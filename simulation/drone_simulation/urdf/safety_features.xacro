@@ -1,0 +1,335 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Include materials -->
+  <xacro:include filename="./materials.xacro"/>
+
+  <!-- ==================== -->
+  <!--  Emergency Parachute System  -->
+  <!-- ==================== -->
+
+  <link name="parachute_assembly">
+    <visual>
+      <geometry>
+        <cylinder radius="0.15" length="0.1"/>
+      </geometry>
+      <material name="orange_payload"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.15" length="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.8"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.01" iyy="0.01" izz="0.01" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="parachute_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="parachute_assembly"/>
+    <origin xyz="0 0 0.3" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Deployable Parachute (hidden when stowed) -->
+  <link name="parachute_canopy">
+    <visual>
+      <geometry>
+        <mesh filename="package://drone_simulation/meshes/parachute.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="parachute_deploy_joint" type="prismatic">
+    <parent link="parachute_assembly"/>
+    <child link="parachute_canopy"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0" upper="2.0" effort="50" velocity="5.0"/>
+    <dynamics damping="10.0" friction="1.0"/>
+  </joint>
+
+  <!-- Gazebo Parachute Plugin -->
+  <gazebo reference="parachute_canopy">
+    <plugin filename="libparachute_plugin.so" name="parachute_controller">
+      <drag_coefficient>1.5</drag_coefficient>
+      <area>4.0</area> <!-- 4m^2 parachute -->
+      <deployment_time>2.0</deployment_time>
+      <command_topic>/hermes/safety/parachute_deploy</command_topic>
+    </plugin>
+  </gazebo>
+
+  <!-- ==================== -->
+  <!--  Emergency Locator Beacon  -->
+  <!-- ==================== -->
+
+  <link name="emergency_beacon">
+    <visual>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+      <material name="red_motor"/>
+    </visual>
+  </link>
+
+  <joint name="beacon_joint" type="fixed">
+    <parent link="electronics_bay"/>
+    <child link="emergency_beacon"/>
+    <origin xyz="0 -0.15 0.18" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Gazebo Beacon Plugin -->
+  <gazebo reference="emergency_beacon">
+    <plugin filename="libgazebo_ros_beacon.so" name="emergency_beacon">
+      <ros>
+        <namespace>/hermes/safety</namespace>
+      </ros>
+      <signal_strength>50.0</signal_strength> <!-- dBm -->
+      <update_rate>1.0</update_rate>
+      <topic_name>beacon_status</topic_name>
+    </plugin>
+  </gazebo>
+
+  <!-- ==================== -->
+  <!--  Propeller Guards  -->
+  <!-- ==================== -->
+
+  <xacro:macro name="propeller_guard" params="motor_prefix">
+    <link name="${motor_prefix}_guard">
+      <visual>
+        <geometry>
+          <cylinder radius="0.25" length="0.02"/>
+        </geometry>
+        <material name="carbon_fiber">
+          <color rgba="0.2 0.2 0.2 0.5"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="0.25" length="0.02"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${motor_prefix}_guard_joint" type="fixed">
+      <parent link="${motor_prefix}"/>
+      <child link="${motor_prefix}_guard"/>
+      <origin xyz="0 0 0.12" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Install guards on all motors -->
+  <xacro:propeller_guard motor_prefix="motor_1"/>
+  <xacro:propeller_guard motor_prefix="motor_2"/>
+  <xacro:propeller_guard motor_prefix="motor_3"/>
+  <xacro:propeller_guard motor_prefix="motor_4"/>
+  <xacro:propeller_guard motor_prefix="motor_5"/>
+  <xacro:propeller_guard motor_prefix="motor_6"/>
+
+  <!-- ==================== -->
+  <!--  Fire Suppression System  -->
+  <!-- ==================== -->
+
+  <link name="fire_extinguisher">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.15"/>
+      </geometry>
+      <material name="red_motor"/>
+    </visual>
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="fire_extinguisher_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="fire_extinguisher"/>
+    <origin xyz="0.4 -0.4 0.1" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Gazebo Fire Suppression Plugin -->
+  <gazebo reference="fire_extinguisher">
+    <plugin filename="libfire_suppression_plugin.so" name="fire_suppression">
+      <ros>
+        <namespace>/hermes/safety</namespace>
+      </ros>
+      <activation_topic>fire_suppression_activate</activation_topic>
+      <agent_count>3</agent_count> <!-- Number of extinguishing charges -->
+    </plugin>
+  </gazebo>
+
+  <!-- ==================== -->
+  <!--  Emergency Landing Gear  -->
+  <!-- ==================== -->
+
+  <link name="emergency_landing_gear">
+    <visual>
+      <geometry>
+        <box size="0.5 0.5 0.02"/>
+      </geometry>
+      <material name="orange_payload"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.5 0.5 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.3"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.1" iyy="0.1" izz="0.1" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="emergency_landing_gear_joint" type="prismatic">
+    <parent link="base_link"/>
+    <child link="emergency_landing_gear"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-0.3" upper="0" effort="100" velocity="1.0"/>
+  </joint>
+
+  <!-- ==================== -->
+  <!--  System Monitoring Sensors  -->
+  <!-- ==================== -->
+
+  <!-- Temperature Sensor Network -->
+  <xacro:macro name="temp_sensor" params="name xyz">
+    <link name="${name}_temp_sensor">
+      <visual>
+        <geometry>
+          <sphere radius="0.01"/>
+        </geometry>
+        <material name="green_sensor"/>
+      </visual>
+    </link>
+
+    <joint name="${name}_temp_sensor_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="${name}_temp_sensor"/>
+      <origin xyz="${xyz}" rpy="0 0 0"/>
+    </joint>
+
+    <gazebo reference="${name}_temp_sensor">
+      <sensor name="${name}_temp_sensor" type="temperature">
+        <always_on>true</always_on>
+        <update_rate>1.0</update_rate>
+        <temperature>
+          <noise type="gaussian">
+            <mean>0.0</mean>
+            <stddev>0.5</stddev>
+          </noise>
+        </temperature>
+        <plugin filename="libgazebo_ros_temperature_sensor.so" name="${name}_temp_plugin">
+          <ros>
+            <namespace>/hermes/safety</namespace>
+            <remapping>temperature:=${name}_temperature</remapping>
+          </ros>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:temp_sensor name="battery_temp" xyz="0.1 -0.1 0.1"/>
+  <xacro:temp_sensor name="motor_temp" xyz="0.5 0 0.1"/>
+  <xacro:temp_sensor name="electronics_temp" xyz="0 0 0.2"/>
+
+  <!-- Vibration Sensor -->
+  <link name="vibration_sensor">
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.01"/>
+      </geometry>
+      <material name="green_sensor"/>
+    </visual>
+  </link>
+
+  <joint name="vibration_sensor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="vibration_sensor"/>
+    <origin xyz="0 0 0.15" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo reference="vibration_sensor">
+    <sensor name="vibration_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <plugin filename="libgazebo_ros_vibration_sensor.so" name="vibration_sensor_plugin">
+        <ros>
+          <namespace>/hermes/safety</namespace>
+          <remapping>vibration:=vibration_metrics</remapping>
+        </ros>
+        <warning_threshold>5.0</warning_threshold> <!-- m/s^2 -->
+        <critical_threshold>10.0</critical_threshold>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ==================== -->
+  <!--  Geofencing System  -->
+  <!-- ==================== -->
+
+  <!-- Geofence Compliance Indicator -->
+  <link name="geofence_indicator">
+    <visual>
+      <geometry>
+        <cylinder radius="0.02" length="0.01"/>
+      </geometry>
+      <material name="green_sensor"/>
+    </visual>
+  </link>
+
+  <joint name="geofence_indicator_joint" type="fixed">
+    <parent link="electronics_bay"/>
+    <child link="geofence_indicator"/>
+    <origin xyz="0.15 0.15 0.06" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Gazebo Geofence Plugin -->
+  <gazebo>
+    <plugin filename="libgeofence_plugin.so" name="geofence_controller">
+      <ros>
+        <namespace>/hermes/safety</namespace>
+      </ros>
+      <max_altitude>120.0</max_altitude> <!-- meters -->
+      <boundary_file>package://drone_simulation/config/geofence_boundaries.json</boundary_file>
+      <violation_topic>geofence_violation</violation_topic>
+    </plugin>
+  </gazebo>
+
+  <!-- ==================== -->
+  <!--  Backup Power System  -->
+  <!-- ==================== -->
+
+  <link name="backup_battery">
+    <visual>
+      <geometry>
+        <box size="0.08 0.05 0.03"/>
+      </geometry>
+      <material name="green_sensor"/>
+    </visual>
+    <inertial>
+      <mass value="0.3"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="backup_battery_joint" type="fixed">
+    <parent link="electronics_bay"/>
+    <child link="backup_battery"/>
+    <origin xyz="0.15 -0.15 0.06" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Gazebo Backup Power Plugin -->
+  <gazebo reference="backup_battery">
+    <plugin filename="libbackup_power_plugin.so" name="backup_power">
+      <capacity>500.0</capacity> <!-- 500Wh -->
+      <activation_voltage>18.0</activation_voltage>
+      <status_topic>/hermes/safety/backup_power_status</status_topic>
+    </plugin>
+  </gazebo>
+</robot>
