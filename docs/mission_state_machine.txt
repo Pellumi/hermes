@@ -1,0 +1,926 @@
+﻿Mission State Machine Specification
+Autonomous Drone Operating System (ADOS)
+
+
+Version 1.0
+Applies to: Simulation & Supervised Autonomy Phases
+Geography: Auja Pilot Deployment
+Domain: Drone Navigation, Autonomy & Recipient Interaction
+
+
+1. Purpose
+This document defines the mission state machine for the ADOS core platform
+ADOS Responsibilities:
+* Drone navigation and flight control
+* Route planning and execution
+* Safety monitoring and fallover
+* Direct container deployment/retraction control
+* Recipient/sender communication (SMS, calls, WhatsApp)
+* Visual identification using onboard cameras
+* Precise location coordination in low-GPS areas
+* Telemetry streaming
+* Operator supervision interfaces
+
+
+External Logistics System Responsibilities:
+* Mission creation with waypoint data
+* Weight verification (sends “WEIGHT_VERIFIED” or “WEIGHT_REJECTED”)
+* OTP generation and verification
+* Payment processing
+* Business subscription & wallet management
+* API integrations
+* Waypoint classification (warehouse/business/customer)
+Integration Pattern: ADOS receives commands and confirmations from external logistics system. ADOS manages all physical drone operations and human interaction.
+
+
+2. Design Principles
+* Every mission must be in exactly one state at any time
+* All transitions must be explicit and logged
+* Safety overrides optimization
+* Illegal transitions must raise system alerts
+* Drone must have safe fallback state under uncertainty
+* ADOS treats all missions identically - workflow differences handled by logistics system
+* Waypoints are abstract coordinates - ADOS does not distinguish warehouse vs business
+* Human communication is an ADOS flight function, not external
+
+
+3. Mission State Categories
+States are grouped into seven phases:
+* Pre-flight
+* Launch & En Route to Pickup
+* Pickup Operations
+* Delivery Transit
+* Delivery Operations
+* Return & Docking
+* Exception & Failure
+
+
+4. Full State Enumeration
+4.1 Pre-flight States
+* MISSION_CREATED
+Mission record exists
+No drone  assigned
+
+
+Entry Condition
+* Business/user creates a mission request OR External logistics system creates mission via ADOS API
+* Payload: pickup_waypoint, destination_waypoint, business_id, mission_profile (Not limited to)
+* Recipient contact data: phone, whatsapp, sms (Not limited to)
+Exit Conditions
+* DRONE_ASSIGNED
+* MISSION_CANCELLED
+Telemetry
+* Mission_id, timestamp, business_id
+
+
+* DRONE_ASSIGNED
+A drone is reserved for this mission
+
+
+Entry Trigger
+* Fleet management selects available drone
+* External system confirms drone allocation
+Guards
+* Drone health status = OK
+   * Drone not in maintenance
+   * Communication modules (4G/5G) verified (Not limited to)
+* Battery >= minimum threshold 
+Exit Conditions
+* ROUTE_CALCULATING
+* MISSION_ABORTED (if drone fails health check)
+* MISSION_CANCELLED (external)
+
+
+* ROUTE_CALCULATING
+Autonomy engine computes flight path
+
+
+Inputs
+* Pickup waypoint coordinates
+* Destination waypoint coordinates
+* Current Weather
+* No-fly zones (static + dynamic)
+* Battery
+* Mission priority
+Exit Conditions
+* ROUTE_READY
+* ROUTE_FAILED
+
+
+* ROUTE_READY
+Flight plan validated and ready for execution
+
+
+Guards
+* Energy budget feasible (round trip + reserves)
+* Weather within limits operational limits
+* No restricted airspace violation
+* Valid contingency landing sites identified
+Exit Conditions
+* AWAITING_LAUNCH_APPROVAL
+
+
+* AWAITING_LAUNCH_APPROVAL
+Human operator must approve (In future to be autonomous)
+Note: Mission already approved by logistics system. This is flight safety approval.
+
+
+Timeout
+* Configurable (default 5 minutes)
+Exit Conditions
+* LAUNCH_INITIATED (ADOS operator approves)
+* MISSION_ABORTED (ADOS operator rejects)
+* MISSION_TIMEOUT (No response)
+Logging: operator_id captured on approval/rejection
+
+
+4.2 Launch & En route to Pickup States
+* LAUNCH_INITIATED
+Takeoff command sent to drone
+
+
+Drone Action
+* Pre arm checks
+* Motor arming
+* Vertical ascent to cruise altitude
+Exit Conditions
+* EN_ROUTE_TO_PICKUP
+* TAKEOFF_FAILURE (with fault code)
+
+
+* EN_ROUTE_TO_PICKUP
+Drone navigating to pickup waypoint
+
+
+Continuous Monitoring
+* Battery drain rate vs predicted
+* Wind speed/direction tolerance
+* Obstacle detection
+* Geofence compliance
+* Communication link quality
+Possible Transitions
+* ARRIVED_AT_PICKUP
+* REROUTING
+* LOW_BATTERY_DIVERSION
+* SIGNAL_LOSS
+* EMERGENCY_LANDING
+* MISSION_ABORTED (ADOS operator or external)
+
+
+4.3 Pickup Operations
+* ARRIVED_AT_PICKUP
+Drone within defined pickup radius
+
+
+Action
+* Hover and stabilize at deployment altitude (configurable: 2-5m AGL)
+* Log arrival timestamp
+* Notify external system: DRONE_ARRIVED_PICKUP event
+Exit Conditions
+* CONTACT_INITIATING_PICKUP
+* PICKUP_TIMEOUT
+* REROUTING (external system updated pickup location)
+* MISSION_ABORTED
+
+
+* CONTACT_INITIATING_PICKUP
+Drone establishes communication with sender
+
+
+ADOS Responsibilities:
+* Retrieve sender contact method from mission manifest
+* Initiate communication via preferred channel
+   * Voice call
+   * SMS with secure link
+   * WhatsApp message
+* Message template: “Your delivery drone has arrived. Please help me locate you)
+Note: The communication would be handled by the Autonomous System which would utilize AI to understand the users information and properly locate the user.[a]
+
+
+Timeout: Configurable (default: 2 minutes)
+Exit Conditions:
+* RECIPIENT_LOCATING_PICKUP (contact established)
+* PICKUP_TIMEOUT (no response)
+* MISSION_ABORTED
+Logging:
+* Contact method attempted
+* Response received timestamp
+* Communication channel used
+
+
+
+
+* RECIPIENT_LOCATING_PICKUP
+Drone uses visual identification to precisely locate sender
+
+
+ADOS Responsibilities:
+* Activate downward-facing camera
+* Computer vision processing for human detection
+* Pattern/color recognition (based on sender description)
+* Voice guidance: “Please wave or stand in an open area”
+* Hover adjustment for optimal viewing
+Integration:
+* ADOS does NOT transmit video to logistics system
+* All identification performed onboard
+* External system provides visual descriptors if available
+Timeout: Configurable (default: 3 minutes)
+Exit Conditions:
+* CONTAINER_DEPLOYING (sender successfully located)
+* PICKUP_TIMEOUT (cannot locate)
+* ESCALATE_OPERATOR (low confidence, human review needed)
+* MISSION_ABORTED
+
+
+* ESCALATE_OPERATOR (Future v2)
+Low-confidence visual identification requires ADOS operator assistance
+
+
+Actions: 
+* Stream video thumbnail to operator dashboard
+* Operator confirms sender visually
+* Operator commands continue or abort
+Exit Conditions: 
+* CONTAINER_DEPLOYING (operator confirms)
+* PICKUP_TIMEOUT (operator cannot confirm)
+* MISSION_ABORTED
+Note: For Abuja MVP, EXCALATE_OPERATOR may be disabled; timeout leads to PICKUP_TIMEOUT
+
+
+* CONTAINER_DEPLOYING
+Payload container lowered for package placement
+
+
+ADOS Responsibilities
+* Activate winch/container deployment mechanism
+* Monitor deployment sensors
+* Confirm container fully deployed and stable
+* Maintain altitude and position hold
+Exit Conditions
+* AWAITING_WEIGHT_CONFIRMATION
+* DEPLOYMENT_FAILURE
+
+
+* AWAITING_WEIGHT_CONFIRMATION
+Container deployed, awaiting weight verification from external system
+ADOS Actions:
+* Stream weight sensor data in telemetry (raw values)
+* Maintain stable hover
+* Monitor battery drain
+* Container remains unlocked
+Timeout: Configurable (default 3 minutes)
+Exit Conditions: 
+* WEIGHT_VERIFIED_RECEIVED (external: “WEIGHT_VERIFIED”)
+* WEIGHT_REJECTED_RECEIVED (external: “WEIGHT_REJECTED”)
+* PICKUP_TIMEOUT
+* MISSION_ABORTED
+Critical Design:
+* ADOS does NOT make weight acceptance decision
+* ADOS sends weight telemetry, external system decides OR external system (payload sensors) measure the weight and sends commands to ADOS
+* External system commands: WEIGHT_VERIFIED or WEIGHT_REJECTED
+
+
+* WEIGHT_VERIFIED_RECEIVED
+The external system confirms the package weight is within limits.
+
+
+Actions
+* Log verification receipt
+* Initiate container securing sequence
+Exit Conditions: 
+* PAYLOAD_SECURED
+
+
+* WEIGHT_REJECTED_RECEIVED
+External system rejects package weight (> 8kg or other business rule)
+
+
+Actions:
+* Notify sender via active communication channel
+* Voice prompt: “Package exceeds weight limit. Please remove items.”
+* Container remains deployed
+* Continue weight monitoring
+Exit Conditions:
+* AWAITING_WEIGHT_CONFIRMATION (retry)
+* PICKUP_TIMEOUT
+* MISSION_ABORTED
+
+
+* PAYLOAD_SECURED
+Container sealed and retracted
+
+
+Actions:
+* Activate container locking mechanism
+* Retract winch/container line
+* Confirm container fully seated and locked
+* Notify external system: PAYLOAD_SECURED event
+
+
+Exit Conditions:
+* EN_ROUTE_TO_DESTINATION
+
+4.4 Delivery Transit
+   * EN_ROUTE_TO_DESTINATION
+Primary delivery flight segment
+
+
+Continuous Evaluation
+   * Weather changes
+   * Obstacle detection and avoidance
+   * Energy budget recalculation (every 60 seconds)
+   * ETA recalculation and updates (streamed continuously)
+   * Geofence compliance
+   * Battery threshold monitoring
+Possible Transitions
+   * ARRIVED_AT_DESTINATION
+   * REROUTING
+   * LOW_BATTERY_DIVERSION
+   * SIGNAL_LOSS
+   * EMERGENCY_LANDING
+   * MISSION_ABORTED
+
+
+   * REROUTING
+Autonomy recalculates flight path
+
+
+Triggers
+   * Dynamic obstacle detected
+   * No-fly zone update
+   * Severe weather
+   * Congestion
+   * ADOS operator override with new waypoint
+   * External system updates destination
+Actions:
+   * Log reroute trigger reason
+   * Increment reroute counter
+   * Compute new path
+   * Validate energy budget for new route
+   * Notify external system: ROUTE_CHANGED with reason
+Exit Conditions
+   * EN_ROUTE_TO_PICKUP (If pickup waypoint changed)
+   * EN_ROUTE_TO_DESTINATION (if delivery waypoint changed)
+   * RETURNING_TO_BASE (if mission aborted during reroute)
+   * MISSION_ABORTED (no valid route)
+
+
+4.5 Delivery Operations
+   * ARRIVED_AT_DESTINATION
+Within destination waypoint specified radius
+
+
+Action
+   * Hover stabilization
+   * Log arrival timestamp
+   * Notify external system: DRONE_ARRIVED_DESTINATION event
+Exit Conditions
+   * CONTACT_INITIATING_DELIVERY
+   * DELIERY_TIMEOUT
+   * REROUTING (external system changes destination)
+   * MISSION_ABORTED
+
+
+   * CONTACT_INITIATING_DELIVERY
+Drone established communication with recipient
+
+
+ADOS Responsibilities:
+   * Retrieve recipient contact data from mission manifest
+   * Initiate communication via preferred channel (Similar to pickup scenario)
+   * Message template: “Your delivery has arrived. Please help me locate you for package drop-off.”
+Timeout: Configurable (default: 2 minutes)
+Exit Conditions:
+   * RECIPIENT_LOCATING_DELIVERY (contact established)
+   * DELIVERY_TIMEOUT (no response)
+   * MISSION_ABORTED
+
+
+   * RECIPIENT_LOCATING_DELIVERY
+Drone uses visual identification to precisely locate the recipient.
+
+
+ADOS Responsibilities:
+   * Activate downward-facing camera
+   * Computer vision processing for human detection
+   * Voice guidance: “Please stand in an open area where I can see you”
+   * Hover adjustment for optimal viewing
+   * Continuous position refinement
+Timeout: Configurable (default: 3 minutes)
+Exit Conditions:
+   * AWAITING_DELIVERY_AUTHORIZATION (recipient successfully located)
+   * DELIVERY_TIMEOUT (cannot locate)
+   * ESCALATE_OPERATOR (low confidence)
+   * MISSION_ABORTED
+
+
+   * AWAITING_DELIVERY_AUTHORISATION
+Recipient located, waiting for external system to authorize package release
+
+
+ADOS Actions: 
+   * Maintain stable hover at deployment altitude
+   * Container remains secured
+   * Recipient visible in camera frame
+   * Voice prompt: “Please wait while we verify your delivery”
+Timeout: Configurable (default: 5 minutes)
+Exit Conditions:
+   * AUTHORISATION_GRANTED_RECEIVED (external: “AUTHORIZATION_GRANTED”)
+   * DELIVERY_TIMEOUT
+   * REROUTING (external: return to pickup or alternate destination)
+   * MISSION_ABORTED
+Critical Design:
+   * ADOS does NOT generate or verify OTP
+   * ADOS does not know payment status
+   * External system commands AUTHORIZATION_GRANTED after OTP/payment verification
+   * ADOS trusts external command
+
+
+   * AUTHORIZATION_GRANTED_RECEIVED
+External system confirms recipient verified and authorizes package release
+
+
+Actions:
+   * Log authorisation receipt with timestamp
+   * Initiate payload deployment sequence
+Exit Conditions:
+   * PAYLOAD_DEPLOYING
+
+
+   * PAYLOAD_DEPLOYING
+Container unlocked and payload released
+
+
+ADOS responsibilities:
+   * Unlock container mechanism
+   * Deploy/rotate container for release
+   * Confirm payload departed (weight sensor < threshold)
+   * Retract empty container
+   * Notify external system: DELIVERY_CONFIRMED event
+Exit Conditions:
+   * DELIVERY_CONFIRMED
+   * DEPLOYMENT_FAILURE
+
+
+   * DELIVERY_CONFIRMED
+Payload successfully released and container retracted
+
+
+Actions: 
+   * Log delivery completion timestamp
+   * Voice confirmation: “Delivery complete. Thank you.”
+   * Terminate communication channel
+Exit Conditions: 
+   * RETURN_ROUTE_CALCULATING
+
+
+4.6 Return & Docking
+   * RETURN_ROUTE_CALCULATING
+Compute optimal return path
+
+
+Destination:
+   * Return waypoint provided by external mission manifest
+   * ADOS treats as abstract coordinate (may be warehouse, business or depot)
+Exit Conditions
+   * RETURNING_TO_BASE
+   * LOW_BATTERY_DIVERSION (if battery insufficient for return)
+
+
+   * RETURNING_TO_BASE
+Drone navigating to return waypoint
+
+
+Exit Conditions
+   * ARRIVED_AT_BASE
+   * LOW_BATTERY_DIVERSION
+   * EMERGENCY_LANDING
+   * MISSION_ABORTED
+
+
+   * ARRIVED_AT_BASE
+Drone at return waypoint
+
+
+Actions
+   * Notify external system: DRONE_ARRIVED_BASE event
+   * Initiate landing sequence
+Exit Conditions
+   * DOCKING
+
+
+   * DOCKING
+Landing and post-flight sequence
+
+
+Actions
+   * Vertical descent
+   * Motor disarm
+   * Container reset (if applicable)
+   * Battery status reporting
+Exit Conditions
+   * MISSION_COMPLETE
+   * DOCKING_FAILURE
+
+
+   * MISSION_COMPLETE
+Terminal state
+Mission closed successfully
+
+
+Actions
+   * Final telemetry package persisted
+   * Mission summary generated
+   * External system notified: MISSION_COMPLETE
+   * Drone marked AVAILABLE in fleet management
+
+
+4.7 Exception & Failure States
+   * LOW_BATTERY_DIVERSION
+Trigger: Battery < critical threshold (configurable, default: 30%)
+
+
+Actions
+   * Query nearest available docking location from fleet management
+   * Autonomous route to safe landing site
+   * Notify external system: LOW_BATTERY_DIVERSION event with target location
+   * Stream ETA to diversion point
+   * Maintain communication with recipient if in delivery or pickup phase
+Exit Conditions
+   * ARRIVED_AT_BASE (successful diversion)
+   * EMERGENCY_LANDING (battery critical, cannot reach destination)
+
+
+   * SIGNAL_LOSS
+Trigger: Communication link lost > configured threshold (default: 30 seconds)
+
+
+Actions
+   * Enter fail-safe mode
+   * Policy decision (configurable per mission)
+   * Continue mission autonomously (if energy permits, destination known)
+   * Return to last known safe waypoint
+   * Proceed to pre-defined contingency landing site
+   * Upon reconnection: synchronize state, notify external system
+Exit Conditions
+   * EN_ROUTE_TO_DESTINATION (signal restored, continue)
+   * RETURNING_TO_BASE (signal restored during RTH)
+   * EMERGENCY_LANDING (signal lost + other fault)
+
+
+   * EMERGENCY_LANDING
+Trigger: Critical fault requiring immediate landing
+
+
+Fault Categories
+   * Motor/propeller failure
+   * Severe weather exceedance
+   * Battery critically low (<5%)
+   * Collision impact detected
+   * Geofence breach with enforcement
+Actions
+   * Execute controlled descent
+   * Activate emergency beacon (if equipped)
+   * Broadcast last known position
+   * Terminal state - requires human recovery
+Logging: Full fault telemetry, video capture included (if available)
+
+
+   * MISSION_ABORTED
+Trigger: ADOS operator or external system abort command
+Terminal state
+
+
+Actions
+   * Execute return-to-home or immediate landing (per abort)
+   * Log operator_id (if ADOS operator-initiated)
+   * Notify external system: MISSION_ABORTED with reason
+
+
+   * MISSION_TIMEOUT
+Trigger: Exceeded maximum mission duration (configurable per mission class)
+Terminal state.
+
+Actions:
+   * Execute return-to-base
+   * Notify external system
+   * Require operator review before next mission
+
+
+   * ROUTE_FAILED
+Trigger: Autonomy unable to compute valid path
+Terminal state
+
+
+Common Causes:
+   * No pat avoiding no-fly zones
+   * Energy budget insufficient for any route
+   * Destination unreachable
+Actions
+   * Notify external system 
+   * Escalate to ADOS operator
+
+
+   * TAKEOFF_FAULURE
+Trigger: Drone unable to achieve stable flight
+
+
+Actions:
+   * Disarm motors
+   * Notify external system with fault code
+   * Require maintenance inspection
+
+
+   * DEPLOYMENT_FAILURE
+Trigger: Payload mechanism fault during deployment or retraction
+
+
+Actions:
+   * Notify external system
+   * Escalate to ADOS operator
+   * Attempt recovery sequence (up to 3 retries)
+   * If unrecoverable: RETURN_TO_BASE with container status
+
+
+   * DOCKING_FAILURE
+Trigger: unable to complete landing sequence
+
+
+Actions:
+   * Hover and retry (up to 3 attempts)
+   * After retries exhausted: notify operator
+   * Alternative: divert to alternate docking station
+
+
+
+
+   5. State Transition Rules
+   * No skipping of mandatory states: Each mission must traverse the defined path
+   * Safety overrides all - Any state can transition to EMERGENCY_LANDING, LOW_BATTERY_DIVERSION, or MISSION_ABORTED
+   * External commands - External system can request:
+   * MISSION_ABORTED
+   * REROUTING (with new waypoint)
+   * WEIGHT_VERIFIED / WEIGHT_REJECTED (in pickup states)
+   * AUTHORIZATION_GRANTED (in delivery states)
+   * MISSION_CANCELLED (pre-flight only)
+   * All transitions logged - Minimum expected fields: timestamp, from_state, to_state, trigger_reason, mission_id, drone_id
+   * No indefinite waits - Every waiting state has explicit timeout with defined fallback
+
+
+   6. Safety Hierarchy (Priority Order)
+Priority
+	Transition Type
+	Description
+	1
+	EMERGENCY_LANDING
+	Immediate landing, any state
+	2
+	LOW_BATTERY_DIVERSION
+	Battery critical, seek safe harbor
+	3
+	SIGNAL_LOSS
+	Communication failure procedure
+	4
+	MISSION_ABORTED
+	ADOS operator or external abort
+	5
+	All other transitions
+	Normal operations
+	Principle: Optimization never overrides safety
+
+
+   7. Telemetry Requirements Per State
+Minimum telemetry fields per state update:
+Field
+	Type
+	Description
+	mission_id
+	UUID
+	ADOS mission identifier
+	drone_id
+	String
+	Drone hardware identifier
+	state
+	String
+	Current mission state
+	latitude
+	Double
+	WGS84 decimal degrees
+	longitude
+	Double
+	WGS84 decimal degrees
+	altitude
+	Float
+	Meters MSL
+	battery_percent
+	Float
+	0.0 - 100.0
+	ground_speed
+	Float
+	m/s
+	wind_speed
+	Float (optional)
+	m/s, if sensor equipped
+	payload_weight
+	Float
+	Kg, 0 if no container/empty
+	container_status
+	Enum
+	DEPLOYED, SECURED, RETRACTED, FAULT
+	communication_status
+	Enum
+	IDLE, INITIATING, ESTABLISHED, FAILED
+	reroute_count
+	Integer
+	Total reroutes for this mission
+	fault_codes
+	String[]
+	Active faults (if any)
+	timestamp
+	ISO8601
+	UTC
+	
+
+Streaming Requirements:
+   * Position updates: 1Hz minimum
+   * State changes: Immediate push
+   * Battery/health critical: 5Hz during emergencies
+
+
+   8. Integration Contract
+8.1 ADOS → External System (Events)
+Event 
+	Minimum Payload
+	Trigger
+	mission.created
+	mission_id, drone_id, business_id 
+	MISSION_CREATED
+	mission.started
+	mission_id, drone_id
+	LAUNCH_INITIATED
+	mission.completed
+	mission_id, summary
+	MISSION_COMPLETE
+	mission.aborted
+	mission_id, reason, operator_id
+	MISSION_AORTED
+	drone.arrived.pickup
+	mission_id, location, timestamp
+	ARRIVED_AT_PICKUP
+	drone.arrived.destination
+	mission_id, location, timestamp
+	ARRIVED_AT_DESTINATION
+	drone.arrived.base
+	mission_id, location
+	ARRIVED_AT_BASE
+	payload.secured
+	mission_id, timestamp
+	PAYLOAD_SECURED
+	delivery.confirmed
+	mission_id, timestamp
+	DELIVERY_CONFIRMED
+	drone.emergency
+	mission_id, fault_code, location
+	EMERGENCY_LANDING
+	drone.low_battery
+	mission_id, battery, target_location
+	LOW_BATTERY_DIVERSION
+	drone.signal_loss
+	mission_id, duration
+	SIGNAL_LOS (start/end)
+	route.changed
+	mission_id, reason, new_waypoint
+	REROUTING
+	eta.updated
+	mission_id, eta_seconds, waypoint
+	Continuous
+	contact.established
+	mission_id, channel
+	CONTACT_INITIATING → RECIPIENT_LOCATING
+	
+
+8.2 External System → ADOS (Commands)
+Command
+	Payload
+	Valid States
+	mission.create
+	pickup_wp, dest_wp, contact_data, business_id 
+	-
+	mission.cancel
+	reason
+	MISSION_CREATED, DRONE_ASSIGNED, ROUTE_READY
+	mission.abort
+	reason
+	Any (except terminal states)
+	mission.reroute
+	new_waypoint
+	EN_ROUTE_TO_PICKUP, EN_ROUTE_TO_DESTINATION
+	weight.verified
+	-
+	AWAITING_WEIGHT_CONFIRMATION
+	weight.rejected.
+	-
+	AWAITING_WEIGHT_CONFIRMATION
+	authorization.granted
+	-
+	AWAITING_DELIVERY_AUTHORIZATION
+	
+
+   9. Configuration Parameters (Externalized)
+Parameter
+	Default
+	Description
+	battery.low_threshold
+	30%
+	Trigger LOW_BATTERY_DIVERSION
+	battery.critical_threshold
+	5%
+	Trigger EMERGENCY_LANDING
+	timeout.launch_approval
+	5 min
+	AWAITING_LAUNCH_APPROVAL
+	timeout.contact_pickup
+	2 min
+	CONTACT_INITIATING_PICKUP
+	timeout.contact_delivery
+	2 min
+	CONTACT_INITIATING_DELIVERY
+	timeout.visual_pickup
+	3 min
+	RECIPIENT_LOCATING_PICKUP
+	timeout.visual_delivery
+	3 min
+	RECIPIENT_LOCATION_DELIVERY
+	timeout.weight_confirmation
+	3 min
+	AWAITING_WEIGHT_CONFIRMATION
+	timeout.delivery_authorization
+	10 min
+	AWAITING_DELIVERY_AUTHORIZATION
+	timeout.signal_loss
+	30 sec
+	Declare SIGNAL_LOSS
+	arrival_radius
+	10 m
+	Distance threshold for ARRIVED_* states
+	deployment.altitude
+	4 m
+	AGL for container deployment
+	visual.confidence_threshold
+	0.85
+	CV confidence for recipient identification
+	
+
+All parameters configurable per:
+   * Business tier
+   * Geography 
+   * Mission priority
+   * Weather conditions
+
+
+   10. Validation Criteria
+State machine is validated when:
+   * All states reachable via defined transitions in simulation
+   * No circular deadlocks: Every path eventually reaches terminal state
+   * No unreachable states: Coverage testing confirms
+   * 1000+ simulated missions execute without illegal transitions
+   * Communication protocols tested: SMS, voice, WhatsApp integration verified
+   * Computer vision pipeline tested: Recipient identification in varied conditions
+   * External integration tests: All events emitted and commands accepted
+   * Failover tests: Confirm safety hierarchy behavior under fault conditions
+
+
+   11. Future Evolution Hooks (Inactive for Abuja Pilot)
+State
+	Purpose
+	DRONE_SWAP_INITATED
+	Mid-mission handoff to another drone
+	PAYLOAD_TRANSFERRED
+	Package transferred between drones
+	ESCALATE_OPERATOR
+	Human-in-loop for low-confidence CV
+	CORRIDOR_TRANSIT
+	Long-haul corridor navigation
+	AIRSPACE_AUTHORIZATION_PENDING
+	Dynamic airspace access requests
+	WEATHER_HOLD
+	Temporary hold due to severe weather 
+	MAINTENANCE_DIVERSION
+	Proactive maintenance routing
+	CONTAINER_RETRIEVAL
+	Empty container recovery missions
+	
+
+   12. Compliance & Auditability
+Supervised Autonomy Requirements:
+   * All ADOS operator interventions logged with operator_id
+   * No mission proceeds without ADOS operator launch approval
+   * Abort capability available at all times via ADOS operator dashboard
+   * Visual identification decisions logged with confidence scores
+Regulatory Artifacts:
+   * Complete state transition history per mission
+   * All rerouting decisions logged with input parameters
+   * Communication attempts and outcomes logged
+   * Emergency events stored with full telemetry snapshot
+   * Audit trail accessible for minimum 90 days
+[a]I do not think I explained this well

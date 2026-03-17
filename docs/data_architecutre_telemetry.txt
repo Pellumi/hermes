@@ -1,0 +1,1297 @@
+﻿Data Architecture & Telemetry Model
+Autonomous Drone Operating System (ADOS)
+
+
+Version: 1.0
+Scope: Simulation + Supervised Autonomy (Abuja Pilot)
+Status: Final - Approved for Implementation
+
+
+1. Purpose
+This document defines: 
+* System-wide data domains and boundaries
+* Complete telemetry schema with all operational fields
+* Mission schema with contact and verification tracking
+* Drone health and battery degradation models
+* Contact operations schema
+* Visual identification schema
+* Weight verification schema
+* Rerouting decision schema
+* Warehouse docking management
+* Geofence violation tracking
+* Event taxonomy (50+ events covering full mission lifecycle)
+* Storage strategy with TimescaleDB optimization
+* Retention policies with graduated compression
+* Data integrity, security, and audit requirements
+* Regulatory compliance (NCAA, NITDA, GDPR)
+It ensures: 
+* Autonomy models are trainable from real telemetry
+* State transitions are fully auditable
+* Regulatory compliance is achievable (NCAA Part 18)
+* Scaling from 1 to 1000+ drones without redesign
+
+
+2. Architectural Data Philosophy
+ADOS data is divided into three classes:
+Class
+	Purpose
+	Examples
+	Operational
+	Real-time mission execution
+	Telemetry, state transitions, commands
+	Analytical
+	Model training & optimization
+	Aggregated telemetry, reroute patterns, battery degradation
+	Regulatory/Audit
+	Compliance & Investigations
+	Immutable logs, operator actions, incident records
+	
+
+Guiding Principles:
+* Append-only logs for safety and state events (no deletions)
+* Event-driven propagation (all state changes emit events)
+* Time-series optimized telemetry storage (TimescaleDB)
+* Geospatial-aware routing and tracking (PostGIS)
+* Explicit separation of control-plane vs data-plane
+* HMAC-signed telemetry with replay protection
+* PII classification for GDPR compliance
+* Immutable audit trail for regulatory investigations
+
+
+3. Data Domain Decomposition
+Domain
+	Responsibility
+	Primary Storage
+	Mission Domain
+	Mission lifecycle, state transitions
+	PostgreSQL
+	Drone Domain
+	Hardware identity, health, maintenance
+	PostgreSQL
+	Telemetry Domain
+	Live positional & sensor data
+	TimescaleDB
+	Autonomy Domain
+	Routing decisions, predictions
+	PostgreSQL
+	Event Domain
+	All system events (emitted to external)
+	Kafka/PostgreSQL
+	Warehouse Domain
+	Docking nodes, capacity management
+	PostgreSQL
+	Contact Domain
+	Sender/recipient communication
+	PostgreSQL
+	Visual Domain
+	CV-based recipient location
+	PostgreSQL
+	Weight Domain
+	Payload verification events
+	PostgreSQL
+	Reroute Domain
+	Path recalculation decisions
+	PostgreSQL
+	Geofence Domain
+	No-fly zone violations
+	PostgreSQL
+	Audit Domain
+	Operator actions, data access
+	PostgreSQL
+	
+
+4. Storage Strategy
+4.1 Primary Databases
+Database
+	Technology
+	Purpose
+	Mission & State
+	PostgreSQL
+	Missions, drones, warehouses, state transitions
+	Geospatial
+	PostGIS
+	Waypoints, no-fly zones, emergency landing sites
+	Telemetry
+	TimescaleDB
+	High-frequency time-series (1Hz standard, 5Hz emergency)
+	Cache
+	Redis 7.0+
+	Live mission state, WebSocket broadcast buffers
+	Object Storage
+	MiniO/S3
+	Logs, flight summaries, emergency telemetry dumps, (future) visual snapshots
+	Streaming
+	Kafka (Phase 2+)
+	Event backbone for external integrations
+	
+
+4.2 Partitioning Strategy
+TimescaleDB Hypertable Configuration
+
+
+
+
+-- Create hypertable with 1-hour chunks from day one
+SELECT create_hypertable('drone_telemetry', 'timestamp', 
+                        chunk_time_interval => INTERVAL '1 hour');
+
+-- Enable compression after 7 days
+ALTER TABLE drone_telemetry SET (
+ timescaledb.compress,
+ timescaledb.compress_segmentby = 'drone_id'
+);
+
+-- Automatic compression policy
+SELECT add_compression_policy('drone_telemetry', INTERVAL '7 days');
+
+-- Data retention policy (30 days hot storage)
+SELECT add_retention_policy('drone_telemetry', INTERVAL '30 days');
+	
+
+4.3 Data Flow Architecture
+Drone/Sensor → MQTT (TLS) → Telemetry Ingestion Service
+                              ├──–> Validation Layer (schema check)
+                              ├──–> Dead Letter Queue (on failure)
+                              ├──–> TimescaleDB (persist)
+                              ├──–> Redis (live state cache)
+                              ├─—-> WebSocket (operator dashboard)
+                              └──–> Kafka (external webhooks)
+
+
+Critical Components:
+* Validation Layer: Rejects malformed telemetry, logs to DLQ
+* Dead Letter Queue: Failed messages stored for replay (retention: 7 days)
+* Monitoring: Latency budget <2s end-to-end (per System Architecture 7.2)
+
+
+5. Telemetry Schema (Core Data Plane)
+Telemetry emitted at minimum 1Hz, 5Hz during emergencies
+
+
+5.1 Table: drone_telemetry
+CREATE TABLE drone_telemetry (
+   -- Identifiers
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   mission_id UUID NOT NULL,
+   drone_id TEXT NOT NULL,
+   sequence_number BIGINT NOT NULL,  -- Monotonic per drone (replay protection)
+   timestamp TIMESTAMPTZ NOT NULL,
+   
+   -- Position (PostGIS)
+   location GEOGRAPHY(POINT) NOT NULL,
+   altitude_msl FLOAT,  -- meters
+   altitude_agl FLOAT,  -- meters
+   gps_accuracy_m FLOAT,
+   gps_satellites INTEGER,
+   
+   -- Movement
+   ground_speed_mps FLOAT,
+   vertical_speed_mps FLOAT,
+   heading_deg FLOAT,
+   
+   -- Battery & Power
+   battery_percent FLOAT CHECK (battery_percent BETWEEN 0 AND 100),
+   battery_voltage FLOAT,
+   battery_current FLOAT,
+   battery_temperature_c FLOAT,
+   power_consumption_w FLOAT GENERATED ALWAYS AS (battery_voltage * battery_current) STORED,
+   
+   -- Payload Container (Autonomy Definition Section 19)
+   payload_weight_kg FLOAT,
+   container_status TEXT CHECK (container_status IN (
+       'STOWED', 'LOWERING', 'LOADING', 'SEALED', 
+       'DEPLOYING', 'EMPTY', 'FAULT'
+   )),
+   container_lock_status TEXT CHECK (container_lock_status IN (
+       'LOCKED', 'UNLOCKED', 'FAULT', 'CALIBRATING'
+   )),
+   container_temp_c FLOAT,
+   container_humidity FLOAT,
+   container_cycle_count INTEGER DEFAULT 0,
+   winch_current_ma FLOAT,
+   winch_status TEXT CHECK (winch_status IN (
+       'STOWED', 'LOWERING', 'RAISING', 'STALL', 'FAULT'
+   )),
+   
+   -- Local Command Tracking (Autonomy Definition Section 12.1)
+   local_command_received BOOLEAN DEFAULT FALSE,
+   local_command_type TEXT CHECK (local_command_type IN (
+       'VERIFIED_LOCAL', 'REJECTED_LOCAL', 'NONE'
+   )),
+   local_command_latency_ms INTEGER,  -- Time from container to drone
+   
+   -- Communication (Mission State Machine Section 4.3, 4.5)
+   contact_attempts INTEGER DEFAULT 0,
+   contact_mode_active TEXT CHECK (contact_mode_active IN (
+       'PHONE', 'WHATSAPP_CALL', 'WHATSAPP_MSG', 'SMS', 'NONE'
+   )),
+   contact_established BOOLEAN DEFAULT FALSE,
+   contact_latency_s FLOAT,  -- Seconds to establish
+   signal_strength_dbm INTEGER,  -- Actual RSSI, not 0-5 scale
+   signal_quality_percent FLOAT,  -- 0-100
+   
+   -- Visual Identification (Future Phase 3)
+   camera_status TEXT CHECK (camera_status IN ('ACTIVE', 'STANDBY', 'FAULT')),
+   visual_confidence FLOAT CHECK (visual_confidence BETWEEN 0 AND 1),
+   visual_escalated BOOLEAN DEFAULT FALSE,
+   visual_processing_ms INTEGER,
+   
+   -- Environment
+   wind_speed_mps FLOAT,
+   wind_direction_deg FLOAT,
+   temperature_c FLOAT,
+   
+   -- Safety & Geofence
+   geofence_distance_m FLOAT,  -- Distance to nearest no-fly boundary
+   geofence_violation BOOLEAN DEFAULT FALSE,
+   operator_intervention_active BOOLEAN DEFAULT FALSE,
+   operator_id UUID NULL,  -- If intervention active
+   
+   -- Mission Context
+   state TEXT NOT NULL,  -- Current mission state (per state machine)
+   reroute_count INTEGER DEFAULT 0,
+   fault_flags TEXT[] DEFAULT '{}',  -- Array of active fault codes
+   
+   -- Signatures (Security)
+   hmac_signature TEXT NOT NULL,  -- HMAC-SHA256 of all fields
+   client_timestamp TIMESTAMPTZ NOT NULL,  -- Original drone timestamp
+   
+   -- Indexes (defined below)
+   PRIMARY KEY (mission_id, timestamp DESC)
+);
+
+-- Required Indexes
+CREATE INDEX idx_telemetry_drone_time ON drone_telemetry (drone_id, timestamp DESC);
+CREATE INDEX idx_telemetry_state ON drone_telemetry (mission_id, state);
+CREATE INDEX idx_telemetry_battery ON drone_telemetry (drone_id, battery_percent) WHERE battery_percent < 30;
+CREATE INDEX idx_telemetry_faults ON drone_telemetry USING GIN (fault_flags);
+CREATE INDEX idx_telemetry_location ON drone_telemetry USING GIST (location);
+
+-- Partial index for active emergencies
+CREATE INDEX idx_telemetry_emergency ON drone_telemetry (timestamp) 
+   WHERE 'EMERGENCY' = ANY(fault_flags);
+	
+
+5.2 Telemetry Validation Rules
+Field
+	Validation
+	Action on Failure
+	timestamp
+	Must be within 60s of server time
+	Reject (replay protection)
+	sequence_number
+	Must be > last sequence for drone
+	Reject (replay protection)
+	hmac_signature
+	Must match computed HMAC
+	Reject (tampering detection)
+	battery_percent
+	0-100 range
+	Clamp, log warning
+	location
+	Within Abuja bounding box
+	Accept, flag for review
+	state
+	Must be a valid mission state
+	Reject, operator alert
+	
+
+6. Mission Schema (Control Plane)
+6.1 Table: missions
+CREATE TABLE missions (
+   mission_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   drone_id TEXT NOT NULL,
+   business_id UUID NOT NULL,
+   mission_type TEXT CHECK (mission_type IN (
+       'BUSINESS_TO_CUSTOMER', 'PEER_TO_PEER', 'API_INTEGRATION'
+   )),
+   mission_profile JSONB,  -- Priority, config overrides
+   
+   -- Waypoints (PostGIS)
+   pickup_waypoint GEOGRAPHY(POINT) NOT NULL,
+   destination_waypoint GEOGRAPHY(POINT) NOT NULL,
+   return_waypoint GEOGRAPHY(POINT),  -- Warehouse or business
+   
+   -- Contact Information (Autonomy Definition Section 20)
+   sender_contact JSONB NOT NULL,  -- {phone, whatsapp, sms, preferred}
+   recipient_contact JSONB NOT NULL,  -- {phone, whatsapp, sms, preferred}
+   preferred_language TEXT DEFAULT 'en',
+   
+   -- Visual Identification (future)
+   visual_descriptors JSONB,  -- {clothing_color, landmarks}
+   
+   -- Payload
+   payload_weight_declared FLOAT NOT NULL CHECK (payload_weight_declared <= 8.0),
+   payload_weight_actual FLOAT,  -- After verification
+   container_id TEXT,  -- Physical container tracking
+   
+   -- Mission Timeline
+   status TEXT NOT NULL,  -- Current mission state
+   reroute_count INTEGER DEFAULT 0,
+   
+   -- Energy
+   estimated_energy_cost FLOAT,  -- Pre-flight
+   actual_energy_used FLOAT,  -- Post-mission
+   
+   -- ETA Tracking
+   eta_initial_seconds INTEGER,
+   eta_actual_seconds INTEGER,
+   
+   -- Regulatory (NCAA Part 18)
+   flight_authorization_id TEXT,  -- NCAA approval
+   remote_pilot_id TEXT,  -- If operator intervened
+   
+   -- Timestamps
+   mission_start_time TIMESTAMPTZ,
+   mission_end_time TIMESTAMPTZ,
+   created_at TIMESTAMPTZ DEFAULT NOW(),
+   updated_at TIMESTAMPTZ DEFAULT NOW(),
+   
+   -- Termination
+   termination_reason TEXT CHECK (termination_reason IN (
+       'COMPLETE', 'ABORT_OPERATOR', 'ABORT_SYSTEM', 
+       'EMERGENCY', 'TIMEOUT', 'CANCELLED'
+   )),
+   
+   FOREIGN KEY (drone_id) REFERENCES drone_registry(drone_id),
+   FOREIGN KEY (business_id) REFERENCES business_profiles(business_id)
+);
+
+-- Indexes
+CREATE INDEX idx_missions_status ON missions (status);
+CREATE INDEX idx_missions_business ON missions (business_id, mission_start_time);
+CREATE INDEX idx_missions_geo_pickup ON missions USING GIST (pickup_waypoint);
+CREATE INDEX idx_missions_geo_dest ON missions USING GIST (destination_waypoint);
+	
+
+
+
+6.2 Table: mission_state_transition (Append-only)
+CREATE TABLE mission_state_transitions (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   mission_id UUID NOT NULL,
+   from_state TEXT NOT NULL,
+   to_state TEXT NOT NULL,
+   trigger_reason TEXT,
+   operator_id UUID NULL,
+   timestamp TIMESTAMPTZ NOT NULL,
+   drone_location GEOGRAPHY(POINT),
+   battery_percent FLOAT,
+   
+   -- State Machine Validation (Mission State Machine Section 5)
+   expected_next_states TEXT[],  -- Valid transitions from this state
+   duration_in_previous_state_seconds INTEGER,  -- Timeout analysis
+   state_machine_version TEXT DEFAULT '2.0',  -- Track evolution
+   
+   -- Dual-Path Logging (Autonomy Definition Section 12.1)
+   local_command_used BOOLEAN DEFAULT FALSE,
+   cloud_override BOOLEAN DEFAULT FALSE,
+   
+   -- Compliance
+   FOREIGN KEY (mission_id) REFERENCES missions(mission_id)
+);
+
+-- Indexes
+CREATE INDEX idx_transitions_mission ON mission_state_transitions (mission_id, timestamp);
+CREATE INDEX idx_transitions_operator ON mission_state_transitions (operator_id) WHERE operator_id IS NOT NULL;
+	
+
+7. Drone Health & Registry
+7.1 Table: drone_registry
+CREATE TABLE drone_registry (
+   drone_id TEXT PRIMARY KEY,
+   hardware_model TEXT NOT NULL,
+   firmware_version TEXT NOT NULL,
+   
+   -- Battery Health (Autonomy Definition Section 6)
+   battery_capacity_original_wh FLOAT NOT NULL,
+   battery_capacity_current_wh FLOAT,
+   battery_health_score FLOAT CHECK (battery_health_score BETWEEN 0 AND 100),
+   battery_cycle_count INTEGER DEFAULT 0,
+   battery_last_calibration TIMESTAMPTZ,
+   
+   -- Maintenance
+   total_flight_hours FLOAT DEFAULT 0,
+   total_cycles INTEGER DEFAULT 0,
+   maintenance_status TEXT CHECK (maintenance_status IN (
+       'OPERATIONAL', 'SCHEDULED', 'IN_MAINTENANCE', 'RETIRED'
+   )),
+   last_service_date DATE,
+   next_service_due DATE,
+   
+   -- Current State
+   current_status TEXT CHECK (current_status IN (
+       'AVAILABLE', 'IN_MISSION', 'CHARGING', 'MAINTENANCE', 'OFFLINE'
+   )),
+   current_mission_id UUID NULL,
+   current_location GEOGRAPHY(POINT),
+   
+   -- Emergency Contact (NCAA requirement)
+   emergency_contact TEXT,  -- 24/7 phone
+   
+   -- Metadata
+   registered_at TIMESTAMPTZ DEFAULT NOW(),
+   updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+	
+
+7.2 Table: battery_cycles
+CREATE TABLE battery_cycles (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   drone_id TEXT NOT NULL,
+   cycle_start TIMESTAMPTZ NOT NULL,
+   cycle_end TIMESTAMPTZ,
+   energy_discharged_wh FLOAT,
+   max_temp_c FLOAT,
+   min_voltage_cell FLOAT,
+   FOREIGN KEY (drone_id) REFERENCES drone_registry(drone_id)
+);
+	
+
+7.3 Table: drone_health_events
+CREATE TABLE drone_health_events (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   drone_id TEXT NOT NULL,
+   mission_id UUID NULL,
+   event_type TEXT CHECK (event_type IN (
+       'FAULT', 'WARNING', 'MAINTENANCE_DUE', 'CALIBRATION'
+   )),
+   fault_code TEXT,
+   severity TEXT CHECK (severity IN ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')),
+   message TEXT,
+   timestamp TIMESTAMPTZ NOT NULL,
+   telemetry_snapshot JSONB,
+   FOREIGN KEY (drone_id) REFERENCES drone_registry(drone_id)
+);
+	
+
+8. Business & External Integration
+8.1 Table: business_profiles
+CREATE TABLE business_profiles (
+   business_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   business_name TEXT NOT NULL,
+   subscription_tier TEXT CHECK (subscription_tier IN (
+       'BASIC', 'PREMIUM', 'ENTERPRISE', 'SANDBOX'
+   )),
+   max_concurrent_drones INTEGER NOT NULL,
+   api_quota_per_minute INTEGER DEFAULT 60,
+   api_key_hash TEXT NOT NULL,  -- Store hash, not raw key
+   webhook_url TEXT,
+   webhook_secret TEXT,  -- For signature verification
+   
+   -- Contact & Billing
+   contact_email TEXT,
+   contact_phone TEXT,
+   billing_info JSONB,  -- Encrypted
+   
+   -- Insurance (NCAA requirement)
+   insurance_provider TEXT,
+   insurance_policy_number TEXT,
+   insurance_expiry DATE,
+   
+   -- Compliance
+   gdpr_data_processing_agreed BOOLEAN DEFAULT FALSE,
+   data_retention_days INTEGER DEFAULT 90,
+   
+   created_at TIMESTAMPTZ DEFAULT NOW(),
+   updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+	
+
+9. Contact Operations Schema
+Reference: Mission State Machine Section 4.3, 4.5; Autonomy Definition Section 20
+
+
+
+
+9.1 Table: contact_operations
+CREATE TABLE contact_operations (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   mission_id UUID NOT NULL,
+   contact_type TEXT CHECK (contact_type IN ('PICKUP', 'DELIVERY')),
+   contact_method TEXT CHECK (contact_method IN (
+       'VOICE_CALL', 'WHATSAPP_CALL', 'WHATSAPP_MSG', 'SMS', 'OTHER'
+   )),
+   contact_destination TEXT NOT NULL,  -- Phone number/WhatsApp ID
+   
+   -- Attempt Tracking
+   attempt_number INTEGER NOT NULL,
+   attempt_timestamp TIMESTAMPTZ NOT NULL,
+   contact_status TEXT CHECK (contact_status IN (
+       'INITIATED', 'ESTABLISHED', 'FAILED', 'TIMEOUT', 'REJECTED'
+   )),
+   
+   -- Response Metrics
+   response_received_timestamp TIMESTAMPTZ,
+   response_time_seconds INTEGER,
+   communication_channel_used TEXT,
+   
+   -- Failure Handling
+   failure_reason TEXT,
+   timeout_seconds INTEGER DEFAULT 120,
+   
+   -- Escalation
+   escalated_to_operator BOOLEAN DEFAULT FALSE,
+   operator_id UUID NULL,
+   
+   FOREIGN KEY (mission_id) REFERENCES missions(mission_id)
+);
+
+-- Indexes
+CREATE INDEX idx_contact_mission ON contact_operations (mission_id, contact_type);
+CREATE INDEX idx_contact_status ON contact_operations (contact_status, attempt_timestamp);
+	
+
+10. Visual Identification Schema 
+Reference: Mission State Machine Section 4.3; Autonomy Definition Section 19.2
+10.1 Table: visual_identification_events
+CREATE TABLE visual_identification_events (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   mission_id UUID NOT NULL,
+   identification_type TEXT CHECK (identification_type IN ('PICKUP', 'DELIVERY')),
+   
+   -- CV Model
+   cv_model_version TEXT,
+   confidence_score FLOAT CHECK (confidence_score BETWEEN 0 AND 1),
+   confidence_threshold FLOAT DEFAULT 0.85,  -- Per mission config
+   
+   -- Results
+   identification_successful BOOLEAN,
+   timestamp TIMESTAMPTZ NOT NULL,
+   processing_duration_ms INTEGER,
+   
+   -- Descriptors
+   visual_descriptors_provided TEXT,  -- What was expected (clothing, etc)
+   visual_descriptors_matched TEXT,   -- What was detected
+   
+   -- Escalation
+   escalation_required BOOLEAN DEFAULT FALSE,
+   escalation_reason TEXT,  -- 'LOW_CONFIDENCE', 'MULTIPLE_PEOPLE', 'NO_DETECTION'
+   operator_confirmed BOOLEAN,
+   operator_id UUID NULL,
+   
+   -- Location
+   drone_location GEOGRAPHY(POINT),
+   
+   -- Audit (no images stored, just metadata)
+   frame_count INTEGER,  -- Number of frames processed
+   avg_processing_time_ms FLOAT,
+   
+   FOREIGN KEY (mission_id) REFERENCES missions(mission_id)
+);
+	
+
+11. Weight Verification Schema
+Reference: Mission State Machine Section 4.3; Autonomy Definition Section 12.1
+
+
+11.1 Table: weight_verification_events
+CREATE TABLE weight_verification_events (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   mission_id UUID NOT NULL,
+   verification_type TEXT CHECK (verification_type IN ('PICKUP', 'DELIVERY')),
+   
+   -- Weight Data
+   weight_kg FLOAT NOT NULL,
+   weight_threshold_kg FLOAT DEFAULT 8.0,
+   
+   -- Source Tracking (Dual-Path)
+   verification_source TEXT CHECK (verification_source IN (
+       'CONTAINER_SENSOR', 'EXTERNAL_SYSTEM', 'BOTH'
+   )),
+   local_command_received BOOLEAN DEFAULT FALSE,
+   cloud_command_received BOOLEAN DEFAULT FALSE,
+   
+   -- Results
+   verification_result TEXT CHECK (verification_result IN (
+       'VERIFIED', 'REJECTED', 'TIMEOUT', 'CONFLICT'
+   )),
+   rejection_reason TEXT,
+   retry_count INTEGER DEFAULT 0,
+   
+   -- Conflict Resolution (Autonomy Definition Section 12.1)
+   conflict_detected BOOLEAN DEFAULT FALSE,
+   resolution_method TEXT CHECK (resolution_method IN (
+       'LOCAL_WON', 'CLOUD_WON', 'OPERATOR', 'SAFETY_OVERRIDE'
+   )),
+   local_command JSONB,
+   cloud_command JSONB,
+   
+   -- Timing
+   verification_timestamp TIMESTAMPTZ NOT NULL,
+   timeout_seconds INTEGER DEFAULT 180,
+   
+   -- Operator (if involved)
+   operator_id UUID NULL,
+   
+   FOREIGN KEY (mission_id) REFERENCES missions(mission_id)
+);
+	
+
+12. Rerouting Decision Schema
+Reference: Autonomy Definition Section 5.5; Mission State Machine REROUTING state
+
+
+12.1 Table: rerouting_events
+CREATE TABLE rerouting_events (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   mission_id UUID NOT NULL,
+   reroute_number INTEGER NOT NULL,  -- Sequential per mission
+   
+   -- Trigger
+   trigger_reason TEXT CHECK (trigger_reason IN (
+       'WIND_EXCEEDANCE', 'OBSTACLE_DETECTED', 'NOFLY_ZONE_UPDATE',
+       'ETA_DEVIATION', 'BATTERY_DRAIN', 'OPERATOR_OVERRIDE',
+       'EXTERNAL_UPDATE', 'COMMUNICATION_QUALITY', 'WEATHER_CELL'
+   )),
+   trigger_threshold TEXT,  -- e.g., "wind > 12m/s"
+   trigger_value FLOAT,  -- Actual value at trigger time
+   
+   -- Route Changes
+   original_waypoint GEOGRAPHY(POINT),
+   new_waypoint GEOGRAPHY(POINT),
+   original_distance_m FLOAT,
+   new_distance_m FLOAT,
+   distance_change_m FLOAT,
+   
+   -- Performance
+   calculation_time_ms INTEGER,
+   timestamp TIMESTAMPTZ NOT NULL,
+   
+   -- Impact
+   eta_change_seconds INTEGER,
+   energy_change_estimate FLOAT,
+   
+   -- Context
+   trigger_telemetry_snapshot JSONB,  -- Full telemetry at trigger time
+   new_route_waypoints JSONB,  -- Array of intermediate points
+   
+   FOREIGN KEY (mission_id) REFERENCES missions(mission_id)
+);
+	
+
+13. Warehouse & Docking Schema
+13.1 Table: warehouses
+CREATE TABLE warehouses (
+   warehouse_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   name TEXT NOT NULL,
+   location GEOGRAPHY(POINT) NOT NULL,
+   
+   -- Status
+   operational_status TEXT CHECK (operational_status IN (
+       'ACTIVE', 'MAINTENANCE', 'FULL', 'OFFLINE'
+   )),
+   
+   -- Capacity
+   drone_capacity INTEGER NOT NULL,
+   available_slots INTEGER NOT NULL,
+   
+   -- Services
+   service_capabilities TEXT[] DEFAULT '{}',  -- ['CHARGE', 'REPAIR', 'PAYLOAD']
+   priority_tier TEXT CHECK (priority_tier IN ('PRIMARY', 'BACKUP', 'EMERGENCY')),
+   
+   -- Contact
+   contact_info JSONB,  -- Ground crew contact
+   
+   -- Metadata
+   last_slot_update TIMESTAMPTZ DEFAULT NOW(),
+   created_at TIMESTAMPTZ DEFAULT NOW()
+);
+	
+
+
+
+13.2 Table: warehouse_docking_slots
+Reference: Autonomy Definition Section 21.4
+CREATE TABLE warehouse_docking_slots (
+   slot_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   warehouse_id UUID NOT NULL,
+   slot_number INTEGER NOT NULL,
+   slot_location GEOGRAPHY(POINT),  -- Precise pad coordinates
+   
+   -- Status
+   status TEXT CHECK (status IN (
+       'AVAILABLE', 'RESERVED', 'OCCUPIED', 'MAINTENANCE'
+   )),
+   
+   -- Reservation
+   reserved_by_drone_id TEXT,
+   reserved_by_mission_id UUID,
+   reservation_timestamp TIMESTAMPTZ,
+   reservation_expiry TIMESTAMPTZ,  -- Auto-release after timeout
+   
+   UNIQUE(warehouse_id, slot_number),
+   FOREIGN KEY (warehouse_id) REFERENCES warehouses(warehouse_id)
+);
+	
+
+13.3 Table: warehouse_activity_log
+CREATE TABLE warehouse_activity_log (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   warehouse_id UUID NOT NULL,
+   drone_id TEXT NOT NULL,
+   mission_id UUID,
+   event_type TEXT CHECK (event_type IN (
+       'ARRIVAL', 'DEPARTURE', 'DOCKING_START', 'DOCKING_COMPLETE',
+       'CHARGE_START', 'CHARGE_COMPLETE', 'MAINTENANCE_START', 'MAINTENANCE_COMPLETE'
+   )),
+   timestamp TIMESTAMPTZ NOT NULL,
+   slot_id UUID,
+   battery_before FLOAT,
+   battery_after FLOAT,
+   duration_seconds INTEGER,
+   
+   FOREIGN KEY (warehouse_id) REFERENCES warehouses(warehouse_id)
+);
+	
+
+14. Geofence & Safety Schema
+Reference: Autonomy Definition Section 4 (Layer 1)
+14.1 Table: geofence_violations
+CREATE TABLE geofence_violations (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   mission_id UUID NOT NULL,
+   drone_id TEXT NOT NULL,
+   violation_type TEXT CHECK (violation_type IN (
+       'NO_FLY_ZONE', 'ALTITUDE_CEILING', 'RESTRICTED_AIRSPACE', 'SPEED_LIMIT'
+   )),
+   
+   -- Location
+   violation_location GEOGRAPHY(POINT) NOT NULL,
+   boundary_distance_m FLOAT,  -- How far inside restricted area
+   
+   -- Severity
+   severity TEXT CHECK (severity IN ('WARNING', 'MINOR', 'MAJOR', 'CRITICAL')),
+   
+   -- Action Taken
+   system_action TEXT CHECK (system_action IN (
+       'ABORT', 'REROUTE', 'RETURN_TO_BASE', 'EMERGENCY_LANDING', 'WARNING_ONLY'
+   )),
+   
+   -- Operator Notification
+   operator_notified BOOLEAN DEFAULT FALSE,
+   operator_notified_at TIMESTAMPTZ,
+   operator_id UUID NULL,
+   operator_response TEXT,
+   
+   timestamp TIMESTAMPTZ NOT NULL,
+   
+   FOREIGN KEY (mission_id) REFERENCES missions(mission_id)
+);
+	
+
+15. Autonomy Decision Log
+15.1 Table: autonomy_decisions
+CREATE TABLE autonomy_decisions (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   mission_id UUID NOT NULL,
+   decision_type TEXT CHECK (decision_type IN (
+       'REROUTE', 'ABORT', 'DIVERT', 'ESCALATE', 'CONTACT', 'VISUAL'
+   )),
+   
+   -- Decision Context
+   input_snapshot JSONB NOT NULL,  -- All relevant sensor/state data
+   decision_output JSONB NOT NULL,  -- Selected action and parameters
+   reason_code TEXT NOT NULL,
+   confidence_level FLOAT CHECK (confidence_level BETWEEN 0 AND 1),
+   
+   -- Conflict Tracking
+   conflict_detected BOOLEAN DEFAULT FALSE,
+   resolution_method TEXT,  -- 'AUTONOMY_WON', 'OPERATOR_WON', 'SAFETY_OVERRIDE'
+   local_decision JSONB,  -- If dual-path
+   cloud_decision JSONB,   -- If dual-path
+   
+   timestamp TIMESTAMPTZ NOT NULL,
+   
+   FOREIGN KEY (mission_id) REFERENCES missions(mission_id)
+);
+
+-- Indexes
+CREATE INDEX idx_autonomy_mission ON autonomy_decisions (mission_id, timestamp);
+CREATE INDEX idx_autonomy_type ON autonomy_decisions (decision_type, timestamp);
+	
+
+16. Event Taxonomy
+Events follow structured envelope:
+{
+ "event_id": "uuid",
+ "event_type": "string",
+ "mission_id": "uuid",
+ "drone_id": "string",
+ "timestamp": "ISO8601",
+ "payload": { ... },
+ "signature": "hmac-sha256"  // For webhook verification
+}
+	
+
+16.1 Mission Events (12 events)
+Event
+	Trigger
+	mission.created
+	Mission record created
+	mission.drone_assigned
+	Drone allocated
+	mission.route_calculating
+	Autonomy started route planning
+	mission.route_ready
+	Valid route found
+	mission.route_failed
+	Cannot compute route
+	mission.awaiting_launch_approval
+	Waiting for operator
+	mission.started
+	LAUNCH_INITIATED
+	mission.completed
+	MISSION_COMPLETE
+	mission.aborted
+	MISSION_ABORTED
+	mission.cancelled
+	External cancellation
+	mission.timeout
+	MISSION_TIMEOUT
+	mission.drone_swapped
+	Handoff initiated (future)
+	
+
+16.2 Navigation Events (15 events)
+Event
+	Trigger
+	navigation.launch_initiated
+	Motors arming
+	navigation.takeoff_complete
+	Stable at cruise altitude
+	navigation.en_route_pickup
+	EN_ROUTE_TO_PICKUP
+	navigation.arrived_pickup
+	ARRIVED_AT_PICKUP
+	navigation.en_route_destination
+	EN_ROUTE_TO_DESTINATION
+	navigation.arrived_destination
+	ARRIVED_AT_DESTINATION
+	navigation.hovering_pickup
+	At pickup, awaiting
+	navigation.hoveriing_destination
+	At delivery, awaiting
+	navigation.return_calculating
+	RETURN_ROUTE_CALCULATING
+	navigation.return_initiated
+	RETURNING_TO_BASE
+	navigation.arrived_base
+	ARRIVED_AT_BASE
+	navigation.docking_requested
+	DOCKING initated
+	navigation.docking_complete
+	DOCKING_COMPLETE
+	navigation.obstacle_detected
+	Short-term avoidance
+	navigation.geofence_approach
+	Within 50m of boundary
+	
+
+16.3 Payload Events (8 events)
+Event
+	Trigger
+	container.deploying
+	CONTAINER_DEPLOYING
+	container.deployed
+	Container fully lowered
+	container.retracting
+	Winch active
+	container.retracted
+	Container stowed
+	container.locked
+	Lock mechanism engaged
+	container.unlocked
+	Lock released
+	container.fault
+	Any container mechanism fault
+	container.overweight
+	Weight >8kg detected
+	
+
+16.4 Safety Events (10 events)
+Event
+	Trigger
+	drone.low_battery
+	LOW_BATTERY_DIVERSION
+	drone.battery_critical
+	Battery <5%
+	drone.signal_loss.start
+	Communication lost
+	dront.signal_loss.end
+	Communication restored
+	drone.emergency
+	EMRGENCY_LANDING
+	drone.emergency_complete
+	Landed safely
+	drone.geofence_violation
+	No-fly zone breach
+	drone.geofence_resolved
+	Returned to safe zone
+	drone.weather_abort
+	Weather exceedace
+	drone.fault_detected
+	New fault code
+	
+
+16.5 Communication Events (8 events)
+Event
+	Trigger
+	contact.initiated
+	CONTACT_INITIATING
+	contact.established.phone
+	Phone call connected
+	contact.established.whatsapp
+	WhatsApp session active
+	contact.established.sms
+	SMS sent
+	contact.failed
+	All attempts exhausted
+	conact.timeout
+	Contact timeout reached
+	contact.retry
+	Retry attempt started
+	contact.escalated
+	Sent to operator
+	
+
+16.6 Visual Events (5 events - Phase 3+)
+Event
+	Trigger
+	visual.searching
+	CV model active
+	visual.found
+	Person detected with confidence
+	visual.confidence_low
+	Confidence < threshold
+	visual.confirmed
+	Operator confirmed
+	visual.escalated
+	Sent to operator
+	
+
+16.7 Operator Events (4 events)
+Event
+	Trigger
+	operator.intervention_started
+	Operator took control
+	operator.intervention_ended
+	Operator released control
+	operator.approval_granted
+	Launch approved
+	operator.override_executed
+	Manual command sent
+	
+
+17. Data Retention Policy
+Data Type
+	Hot Storage
+	Warm Storage
+	Cold Archive
+	Raw telemetry
+	30 days
+	1 year (downsampled)
+	5 years (critical only)
+	Mission records
+	2 years
+	5 years
+	10 years
+	State transitions
+	2 years
+	5 years
+	10 years
+	Emergency logs
+	2 years
+	5 years
+	Permanent
+	Autonomy decisions
+	90 days
+	1 year
+	5 years
+	Operator actions
+	2 years
+	5 years
+	10 years
+	Contact logs
+	90 days
+	1 year
+	3 years
+	Visual metadata
+	30 days
+	90 days
+	1 year
+	Business data
+	Active
+	2 years
+	7 years
+	Audit logs
+	1 year
+	5 years
+	Permanent
+	
+
+17.1 Graduated Compression Strategy
+* After 30 days: downsample to 0.1Hz (10-second intervals)
+* After 1 year: aggregate to minute-level statistics
+* After 5 years: keep only anomalies and incidents
+
+
+Implementation:
+-- Create materialized views for aggregated telemetry
+CREATE MATERIALIZED VIEW telemetry_10s
+WITH (timescaledb.continuous) AS
+SELECT time_bucket('10 seconds', timestamp) as bucket,
+      drone_id,
+      AVG(battery_percent) as battery_avg,
+      MAX(battery_percent) as battery_max,
+      MIN(battery_percent) as battery_min,
+      AVG(ground_speed_mps) as speed_avg,
+      -- Additional aggregates
+FROM drone_telemetry
+GROUP BY bucket, drone_id;
+	
+
+18. Security & Integrity
+18.1 Data Security Measures
+Measure
+	Implementation
+	Encryption at rest
+	PostgreSQL TDE, S3 server-side encryption
+	Encryption in transit
+	TLS 1.3 for all connections
+	Telemetry signing
+	HMAC-SHA256 with per-drone key
+	Replay protection
+	Sequence number + timestamp window
+	API authentication
+	API key + JWT for operators
+	Rate limiting
+	Per drone: 100 msgs/sec; Per business: quota-based
+	PII encryption
+	Contact fields encrypted at application level
+	Audit immutability
+	Append-only tables with delete triggers blocked
+	
+
+18.2 PII Classification
+Field
+	Classification
+	Handling
+	sender_contact.phone
+	PII - Sensitive
+	Encrypted, masked in logs
+	recipient_contact.phone
+	PII - Sensitive
+	Encrypted, masked in logs
+	contact_destination
+	PII - Sensitive
+	Encrypted
+	business_contact_email
+	PII - Business
+	Encrypted
+	operator_id
+	Internal
+	Hashed in external logs
+	drone_location
+	Operational
+	Not PII
+	visual_descriptors
+	PII - Biometric (future)
+	Encrypted, limited retention
+	
+
+GDPR Compliance:
+* Right to deletion: Anonymize mission data after 90 days (keep audit hashes)
+* Data portability: Export API for business owners
+* Consent tracking: Store consent timestamps in business_profiles
+
+
+19. Compliance & Auditability
+19.1 Table: data_access_log
+CREATE TABLE data_access_log (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   user_id UUID NOT NULL,
+   user_role TEXT NOT NULL,
+   accessed_table TEXT NOT NULL,
+   accessed_record_id UUID,
+   access_type TEXT CHECK (access_type IN ('READ', 'EXPORT', 'MODIFY', 'DELETE')),
+   query_filter JSONB,  -- What data was accessed
+   timestamp TIMESTAMPTZ NOT NULL,
+   ip_address INET,
+   user_agent TEXT,
+   
+   -- For bulk exports
+   records_accessed INTEGER,
+   data_size_bytes INTEGER
+);
+
+-- Retention: 5 years
+	
+
+19.2 Table: configuration_change_log
+CREATE TABLE configuration_change_log (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   parameter_name TEXT NOT NULL,
+   old_value TEXT,
+   new_value TEXT NOT NULL,
+   changed_by_user_id UUID NOT NULL,
+   reason TEXT,
+   timestamp TIMESTAMPTZ NOT NULL,
+   applies_to TEXT,  -- 'GLOBAL', 'BUSINESS', 'MISSION'
+   business_id UUID NULL,
+   mission_id UUID NULL
+);
+
+-- Retention: 10 years
+	
+
+19.3 Regulatory Artifacts
+Available for export per NCAA/NITDA request:
+* Full mission replay (telemetry + state transitions)
+* Decision logs for all reroutes and aborts
+* Emergency landing snapshots (location, telemetry, video thumbnails)
+* Operator intervention records with operator_id
+* Geofence violation reports
+* Battery performance history per drone
+* Maintenance records
+* Data access audit trail
+
+
+20. Real-Time Data Flow & Monitoring
+20.1 Latency Budget Compliance
+Component
+	Target
+	Monitoring
+	Drone → Ingestion
+	< 500ms
+	Per-message latency tracking
+	Ingestion → TimesacleDB
+	< 200ms
+	Database insert latency
+	Ingestion → Redis
+	< 50ms
+	Cache update latency
+	Redis → WebSocket
+	< 100ms
+	Broadcast latency
+	End-to-end dashboard
+	< 2s
+	User-perceived latency
+	External webhook
+	< 3s
+	HTTP callback latency
+	
+
+20.2 Monitoring Table: pipeline_metrics
+CREATE TABLE pipeline_metrics (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   component TEXT NOT NULL,
+   metric_name TEXT NOT NULL,
+   metric_value FLOAT,
+   unit TEXT,
+   timestamp TIMESTAMPTZ NOT NULL
+);
+
+-- Alert if latency > 2s for 5 consecutive minutes
+	
+
+21. Data Evolution Plan
+Phase 1: Simulation (Current)
+* Implement all schemas with simulation flag
+* Generate synthetic telemetry for 1000 missions
+* Validate all indexes and query performance
+* Test replay protection with simulated drones
+* Verify state transition logging
+
+
+Phase 2: Supervised Physical Flights (Abuja Pilot)
+* Add real-world calibration to battery model
+* Enable contact operations and weight verification schemas
+* Implement real-time monitoring dashboard
+* Configure retention policies
+* Train initial ML models on collected telemetry
+
+
+Phase 3: Fleet Expansion
+* Convert to TimescaleDB hypertables (if not already)
+* Enable visual identification schema
+* Implement warehouse docking management
+* Add predictive maintenance from cycle data
+* Deploy Kafka for external webhooks
+
+
+Phase 4: Multi-City Operations
+* Add region partitioning strategy
+* Implement cross-region telemetry aggregation
+* Deploy read replicas for analytics
+* Enable multi-drone coordination logging
+
+
+Phase 5: National Grid
+* Geographic sharding by region
+* Central audit data lake
+* Real-time traffic analytics
+* Corridor optimization from historical data
+
+
+22. Validation Requirements
+Before production deployment:
+Test
+	Criteria
+	Telemetry Ingestion
+	10,000 msgs/sec sustained
+	Latency budget
+	99% of messages <2s end-to-end
+	Replay protection
+	Reject old/out-of-sequence messages
+	State transition integrity
+	1000 simulated missions, no illegal transitions
+	Event delivery
+	> 99.9% webhook delivery success
+	Query performance
+	Most queries < 100ms
+	Retention enforcement
+	Data deleted per policy
+	Security audit
+	No unencrypted PII, all access logged
+	
+
+23. Glossary
+Term
+	Definition
+	ADOS
+	Autonomous Drone Operating System
+	AGL
+	Above Ground Level
+	CV
+	Computer Vision
+	DLQ
+	Dead Letter Queue (failed message storage)
+	ETA
+	Estimated Time of Arrival
+	GDPR
+	General Data Protection Regulation
+	HMAC
+	Hash-based Message Authetication Code
+	ML
+	Machine Learning
+	MSL
+	Mean Sea Level
+	NCAA
+	Nigerian Civil Aviation Authority
+	NITDA
+	National Information Technology Development Agency
+	NiMet
+	Nigerian Meteorological Agency
+	OTP
+	One-Time Password
+	PII
+	Personally Identifiable Information
+	PostGIS
+	Geospatial extension for PostgreSQL
+	RTH
+	Return to Home
+	TDE
+	Transparent Data Encryption
+	TimescaleDB
+	Time-series extension for PostgreSQL
