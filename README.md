@@ -1,6 +1,6 @@
 # Hermes — AI Drone Delivery System
 
-Hermes is an **AI-enhanced autonomous drone delivery system** built with **ROS2**, **PX4**, and **FastAPI**, designed for efficient and safe aerial deliveries in the **Nigerian logistics ecosystem**.
+Hermes is an **AI-enhanced autonomous drone delivery system** designed for efficient and safe aerial deliveries in the **Nigerian logistics ecosystem**.
 
 ---
 
@@ -153,15 +153,15 @@ uvicorn main:app --reload --port 8000
 
 * [ ] Install ROS2 Humble & dependencies
 * [ ] Setup Gazebo + PX4 SITL simulation
-* [ ] Create base project structure
+* [x] Create base project structure
 * [ ] Verify colcon build and source
 
 ### Phase 2 — Core Node Development
 
-* [ ] `drone_vision_node` — YOLOv8 + camera streaming
-* [ ] `telemetry_node` — MAVLink telemetry
-* [ ] `path_planner_node` — GPS path planning
-* [ ] `controller_node` — flight command handler
+* [x] `drone_vision_node` — YOLOv8 + camera streaming
+* [x] `telemetry_node` — MAVLink telemetry
+* [x] `path_planner_node` — GPS path planning
+* [x] `controller_node` — flight command handler
 
 ### Phase 3 — AI & Backend Integration
 
