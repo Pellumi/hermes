@@ -1,0 +1,1452 @@
+﻿ADOS Simulation & Validation Plan
+
+
+Scope: ADOS v1 (Simulation Autonomy)
+Status: Final - Approved for Execution
+Last Updated: March 18, 2026
+Next Review: After completion of Phase 1 (100 missions)
+
+
+1. Purpose
+This document defines how the ADOS system will be validated before any real-world deployment.
+
+
+This plan ensures:
+* Autonomy logic is correct and deterministic 
+* Mission state machine has no illegal transitions
+* Telemetry pipeline meets latency and reliability requirements
+* Routing, ETA, and battery models are accurate enough for reality
+* System behaves safely under failure scenarios 
+* Edge-cloud disagreement is handled correctly
+* Event ordering maintains state integrity
+* Operator error does not compromise safely 
+* Multi-drone coordination scales without conflict
+* Model degradation triggers safe fallbacks
+
+
+This directly fulfills the autonomy validation requirements defined in your system and maps explicitly to the Operational Risk Register (R1-R10)
+
+
+2. Validation Philosophy
+ADOS validation is based on four principles:
+* Simulation must be adversarial
+We do not test “happy paths.” We actively try to break the system through chaos engineering 
+
+
+* Safety over success
+A mission that aborts safely is a pass, not a failure
+
+
+* Determinism under identical inputs
+Same inputs → same outputs. Reply validation enforces this
+
+
+* Resilience under contradiction
+The system must survive when:
+* Edge and cloud disagree
+* Events arrive out of order
+* Telemetry is corrupted
+* Operators make mistakes
+* Models drift from reality
+
+
+3. Validation Scope
+The following subsystems are validated:
+Component
+	Validated
+	Mission Engine
+	✔
+	State Machine
+	✔
+	Route Planning Engine
+	✔
+	Battery Prediction Model
+	✔
+	ETA Prediction Engine
+	✔
+	Autonomy Policy Engine
+	✔
+	Telemetry Pipeline
+	✔
+	Event System
+	✔
+	Operator Intervention Flow
+	✔
+	Edge-Cloud Coordination
+	✔
+	Multi-Drone Coordination
+	✔
+	Model Degradation
+	✔
+	Chaos Scenarios
+	✔
+	
+
+4. Risk-Scenario Mapping
+Every operational risk (R1-R10 from Operational Risk Register) maps to specific validation scenarios:
+Risk ID
+	Risk Name
+	Validation Scenario
+	Section
+	R1
+	Battery Model Error
+	Battery stress + degradation
+	6.2, 8.2
+	R2
+	Regulatory Restrictions
+	Geofence breach + NCAA sandbox
+	6.5, 6.6
+	R3
+	Cellular Instability
+	Communication failure + handover
+	6.3
+	R4
+	Reroute Latency
+	Reroute stress + concurrent storms
+	6.4
+	R5
+	Container Mechanical
+	Container fault + weight conflict
+	6.5, 6.5.1
+	R6
+	Visual ID Errors
+	(Deferred to Phase 3)
+	-
+	R7
+	Operator Error
+	Operator-in-loop + error simulation
+	6.7
+	R8
+	External System Overload
+	API load + webhook failure 
+	6.8
+	R9
+	Data Breach
+	Security validation
+	6.9
+	R10
+	OTP Timeout
+	Delivery timeout + cascades
+	6.5
+	
+
+
+
+5. Simulation Environmental Architecture
+5.1 Core Stack
+Gazebo (3D World with Abuja DEM)
+   ↓
+PX4 SITL (Flight Control)
+   ↓
+ROS2 Bridge
+   ↓
+Drone Simulation Node (x N drones)
+   ↓
+Telemetry → ADOS Backend
+   ↓
+Autonomy Engine + Mission Engine
+   ↓
+Chaos Injection Layer (random failures)
+	
+
+5.2 Environment Components 
+Component
+	Capability
+	Terrain
+	Digital Elevation Model (DEM) of actual Abuja
+	Wind
+	Cellular automata for urban wind patterns
+	Weather
+	Harmattan dust/sand simulation with visibility degradation
+	Communication
+	Multi-carrier simulation with tower handover, latency, packet loss
+	Obstacles
+	Dynamic obstacles (birds, other drones, construction cranes)
+	Time of Day
+	Day/night cycles with varying illumination
+	Cellular Coverage
+	Heatmap-based signal strength from Risk R3 mapping
+	Chaos Layer
+	Random injection of failures at any time
+	
+
+5.3 Chaos Injection Layer
+The chaos layer injects random failures without predictability:
+Failure Type
+	Probability
+	Severity
+	Sensor noise/spikes
+	5% per hour
+	Low
+	GPS dropout
+	2% per hour
+	Medium
+	Motor degradation
+	1% per hour 
+	High
+	Communication blackout
+	3% per hour
+	Critical 
+	Battery anomaly
+	2% per hour
+	High
+	Payload sensor fault
+	1% per hour
+	Medium
+	Random reroute trigger
+	5% per hour
+	Low
+	Pass criteria: System must never enter undefined state, always choose safest path.
+
+
+6. Simulation Scenario Matrix
+6.0 Risk-Scenario Quick Reference
+Section
+	Scenario Type
+	Primary Risks Covered
+	6.1
+	Weather & Wind
+	R1, R2
+	6.2
+	Battery Stress
+	R1
+	6.3
+	Communication Failure
+	R3
+	6.4
+	Rerouting Stress
+	R4
+	6.5
+	Mission Failure
+	R5, R10
+	6.5.1
+	Weight Verification Conflict
+	R5
+	6.5.2
+	Container Mechanism Failures
+	R5
+	6.6
+	Emergency Scenarios
+	R1, R2, R4
+	6.7
+	Operator-in-the-Loop
+	R7 
+	6.8
+	External System Integration
+	R8
+	6.9
+	Security Validation
+	R9
+	6.10
+	Multi-Drone Scenarios
+	R4
+	6.11
+	Edge-Cloud Disagreement
+	R3, R4
+	6.12
+	Event Ordering
+	All
+	6.13
+	Model Degradation
+	R1
+	6.14
+	Chaos Scenarios
+	All
+	
+
+6.1 Weather& Wind Scenarios
+Scenario
+	Wind Speed
+	Visibility
+	Dust
+	Action Expected
+	Calm
+	0-3 m/s
+	10km
+	None
+	Normal operation
+	Normal
+	4-8 m/s
+	5km
+	None
+	Normal with wind correction
+	High
+	9-12 m/s
+	2km
+	Low
+	Reroute possible
+	Critical
+	13-20 m/s
+	1km
+	Low
+	Abort missions
+	Light Harmattan
+	4-8 m/s
+	800m
+	Light
+	Reduced speed, sensor check
+	Moderate Harmattan
+	6-10 m/s
+	400m
+	Medium
+	Abort new missions
+	Severe Harmattan
+	8-12 m/s
+	200m
+	Heavy
+	Return to base
+	
+
+Injected variables
+* Headwind vs tailwind
+* Gust spikes (2x sustained for 10s)
+* Directional shifts (90° in 30s)
+* Visibility degradation
+
+
+6.2 Battery Stress Scenarios
+Scenario
+	Drain Profile
+	Duration
+	Expected  Action
+	Normal
+	Baseline model
+	Full mission
+	No diversion
+	Moderate deviation
+	+10% at 50%
+	5 minutes
+	Operator notification
+	High deviation
+	+20% at 40%
+	3 minutes
+	Division triggered
+	Critical anomaly
+	+30% at 35%
+	1 minutes
+	Emergency landing
+	Aging simulation (50 cycles)
+	+5% error
+	Full mission
+	Model recalibration
+	Aging simulation (100 cycles)
+	+12% error
+	Full mission
+	Warning triggered
+	Aging simulation (200 cycles)
+	+20% error
+	Full mission
+	Force recalibration
+	
+
+Test triggers:
+* Mid-flight drain spike
+* Return leg underestimation
+* Payload weight miscalculation
+* Temperature effects (40°C+)
+
+
+6.3 Communication Failure Scenarios
+Scenario
+	Condition
+	Duration
+	Expected
+	Stable
+	No loss
+	-
+	Normal
+	Intermittent
+	Drops every 10-30s
+	30-120s
+	Buffer, reconnect
+	Degraded
+	Low signal (-100dBm)
+	2-5 min
+	Reduced frequency
+	Full loss
+	Complete disconnect
+	>30s
+	Autonomous continuation
+	Carrier handover
+	Switch networks mid-flight
+	<5s
+	<5s interruption
+	Tower congestion
+	Peak hour traffic
+	15 min
+	Increased latency <2s
+	Test across phrases:
+* En route to pickup
+* Pickup operation
+* Delivery phase
+* Return phase
+6.4 Rerouting Stress Scenarios
+Triggers: 
+* New no-fly zone
+* Obstacle insertion
+* Weather spike
+* ETA deviation >20%
+* Battery drain >15%
+* Operator override
+* External update
+Scanario
+	Reroutes
+	Drones Concurrent
+	Expected
+	Light
+	1-2
+	5
+	<500ms each
+	Moderate
+	3-5
+	10
+	<800ms, queue forms
+	Heavy
+	6-10
+	20
+	Max wait <2s, no failures
+	
+
+Concurrent Reroute Storm Test:
+* 20 drones request reroute simultaneously
+* Measure: queue depth, max wait time, failure rate
+* Pass: max wait <2s, no mission aborted due to routing stall
+
+
+6.5 Mission Failure Scenarios
+Scenario
+	Description
+	Expected Outcome
+	Pickup timeout
+	No sender response after 3 min
+	Return to warehouse
+	Delivery timeout
+	Recipient unreachable after 5 min
+	Return to pickup
+	Weight rejection
+	Package > 8kg
+	Voice prompt, retry, timeout
+	Container fault
+	Lock failure
+	Abort mission, return to base
+	Sensor fault
+	GPS degradation > 10m
+	Degraded mode, operator notified
+	Geofence breach
+	Forced violation
+	Immediate abort, return to safe zone
+	OTP timeout
+	No authorization after 5 min
+	Return to pickup, notify external
+	
+
+6.5.1 Weight Verification Conflict 
+Scenario
+	Local Command
+	Cloud Command
+	Expected Resolution
+	Local VERIFIED, Cloud REJECTED
+	VERIFIED
+	REJECTED
+	Follow cloud (business rule)
+	Local REJECTED, Cloud VERIFIED
+	REJECTED
+	VERIFIED
+	Follow local (safety)
+	No local, Cloud VERIFIED
+	None
+	VERIFIED
+	Accept after 5s
+	No local, Cloud REJECTED
+	None
+	REJECTED
+	Accept after 5s
+	Both missing 
+	None
+	None
+	PICKUP_TIMEOUT
+	Conflict with operator
+	VERIFIED
+	REJECTED + operator override
+	Operator wins, logged
+	Pass criteria:
+* All conflicts logged in weight_verification_events
+* Operator notified on conflict
+* Safety always wins for weight >8kg
+
+
+6.5.2 Container Mechanism Failures
+Scenario
+	Failure
+	Attempts
+	Expected
+	Lock won’t seal
+	Mechanical jam
+	3
+	DEPLOYMENT_FAULIRE, return to base
+	Lock won’t open
+	Solenoid failure
+	3
+	Escalate to operator
+	Winch stall
+	Motor overcurrent
+	3
+	Emergency landing at safe zone
+	Weight sensor drift
+	±200g error
+	-
+	Fallback to external confirmation
+	Container stuck deployed
+	Cable jam
+	3 retract attempts
+	Emergency landing, technician dispatch
+	
+
+Pass criteria:
+* Failure rate <1% in 1000 simulated cycles
+* All failures logged with telemetry snapshot
+* No mission continues with unsecured container
+
+
+6.6 Emergency Scenarios
+Scenario
+	Trigger
+	Expected Outcome
+	Critical battery
+	<5%
+	EMERGENCY_LANDING
+	Motor fault
+	Injected
+	EMERGENCY_LANDING
+	Severe weather
+	> limits
+	Return to base
+	Collision risk
+	Obstacle insertion
+	Avoidance + reroute
+	Geofence breach
+	Inside no-fly
+	Immediate abort
+	
+
+Emergency Landing Site Selection Validation:
+Scenario
+	Location
+	Nearest Safe Zone
+	Expected
+	Battery critical at 5%
+	500m from park
+	Park (500m)
+	Navigate to park, land safely
+	Battery critical at 5%
+	2km from any zone
+	ROADSIDE (2.5km)
+	Land at roadside, notify
+	Battery critical at 3%
+	1km from park
+	Park (1km)
+	Direct emergency descent, broadcast location
+	Geofence breach
+	Inside no-fly
+	Boundary 200m
+	Exit zone immediately, return to base
+	
+
+Pass criteria:
+* 100% of emergency landings at safe or acceptable sites
+* No landings in prohibited areas (markets, highways, residential)
+* Distress signal broadcast in all cases
+
+
+6.7 Operator-in-the-Loop Scenarios
+Scenario
+	Fault Injected
+	Expected Operator Response
+	Level 3 escalation
+	Airspace conflict
+	Approve reroute or abort
+	Level 4 emergency
+	Critical battery
+	Emergency landing command
+	Conflicting info
+	Sensor disagreement
+	Correct identification
+	Distraction
+	Multiple alerts simultaneously
+	Prioritize correctly
+	Late response
+	Operator delays beyond timeout
+	Automatic safe return
+	Wrong override
+	Operator commands unsafe action
+	System ignores command
+	Spam commands
+	Rapid repeated commands
+	Rate limiting, no state corruption
+	Simulation Setup:
+* 10 operators complete 20 simulated missions each
+* Inject random faults par matrix
+* Measure: response time, decision accuracy, stress indicators
+* Compare against automated fallback decisions
+Pass Criteria:
+* <5% operator error rate (wrong abort, wrong continue)
+* 100% compliance with safety hierarchy (no Layer 1 overrides)
+* Response times within timeouts for 95% of cases
+* All operators certified before first physical flight
+
+
+6.8 External System Integration Scenarios
+Scenario
+	Condition
+	Expected
+	API rate limit exceeded
+	2x quota burst
+	HTTP 429, graceful degradation
+	API rate limit exceeded
+	10x quota burst
+	Quarantine, operator notified
+	Webhook delivery failure
+	External down (5 min)
+	Retry with backoff, DLQ
+	Webhook permanent failure
+	External down (24h)
+	Mark subscription FAILED
+	External system down during mission
+	At pickup
+	Continue mission autonomously
+	External system down during delivery
+	At delivery
+	Complete delivery, log for later sync
+	Malformed webhook
+	Invalid payload
+	Reject, log, no system crash
+	Circuit breaker test
+	5 consecutive failures
+	Breaker trips, half-open after 30s
+	
+
+Pass Criteria:
+* No system degradation under 2x quota
+* Graceful rate limiting at quota boundary (HTTP 429 with retry-after)
+* Missions complete even if external unreachable for up to 5 minutes
+* Failed webhooks successfully retried within 1 hour
+* Circuit breaker trips after 5 consecutive failures
+
+
+6.9 Security Validation Scenarios
+Scenario
+	Attack Vector
+	Expected
+	Reply attack 
+	Old telemetry re-sent
+	Reject due to sequence number
+	HMAC tampering
+	Modified payload
+	Reject, flag security incident
+	Unauthorized API access
+	No/invalid key
+	HTTP 401
+	SQL injection
+	Malformed query
+	Reject, logged
+	PII exposure attempt
+	Unauthorized data access
+	Logged, blocked
+	Certificate expiration
+	Drone cert expired
+	Reject connection
+	Key compromise
+	Stolen key used
+	Detect anomaly, revoke
+	DDoS simulation
+	100x normal traffic
+	Rate limiting, no crash
+	Pass Criteria:
+* Zero PII in logs (automated scan)
+* All access logged and auditable
+* Detection time <1 hour for simulated breach
+* Penetration test passes with no critical findings
+* Key rotated at least once during simulation phase
+
+
+
+
+6.10 Multi-Drone Scenarios
+Sceario
+	Drones
+	Duration
+	Expected
+	Light traffic
+	5
+	1 hour
+	No conflicts
+	Normal traffic
+	10
+	2 hours
+	<3m separation maintained
+	Heavy traffic
+	20
+	2 hours
+	No collisions, latency <2s
+	Peak traffic
+	50
+	30 min
+	Graceful degradation, queuing
+	Reroute storm
+	20 concurrent
+	5 min
+	Max wait <2s, no deadlocks
+	Airspace conflict
+	2 drone same corridor
+	Resolution
+	One reroutes, separation maintained
+	
+
+Metrics:
+* Minimum separation distance
+* Collision avoidance trigger rate
+* Reroute coordination success
+* Telemetry ingestion rate 
+* State machine consistency across drones
+Pass Criteria:
+* No collisions (separation <2m counts as near-miss, logged)
+* No routing deadlocks
+* No telemetry congestion drops
+* State machine remains consistent per drone
+
+
+6.11 Edge-Cloud Disagreement Tests
+Your architecture is hybrid—edge and cloud can disagree.
+Scenario
+	Edge Decision
+	Cloud Decision
+	Network Condition
+	Expected
+	Delayed telemetry
+	Continue
+	Reroute
+	2s lag
+	Edge continues, cloud catches up
+	Stale cloud decision
+	Continue
+	Reroute (based on old data)
+	5s lag
+	Cloud decision rejected as stale
+	Out-of-order packets
+	Abort
+	Continue
+	Packet reordering
+	Edge safety dominates
+	Full disconnect
+	Continue autonomously
+	No command
+	60s loss
+	Edge continues, sync on reconnect
+	Conflict: safety vs optimization
+	Emergency land
+	Return to base
+	Connected
+	Edge safety wins
+	
+
+Pass Criteria:
+* No conflicting commands executed 
+* Edge safety always dominates (Layer 1 rules)
+* Cloud decisions rejected if timestamp >2s old
+* State synchronized correctly on reconnect
+* All disagreements logged in autonomy_decisions with conflict flag
+
+
+6.12 Event Ordering & Idempotency Validation
+Event-driven systems fail when events arrive out of order.
+Scenario
+	Injection
+	Expected
+	Duplicated events
+	Same event twice
+	Idempotent - second ignored
+	Out-of-order events
+	ARRIVED before EN_ROUTE
+	State machine rejects illegal transition
+	Missing events
+	Drop 1 of 3 critical events
+	State machine recovers or aborts safely
+	Replay storm
+	Replay last 100 events 
+	State unchanged, logged
+	
+
+Test Method:
+* Record a complete mission event stream
+* Shuffle, duplicate, drop events randomly
+* Replay to state machine
+* Compare final state with original
+
+
+Pass Criteria:
+* No illegal state transitions 
+* Final state matches original or safe fallback
+* All anomalies logged
+* Idempotency: duplicate events produce no changes
+
+
+6.13 Model Degradation Simulation 
+Models degrade over time. The system must compensate.
+Scenario
+	Degradation
+	Expected
+	ETA model drift
+	+5% error after 100 missions
+	Operator notified
+	ETA model drift
+	+15% error after 500 missions
+	Rerouting triggered more often
+	Battery model drift
+	+10% error after 100 cycles
+	Safety margin increased
+	Battery model drift 
+	+20% error after 200 cycles
+	Force recalibration
+	Weather model bias
+	Underestimates wind by 20%
+	Conservative routing
+	Test Method:
+* Run 1000 simulated missions with gradually degrading models
+* Monitor: Safety incidents, reroute frequency, operator escalations
+Pass Criteria:
+* No safety incidents despite model drift
+* System compensates (wider margins, more reroutes)
+* Operators notified at thresholds (5%, 10%, 15%)
+* Forced recalibration at 20% error
+6.14 Chaos Scenarios 
+Random failures at random times with no predictability.
+Chaos Seed
+	Duration
+	Failure Types
+	Expected
+	Seed 1
+	1 hour
+	Random sensor noise, comms drops
+	No undefined states
+	Seed 2
+	2 hours
+	Battery spikes, GPS jumps, motor degradation
+	Safe landings only
+	Seed 3
+	30 min
+	Complete comms loss + battery critical + reroute
+	Emergency landing success
+	Seed 4
+	3 hours
+	All of above, plus operator distraction
+	System survives
+	Pass Criteria:
+* No undefined system states
+* No crashes due to logic error
+* All failures logged 
+* Safety always preserved
+
+
+7. State Machine Validation
+Derived from a mission state machine.
+
+
+7.1 Validation Requirements
+Requirement
+	Pass Criteria
+	State reachability
+	100% of states executed
+	Transition coverage  
+	100% of defined transitions tested
+	Illegal transitions
+	0 occurrences
+	Deadlocks
+	0 occurrences
+	Timeout paths
+	100% executed
+	Failure states
+	100% reachable
+	State regression
+	No transitions to previous invalid state
+	
+
+7.2 Test Method
+* Generate random mission flows
+* Inject failures at every state
+* Track transitions with validation rules
+* Replay recorded mission to verify determinism 
+
+
+7.3 Coverage Metrics
+Metric
+	Target
+	Current
+	State coverage
+	100%
+	
+
+	Transition coverage
+	100%
+	
+
+	Failure path coverage
+	100%
+	
+
+	Timeout coverage
+	100%
+	
+
+	Edge case coverage
+	>90%
+	
+
+	
+
+8. Autonomy Engine Validation
+8.1 Route Planning
+Metric
+	Target
+	Initial route calculation
+	<2 seconds
+	Reroute calculation
+	<500ms
+	Route validity
+	100% (no restricted zones)
+	Energy feasibility
+	100% of accepted routes
+	Grid resolution trade-off
+	50m optimal, 25m tested
+	
+
+Grid Resolution Test:
+Grid Size
+	Calculation Time
+	Memory
+	Pass/Fail
+	100m * 100m * 20m
+	<1s
+	Low
+	Baseline
+	50m * 50m * 10m
+	<2s
+	Medium
+	Target
+	25m * 25m * 5m
+	<5s
+	High
+	Trade-off analysis
+	
+
+8.2 Battery Model
+Metric
+	Target
+	Error for <50 cycles
+	<10%
+	Error for 50-200 cycles
+	<15%
+	Error for >200 cycles
+	<20% (triggers recalibration)
+	Diversion trigger accuracy
+	>99%
+	Safe landing reserve
+	>20% consistently
+	
+
+Aging Validation:
+* Test batteries at 0, 50, 100, 200 simulated cycles
+* Verify model recalibration triggers at thresholds
+
+
+
+
+
+
+
+
+8.3 ETA Prediction
+Metric
+	Target
+	ETA error
+	<15%
+	Update frequency
+	1Hz minimum
+	Deviation >5%
+	Dashboard update
+	Deviation >20%
+	Operator notified
+	Deviation >25%
+	Escalate to AWAITING_OPERATOR_INSTRUCTION
+	
+
+Update Trigger Validation:
+Trigger
+	Expected
+	Pass/Fail
+	Telemetry cycle (1Hz)
+	ETA recalculated
+	
+
+	State change
+	Immediate push
+	
+
+	Reroute
+	Immediate push
+	
+
+	Deviation >5%
+	Dashboard update
+	
+
+	Deviation >20%
+	Operator notified
+	
+
+	
+
+8.4 Rerouting Logic
+Trigger
+	Expected Reroute
+	Success Criteria
+	Wind >12m/s
+	Yes
+	New route avoids high wind
+	Obstacle detected
+	Yes
+	Path around obstacle
+	No-fly zone update
+	Yes
+	Route excludes new zone
+	ETA deviation >20%
+	Yes
+	Optimize remaining path
+	Battery drain >15%
+	Yes
+	Energy-optimal route
+	Operator override
+	Yes
+	Follow new waypoint
+	External update
+	Yes
+	Follow new destination
+	Communication Quality drop
+	Yes
+	Avoid dead zones
+	
+
+Pass Criteria
+* No unsafe reroute accepted
+* No mission stranded due to reroute
+* All reroutes logged in rerouting_events
+
+
+
+
+
+
+9. Telemetry & Data Pipeline Validation
+9.1 Validation Tests
+Test
+	Method 
+	Pass Criteria
+	Throughput
+	10,000 msgs/sec sustained
+	No message loss
+	Latency
+	Measure p99 end-to-end
+	<2s
+	Reply protection
+	Send old sequence number
+	Rejected
+	HMAC validation
+	Tamper with payload
+	Rejected, logged
+	DLQ functionality
+	Send malformed telemetry
+	Captured in DLQ
+	WebSocket broadcast
+	100 concurrent viewers
+	<2s latency all
+	Sequence monotonicity
+	Send out-of-order
+	Rejected
+	Timestamp validation
+	Send time >60s drift
+	Rejected
+	GPS jump
+	Teleport 1km
+	Flagged, state validated
+	
+
+9.2 Telemetry Corruption Suite
+Corruption
+	Injection
+	Expected
+	Invalid HMAC
+	Modify signature
+	Reject, flag security incident
+	Timestamp drift
+	+120s
+	Reject to DLQ
+	Sequence rollback
+	Send 100 then 50
+	Reject
+	GPS teleport
+	Jump 5km in 1s
+	Flag, state transition validated
+	Battery spike
+	40% → 90% in 1s
+	Flag, model recalculation
+	Missing fields
+	Omit required field
+	Reject to DLQ
+	Data type mismatch
+	String where float expected
+	Reject
+	
+
+9.3 Dead Letter Queue Validation
+Scenario
+	Expected
+	Message with invalid HMAC
+	Captured, retry count 0
+	Message with timestamp drift
+	Captured, retry after 1min
+	Message with missing field
+	Captured, retry after 5min
+	Permanent failure after 5 retries
+	Archived, admin notified
+	
+
+10. Operator Inrervention Validation
+10.1 Command Latency
+Command
+	Max Latency
+	Test Method
+	Abort 
+	<1s
+	Measure from button to drone ACK
+	Reroute
+	<1s
+	Measure from waypoint entry
+	Emergency land
+	<500ms
+	Highest priority
+	Hold position
+	<1s
+	Standard command
+	
+
+10.2 Operator Error Simulation (per Section 6.7)
+10.3 Pass Criteria
+* Command latency within target for 99% of tests
+* No undefined states created by operator commands
+* Safety rules override unsafe operator commands
+
+
+11. Safety Validation
+11.1 Safety Violation Definition
+A safety violation is defined as:
+* Geofence breach >10m inside no-fly zone
+* Battery <3% in flight (below emergency threshold)
+* Collision with obstacle (within 2m)
+* Uncommanded descent below minimum safe altitude
+* Payload deployment without authorization
+* Emergency landing in prohibited area (market, highway, residential)
+
+
+11.2 Pass Criteria
+* 0 safety violations across all missions
+
+
+11.3 Safety Invariants
+Invariant
+	Enforcement
+	No-fly zones are absolute
+	Geofence violation → immediate abort
+	Battery reserve never <3%
+	Emergency landing at 5%
+	Authorization required for deployment
+	No payload release without external command
+	Operator cannot override Layer 1
+	Safety rules always win
+	
+
+12. Replay Validation
+12.1 Method
+* Record a complete mission: telemetry, state transitions, events, commands
+* Store as JSON (per Data Architecture format)
+* Replay through the system with identical timing
+* Compare outputs: state machine trajectory, decisions, final state
+
+
+12.2 Pass Criteria
+* Final state identical to original
+* All decision identical (deterministic)
+* Any deviation triggers investigation
+* Non-determinism >0.1% fails validation
+
+
+12.3 Coverage
+Replay validation performed on:
+* 10% of all missions (randomly selected)
+* 100% of failure/emergency missions
+* 100% of missions with operator intervention
+
+
+13. Mission Kill Tests
+Force worst-case combinations:
+Test
+	Combination
+	Expected
+	Kill 1
+	Battery critical + comms loss + reroute
+	Emergency landing
+	Kill 2
+	Geofence breach + operator distracted _ sensor fault
+	Abort, safe return
+	Kill 3
+	Motor failure + low battery + no warehouse reachable
+	Emergency landing at nearest safe zone
+	Kill 4
+	Payload struck deployed + battery critical + night
+	Emergency landing, beacon activated
+	
+
+Pass Criteria:
+* System always lands safely
+* No undefined states
+* All failures logged with full telemetry snapshot
+
+
+14. Performance Benchmarks
+Metric
+	Target
+	Source
+	Mission success rate
+	>95%
+	Autonomy Definition Section 13
+	ETA accuracy
+	<15%
+	Autonomy Definition Section 13
+	Battery prediction error
+	<10%
+	Autonomy Definition Section 13
+	Reroutes per mission
+	<2 avg
+	Autonomy Definition Section 13
+	Telemetry latency
+	<2s
+	System Architecture Section 7.2
+	Ingestion latency
+	<500ms
+	Data Architecture Section 20
+	Packet loss
+	<2%
+	Data Architecture Section 20
+	Replay determinism
+	>99.9%
+	This document
+	Safety violations
+	0
+	This document
+	
+
+15. Failure Acceptance Criteria
+Acceptable:
+* Mission aborts safely 
+* Diversion timeout correctly
+* Delivery timeout handled
+* Return to base on low battery
+* Operator escalates correctly
+Unacceptable:
+* Crash due to logic error 
+* Undefined system state
+* Geofence violation
+* Battery depletion  below 3%
+* Payload deployment without authorization
+* Emergency landing in prohibited area
+
+
+16. Logging & Observability
+Every simulation must log:
+Data Type
+	Format
+	Retention (Sim)
+	Full telemetry stream
+	JSON
+	Full simulation
+	State transitions
+	JSON with reason
+	Full simulation
+	Autonomy decisions
+	JSON with inputs/outputs
+	Full simulation
+	Reroute events
+	JSON with trigger
+	Full simulation
+	Failure events
+	JSON with snapshot
+	Permanent
+	Operator actions
+	JSON with operator_id
+	Full simulation
+	Edge-cloud disagreements
+	JSON with conflict
+	Full simulation
+	Event ordering anomalies
+	JSON
+	Full simulation
+	
+
+17. Validation Phases
+Phase 1 - Basic Simulation (100 missions)
+* No failures
+* Baseline validation
+* Establish performance metrics
+* Exit: All baseline metrics established, no illegal transition
+
+
+Phase 2 - Stress Simulation (500 missions)
+* Inject anomalies per matrix
+* Single-failure scenarios
+* Exit: All stress scenarios executed, <10% battery error, <15% ETA error, no safety violations
+
+
+Phase 3 - Adversarial Simulation (400 missions)
+* Chaos scenarios
+* Multi-feature combinations
+* Operator-in-loop
+* Security validation
+* Multi-drone interference
+* Exit: All adversarial scenarios passed, penetration test passed, operator error rate <5%
+
+
+Phase 4 - Replay & Determinism Validation (all missions)
+* Replay 10% of all missions
+* Verify determinism
+* Exit: >99.9% determinism, all deviations investigated
+
+
+18. Graduation Criteria
+Before moving to real-world testing:
+ALL MUST PASS:
+* 1000 missions completed
+* 0 safety violations
+* <10% battery error
+* <15% ETA error
+* <2s telemetry latency
+* 100% state coverage
+* 100% transition coverage
+* 0 illegal transitions
+* Operator error rate <5%
+* Replay determinism >99.9%
+* All risks R1-R10 mitigated per mapping
+
+
+19. Output Artifacts
+Artifact
+	Format
+	Contents
+	Simulation Report
+	PDF
+	Executive summary, methodology, results, risk mapping
+	Performance Dashboard
+	Web
+	Real-time metrics during simulation runs
+	Failure Analysis Log
+	JSON
+	All failures with root cause, risk correlation
+	Autonomy Confidence Score
+	Score (0-100)
+	Aggregate metric for readiness
+	State Coverage Report
+	HTML
+	Visual map of all states/transitions executed
+	Replay Validation Report
+	PDF
+	Determinism analysis, deviation log
+	Security Audit Report
+	PDF
+	Penetration test results, findings, fixes
+	
+
+20. Risk Mitigations Validation Matrix
+
+
+Risk
+	Validated By
+	Pass Condition
+	Status
+	R1
+	6.2, 8.2, 6.13
+	<10% error, safe diversion
+	
+
+	R2
+	6.1, 6.6
+	0 violations, NCAA clearance
+	
+
+	R3
+	6.3, 6.11
+	Reconnect <10s, no aborts
+	
+
+	R4
+	6.4, 6.10
+	95% reroutes <500ms
+	
+
+	R5
+	6.5, 6.5.1, 6.5.2
+	Failure rate <1%
+	
+
+	R6
+	Deferred
+	Phase 3
+	
+
+	R7
+	6.7
+	Error rate <5%
+	
+
+	R8
+	6.8
+	Graceful degradation
+	
+
+	R9
+	6.9
+	Zero PII in logs
+	
+
+	R10
+	6.5
+	Timeout rate <10%
+	
+
+	
+
+21. Glossary
+Term 
+	Definition
+	Chaos Engineering
+	Random failure injection without predictability
+	DEM
+	Digital Elevation Model
+	DLQ
+	Dead Letter Queue
+	Idempotency
+	Property where duplicate operations produce the same result
+	Kill Test
+	Worst–case combination of failures
+	Replay Validation
+	Verifying determinism by replaying recorded missions
+	SITL
+	Software in the Loop
+	Transition Coverage
+	% of defined state transitions executed
