@@ -1,0 +1,1229 @@
+﻿Autonomy Definition Document
+Autonomous Drone Operating System (ADOS)
+
+
+Version: 1.0
+Deployment Context: Abuja Pilot
+Autonomy Level: Supervised Autonomy
+Status: Final Draft for implementation
+
+
+1. Purpose
+This document defines:
+* What “autonomy” means inside the ADOS
+* What decisions are made by the system
+* What decisions require supervision
+* Which algorithms are used
+* What triggers rerouting, aborts, or diversions
+* How ETA and energy models function
+* How autonomy evolves over phases
+* Payload container operations logic
+* Customer contact and verification protocols
+* Warehouse network integration
+* Edge vs cloud execution boundary
+The goal is to transform “AI navigation” into measurable, testable logic
+
+
+2. Autonomy Philosophy
+ADOS autonomy is:
+* Hybrid (rule-based + optimization + ML prediction)
+* Safety-constrained
+* Human-supervised in pilot phase
+* Deterministic under identical inputs
+* Data-driven over time
+It is NOT:
+* Pure reinforcement learning
+* Black-box decision making
+* Self-directed without oversight
+Note: Safety rules always override optimization.
+
+
+2.1 Autonomy Execution Environment
+EDGE (Drone Companion Computer):
+* Real-time obstacle detection (<100ms latency)
+* PX4 safety constraints (geofence, altitude ceilings)
+* Motor control failsafes
+* Sensor fusion (IMU, GPS, cameras)
+* Operates: ALWAYS (even during signal loss)
+
+
+CLOUD (Autonomy & Intelligence Layer):
+* Route planning (Section 5)
+* ETA prediction (Section 7)
+* Rerouting decisions (Section 5.5)
+* Policy evaluation (Section 8)
+* Operates: When connected (graceful degradation on loss)
+
+
+HYBRID (Coordinated):
+* Battery prediction (edge telemetry → cloud model → edge thresholds)
+* Warehouse diversion (edge detects low battery → cloud selects nearest → edge navigates)
+* Visual Identification (edge runs CV models → cloud stores audit logs)
+
+
+Latency Budget:
+* Edge decisions: <100ms
+* Cloud rerouting: <500ms
+* Operator commands: <1s (per Architecture Section 7.2)
+
+
+3. Autonomy Architecture Overview
+Autonomy consists of four core engines that operate continuously during mission execution:
+* Route Planning Engine - Generate and validate flight paths
+* Energy & Battery Prediction Engine - Model consumption, trigger diversions
+* ETA Prediction Engine - Calculate and update arrival times
+* Autonomy Policy Engine - Safety arbiter, escalation decisions
+Plus operations autonomy modules:
+* Payload Container Operations (Section 19)
+* Delivery Verification (Section 20)
+* Warehouse Network Operations (Section 21)
+
+
+4. Decision Layers
+Autonomy decisions follow a strict hierarchy:
+
+
+Layer 1: Hard Safety Rules
+Non-negotiable constraints - violation → Abort or Divert
+
+
+Constraint
+	Threshold
+	No-fly zones
+	Zero tolerance
+	Max wind sustained
+	15m/s (54km/h)
+	Max wind gust
+	20m/s (72 km/h)
+	Minimum battery reserve
+	30% for mission acceptance
+	Critical battery
+	5% (emergency landing)
+	Altitude ceiling
+	120m AGL (regulatory)
+	Max payload
+	8kg (hard limit)
+	
+
+Layer 2: Feasibility Validation
+Checks before mission proceeds:
+* Can drone reach destination with reserve?
+* Is return path energy-feasible?
+* Is weather acceptable for full mission duration?
+* Are contingency landing sites available along route?
+Failure → Route Recalculation or Abort
+
+
+Layer 3: Optimization
+Objectives (weighted, tunable):
+* Minimize energy consumption
+* Minimize travel time
+* Minimize risk score (population density, weather exposure)
+
+
+Layer 4: Predictive Intelligence
+ML models trained on operational data:
+* ETA prediction (regression)
+* Battery drain forecasting
+* Weather impact estimation
+* Congestion prediction
+
+
+5. Route Planning Engine
+5.1 Objective
+Generate safe, energy-feasible flight paths between two coordinates
+
+
+5.2 Inputs
+Input 
+	Source
+	Pickup GPS
+	Mission manifest
+	Destination GPS
+	Mission manifest
+	Drone specs (battery capacity, max speed)
+	Fleet registry
+	Payload weight
+	External System
+	Wind speed/direction
+	Weather service
+	Terrain elevation
+	Geospatial DB
+	Geofenced no-fly zones
+	Static + dynamic
+	Airspace restrictions
+	Regulatory API (need more research)
+	Communication coverage map
+	Cellular DB
+	Visual identification feasibility
+	Land use map
+	
+
+5.3 Algorithm Strategy
+Base Algorithm: A* over 3D geospatial grid
+
+
+
+
+Enhancements: 
+* Risk-weighted edges (avoid population-dense areas)
+* Energy-weighted cost function
+* Weather-adjusted cost multipliers
+* Communication-aware weighting (penalize routes through dead zones)
+* Visual-access weighting (prefer open areas for final approach)
+Cost Function:
+Cost = (α * distance) + (β * estimated_energy) + (γ * risk_score) + (δ * comm_penalty) + (ε * visual_penalty)
+Where α, β, γ, δ, ε are the tunable weights per mission priority
+
+
+5.4 Geospatial Model
+Abuja is modeled as:
+* 3D grid map (50m * 50m * 10m cells)
+* No-fly zone overlays (airports, government zones, military)
+* Elevation map
+* Dynamic hazard overlays (weather cells, temporary restrictions)
+* Cellular coverage heatmap
+* Emergency landing zone registry
+
+
+5.5 Rerouting Triggers
+Route recalculation occurs when:
+
+
+Trigger
+	Threshold
+	Wind exceedance
+	> 12m/s sustained
+	Obstacle detected
+	Any permanent obstacle
+	New no-fly zone issued
+	Immediate
+	ETA deviation
+	> 20% from planned
+	Battery drain higher than predicted
+	> 15% deviation
+	External system update
+	New destination waypoint
+	ADOS operator override
+	Manual command
+	Communication Quality Drop
+	Signal < 2 bars for 30s
+	
+
+Performance Requirement:
+* In-transit recalculation: <500ms
+* Initial route calculation: <2 seconds
+
+
+6. Energy & Battery Prediction Engine
+Battery is the primary physical constraint
+
+
+
+
+
+
+6.1 Inputs
+Input 
+	Description
+	Current battery %
+	Real-time telemetry
+	Voltage
+	Battery health indicator
+	Payload weight
+	From external system
+	Wind speed/direction
+	Current + forecast
+	Altitude
+	Current + planned
+	Speed 
+	Current + optimal
+	Distance remaining
+	Per route segment
+	Mission waypoint sequence
+	Full path, not just origin/destination
+	Return waypoint type
+	Warehouse vs pickup location
+	
+
+6.2 Energy Model
+Initial Model: Physics-informed regression
+Energy_per_km = base_consumption + (weight_factor * payload_weight) + (wind_factor * headwind_component) + (climb_factor * altitude_gain)
+
+
+For multi-leg missions:
+Total_energy = Σ(segment_energy) + reserve_buffer
+
+
+Each segment calculated with current payload weight (container may be empty on return)
+Reserve Buffer: Minimum 30% battery before mission acceptance
+
+
+Dynamic Diversion Threshold:
+Diversion triggered if predicted_landing_battery < safety_margin
+Where safety_margin = 25% + mission_risk_factor
+
+
+mission_risk_factor based on:
+* Weather severity (0-5% additive)
+* Distance to alternative landing sites (0-3%)
+* Uran density below flight path (0-2%)
+
+
+6.3 Diversion Logic
+If projected landing battery < safety margin:
+* Transition to LOW_BATTERY_DIVERSION (Mission State Machine)
+* Query nearest warehouse node within energy-feasible range
+* Filter by: operational_status = ACTIVE, available_capacity > 0
+* Select warehouse with minimum energy cost to reach
+* Reserve docking slot
+* Navigate to selected warehouse
+* Notify external system: drone.low_battery event
+If no warehouse reachable:
+* Trigger EMERGENCY_LANDING
+* Select nearest pre-mapped safe zone (Section 8.2.1)
+* Broadcast distress signal with GPS coordinates
+
+
+7. ETA Prediction Engine
+ETA must update continuously and be broadcast to external systems
+
+
+7.1 Initial ETA
+Calculated using:
+ETA_seconds = distance / adjusted speed
+
+
+Adjusted_speed accounts for:
+* Wind component (headwind/tailwind)
+* Drone max speed (configurable per model)
+* Climb/descent penalties
+* No-fly zone detours
+
+
+7.2 Dynamic ETA Update
+Update Frequency:
+* Every telemetry cycle (minimum 1Hz)
+* Immediate push on state change
+* Immediate push on reroute
+Deviation Handling:
+* If deviation > 5%: Update dashboards
+* If deviation > 20%: Notify operator
+* If deviation > 25%: Escalate to AWAITING_OPERATOR_INSTRUCTION
+Broadcast Targets:
+* External logistics system (via eta.updated event)
+* Operator dashboard
+* Business tracking portals
+* API integrators (webhook)
+
+
+7.2.1 API Event Publishing
+ETA Update Triggers:
+* Every 60 seconds (standard polling)
+* Immediately on deviation >5% 
+* On reroute initiation
+* On mission state change
+Flight Stage Transitions (webhook events):
+* MISSION_CREATED → ROUTE_CALCULATED
+* ROUTE_CALCULATED → LAUNCH_APPROVED
+* EN_ROUTE_TO_PICKUP → ARRIVED_AT_PICKUP
+* PAYLOAD_SECURED → NAVIGATING_TO_DETINATION
+* ARRIVED_AT_DESTINATION → PAYLOAD_DEPLOYED
+* (Full state machine mapped)
+
+
+
+
+Location Streaming:
+* GPS broadcast every 5 seconds
+* Reduced to 10 seconds if > 1000 concurrent API consumers
+* Rate limiting: Max 1 request/second per API key
+
+
+Payload Format:
+{
+ "mission_id": "uuid",
+ "drone_id": "string",
+ "timestamp": "ISO-8601",
+ "location": {"lat": double, "lng": double, "alt": float},
+ "eta_seconds": integer,
+ "battery_percent": float,
+ "stage": "EN_ROUTE_TO_DESTINATION",
+ "speed_mps": float
+}
+	
+
+7.3 Model Evolution
+Phase
+	Model Type
+	Phase 1
+	Physics-based deterministic
+	Phase 2
+	Regression model trained on telemetry
+	Phase 3
+	Weather-aware predictive ML
+	Phase 4
+	Congestion-aware network model
+	
+
+8. Autonomy Policy Engine
+This is the safety arbiter. It evaluates:
+* Whether rerouting is allowed
+* Whether abort required
+* Whether escalation to operator needed
+
+
+8.1 Escalation Conditions
+Operator must be notified when:
+Condition
+	Threshold
+	Weather approaching limits 
+	Wind > 12m/s
+	Multiple reroutes
+	> 3 within single mission
+	ETA deviation
+	> 25%
+	Battery drain spike
+	> 20% above predicted
+	Communication Instability
+	Signal loss > 10s
+	Visual identification confidence
+	< 0.85 (Section 19)
+	Route calculation impossible
+	After 3 attempts
+	
+
+Formal Escalation State: AWAITING_OPERATOR_INSTRUCTION (Mission State Machine)
+
+
+8.2 Automatic Abort Conditions
+Mission automatically aborts when:
+Condition
+	Action
+	Battery < critical threshold (5%)
+	Emergency landing
+	Airspace isolation detected
+	Return to safe zone
+	Severe hardware fault
+	Emergency landing
+	Critical sensor failure
+	Return to base
+	Geofence breach
+	Immediate abort
+	
+
+Abort Actions (in priority order):
+* Return to home (if energy permits)
+* Emergency landing at nearest safe zone
+* Controlled descent at current location
+
+
+8.2.1 Emergency Landing Site Selection
+Pre-computed Safe Zones (Phase 1):
+* Abuja mapped for designated emergency landing zones
+* Database of GPS coordinated tagged as:
+   * SAFE_OPEN_SPACE (parks, fields)
+   * PARKING_LOT (paved, clear)
+   * ROOFTOP (pre-approved building)
+   * ROADSIDE (last resort)
+Selection Algorithm:
+* Query safe zones within glide range (based on altitude)
+* Filter by accessibility (ground crew can reach within 30 min)
+* Prefer ROOFTOP > SAFE_OPEN_SPACE > PARKING_LOT > others
+* Calculate glide path feasibility (no obstacles)
+* Navigate to selected site
+* Broadcast distress signal (GPS + diagnostics)
+* Execute controlled descent
+* Activate beacon (visual/audio)
+
+
+Abuja Context:
+* Avoid: markets, highways, residential yards
+* Prefer: stadium parking, designated rooftops, university fields, designated pads
+* Coordinate with NEMA (National Emergency Management Agency)
+
+
+8.3 Operator Response Protocol
+Escalation Severity Levels:
+
+
+Level
+	Description
+	Timeout
+	Fallback
+	1
+	Informational (weather approaching limits)
+	N/A
+	Continue autonomously
+	2
+	Advisory (multiple reroutes)
+	5 min
+	Continue, log decision
+	3
+	Critical (airspace risk, comm instability)
+	2 min
+	Automatic safe return
+	4
+	Emergency (critical fault)
+	30 sec
+	Emergency landing)
+	
+
+Fallback Doctrine: “In absence of human decision, system chooses safest option, not most optimal. But both safest option and most optimal option will be logged”
+
+
+8.4 Drone Reassignment Logic (Future v2)
+When low battery or fault detected AND no servicing drone available:
+* Evaluate handoff feasibility
+* Identify replacement drone with sufficient range
+* Coordinate payload transfer at nearest warehouse
+* See Mission State Machine: DRONE_SWAP_INITIATED (Future)
+
+
+9. Obstacle Avoidance
+9.1 Short-range (Edge Layer)
+* Handled by PX4 + onboard sensors (lidar/stereo cameras)
+* Reaction time: <100ms
+* Actions: Hover, climb, lateral move
+* Does not trigger cloud-level rerouting
+
+
+9.2 Strategic (Cloud Layer)
+* Handles macro rerouting
+* Airspace obstacles (buildings, towers)
+* Restricted zones
+* Weather cells
+* Triggers REROUTING state
+
+
+10. Communication Autonomy
+10.1 Signal Loss Decision Matrix
+
+
+Mission Phase
+	Energy Status
+	Action
+	En route to pickup
+	>40%
+	Continue to pickup, loiter up to 60s for reconnect
+	En route to pickup
+	<40%
+	Return to base
+	En route to destination
+	>35% reserve
+	Continue to destination
+	En route to destination
+	<35% reserve
+	Return to base
+	Any phase
+	<20%
+	Continue to nearest safe landing site
+	Pickup/Delivery ops
+	Any
+	Maintain position for 60s, then conservative return
+	
+
+10.2 Reconnection Protocol
+* Buffer all state transitions and telemetry during loss
+* Upon reconnect: full state sync with cloud
+* Notify external system of signal loss duration
+* If mission continued autonomously, flag for operator post-mission review
+
+
+10.3 Graceful Degradation
+* Loss of cellular: Continue on 4G backup if available
+* Loss of all comms: Execute pre-progammed failover per mission profile
+* Loss of GPS: Fall back to visual odometry + cellular triangulation
+
+
+11. Supervised Autonomy Model
+11.1 Operator Capabilities
+Operator can:
+* Abort mission (any state)
+* Force return to base
+* Override route with new waypoint
+* Approve high-risk reroute
+* Override visual identification (if escalated)
+Operator cannot:
+* Micromanage motor control
+* Disable safety constraints
+* Override hard safety rules (Layer 1)
+
+
+11.2 Logging
+All operator interventions logged with:
+* operator_id
+* Timestamp
+* Action taken
+* Mission context at time of intervention
+
+
+12. Payload Validation Logic
+12.1 Weight Verification - Dual Path Architecture
+Local Fast Path (Primary):
+* Payload container measures weight via onboard sensors
+* Container evaluates against 8kg threshold
+* Container send signed command directly to drone:
+   * WEIGHT_VERIFIED_LOCAL (if <= 8kg)
+   * WEIGHT_REJECTED_LOCAL (if > 8kg)
+* Drone validates command authenticity (HMAC, timestamp)
+* Drone acts immediately on valid command
+* Drone logs local command receipt
+Cloud Audit Path (Secondary):
+* Container streams weight telemetry to drone
+* Drone forwards to ADOS cloud (when connected)
+* ADOS relays to external logistics system
+* External system logs for audit/billing
+* External system may send weight.verified or weight.rejected command
+* Drone accepts cloud command if no local command received within 5s
+Conflict Resolution:
+* Safety always wins: if weight > 8kg (local REJECTED), ignore cloud VERIFIED
+* Business rule win: if weight <= 8kg (local VERIFIED) but cloud sends REJECTED (e.g., payment failure), follow cloud
+* All conflicts logged and operator notified
+Timeout Behaviour:
+If no local command within 10s AND no cloud command within 15s:
+* Transition to PICKUP_TIMEOUT
+* Notify external system: WEIGHT_VERIFICATION_TIMEOUT
+
+
+12.2 Container Security
+If container lock not confirmed after WEIGHT_VERIFIED
+* Prevent takeoff
+* Notify external system: CONTAINER_FAULT
+* Retry locking (up to 3 attempts)
+* If failed: Escalate to operator, mark drone for maintenance
+
+
+12.3 Payload Limit
+Hard limit: 8kg (container + contents)
+Tolerance: +0% (no exceptions)
+Weight sensor accuracy: ± 50g
+
+
+13. Autonomy Performance Metrics
+Tracked continuously per mission and aggregated:
+
+
+Metric 
+	Target
+	Reroutes per mission
+	< 2 average
+	Battery prediction error
+	<10%
+	ETA prediction error
+	< 15%
+	Mission completion rate
+	> 95%
+	Diversion frequency
+	< 5% of missions
+	Safety intervention frequency
+	0 (Phase 2)
+	Visual identification success
+	> 90% (Phase 2+)
+	Contact establishment rate
+	> 95%
+	
+
+14. Abuja-Specific Constraints
+14.1 Weather Operational Limits (Provisional)
+
+
+Parameter
+	Limit
+	Max sustained wind
+	15 m/s (54km/h)
+	Max gust
+	20 m/s (72 km/h)
+	Crosswind landing
+	10 m/s
+	Light rain
+	OPERATIONAL (reduced speed)
+	Moderate rain (>5mm/hr)
+	ABORT new missions
+	Heavy rain (>10mm/hr)
+	RETURN TO BASE
+	Visibility minimum
+	1000m horizontal
+	Fog/haze 
+	ABORT if <500m
+	Operating temperature
+	5°C to 45°C
+	Extreme heat (>40°C)
+	Reduced payload capacity
+	These are PLACEHOLDER values requiring validation with NiMet data
+
+
+14.2 Harmattan Season Considerations (Nov-Mar)
+* Increased dust/haze
+* Reduced visibility common
+* May require seasonal operationa restrictions
+* Conservative limits during harmattan
+
+
+14.3 Weather Data Sources
+* Primary: NiMet API (Nigerian Meteorological Agency)
+* Backup: OpenWeatherMap
+* Update frequency: Every 15 minutes
+
+
+14.4 Communication Constraints
+* Cellular dead zones mapped (pre-identified areas)
+* Minimum altitude for signal reliability: 40m AGL
+* Handover zones between towers identified
+
+
+14.5 No-fly Overlays
+* Government zones
+* Nnamdi Azikiwe International Airport approach paths
+* Militery barracks
+* Presidential fleet operations area
+
+
+15. Evolution Roadmap for Autonomy
+
+
+Phase 
+	Capabilities
+	Phase 1
+	Deterministic + rule-based; simulation only
+	Phase 2
+	Predictive ETA; supervised physical flights; OTP verification; basic container ops
+	Phase 3
+	Adaptive route optimization; visual identification; warehouse network
+	Phase 4
+	Multi-drone coordination; dynamic airspace
+	Phase 5
+	Corridor-based cross-state routing; national grid
+	
+
+16. Validation Strategy
+Autonomy must pass:
+
+
+Test
+	Description
+	1000 simulated missions
+	No illegal state transitions
+	Wind stress tests
+	0-20 m/s stepped increments
+	Battery aonmaly injection
+	Simulated drain spikes
+	Signal loss simulation
+	Loss at each mission phase
+	Reroute stress scenarios
+	10+ reroutes per mission
+	Weight sensor simulation
+	Under/over limit tests
+	OTP failure scenarios
+	Invalid, timeout, retry
+	Communication failure
+	No response from recipient
+	
+
+17. Failure Doctrine
+Autonomy must never:
+* Enter undefined state
+* Ignore safety constraint
+* Bypass battery reserve rule
+* Continue under critical sensor failure
+* Deploy payload without authorization
+* Descend below minimum safe altitude in unverified areas
+
+
+18. Logging & Explainability
+Every decision must log:
+Field
+	Description
+	timestamp
+	ISO8601 UTC
+	decision_type
+	REROUTE, ABORT, DIVERT, ESCALATE
+	input_variables
+	All relevant sensor/context data
+	decision_output
+	Selected action
+	reason_code
+	Categorical reason
+	confidence_level
+	For ML components (0-1)
+	operator_id
+	If human involved
+	
+
+Retention: 90 days minimum for regulatory audit.
+
+
+19. Payload Container Operations Autonomy
+19.1 Container States
+State
+	Description
+	CONTAINER_STOWED
+	Secured in drone body, transit mode
+	CONTAINER_LOWERING
+	Winch active, descending to ground
+	CONTAINER_LOADING
+	On ground, weight validation active
+	CONTAINER_SEALED
+	Locked, ready for transit
+	CONTAINER_DEPLOYING
+	Lowering for delivery
+	CONTAINER_EMPTY
+	After delivery, retracted
+	CONTAINER_FAULT
+	Mechanism failure
+	
+
+19.2 Pickup Autonomy Logic
+Trigger: ARRIED_AT_PICKUP → CONTACT_INITIATING_PICKUP → RECIPIENT_LOCATING_PICKUP → CONTAINER_DEPLOYING
+
+
+Actions:
+* Maintain hover at deployment altitude (configurable: 3-5m AGL)
+* Activate winch mechanism, lower container at 0.5m/s
+* Confirm container fully deployed (limit switch engaged)
+* Voice guidance: “Container deployed. Please place your package.”
+* Monitor for WEIGHT_VERIFIED or WEIGHT_REJECTED command
+
+
+Weight Verification Flow:
+* Container evaluates weight locally against 8kg threshold
+* If weight <= 8kg: Container sends WEIGHT_VERIFIED_LOCAL to drone
+* If weight > 8kg: Container sends WEIGHT_REJECTED_LOCAL to drone
+* Drone acknowledges local command immediately
+* Drone continues to stream weight data to cloud for audit
+* If business rule override needed, cloud sends weight.rejected within 5s window
+Weight Rejected Flow
+* If external system sends WEIGHT_REJECTED:
+   * Voice guidance: “Package exceeds 8kg. Please remove items.”
+   * Container remains deployed
+   * Weight displayed via voice/SMS
+   * Timer resets for 3 minutes
+   * If weight still >8kg after timeout → PICKUP_TIMEOUT
+Weight Verified Flow:
+* If external system sends WEIGHT_VERIFIED
+   * Voice guidance: “Weight verified. Securing container.”
+   * Activate container locking mechanism
+   * Verify lock status via sensor
+   * If lock confirmed: Retract container at 0.5 m/s
+   * If lock fails: DEPLOYMENT_FAILURE, escalate to operator
+
+
+19.3 Delivery Autonomy Logic
+Trigger: AUTHORIZATION_GRANTED_RECEIVED → PAYLOAD_DEPLOYING
+
+
+Actions:
+* Voice guidance: “Delivery authorized. Releasing package.”
+* Lower container to ground level (if not already)
+* Unlock container mechanism
+* Voice guidance: “Please remove your package.”
+* Monitor weight sensor for package removal
+* When weight < 0.1kg (empty):
+   * Voice confirmation: “Package removed. Thank you.”
+   * Retract empty container
+   * Verify container fully seated and locked
+* Transition to DELIVERY_CONFIRMED
+
+
+Timeout: If package not removed within 3 minutes:
+* Voice reminder
+* After 5 minutes total: Capture photo, escalate to operator
+* Operator may: Force retraction (package retained) or dispatch ground support
+
+
+19.4 Container Failure Handling
+Failure
+	Action
+	Winch malfunction
+	Emergency landing at safe zone, dispatch technician
+	Lock failure (won’t seal)
+	Abort mission, return to base, manual intervention
+	Lock failure (won’t open)
+	Escalate to operator, possible package retention
+	Weight sensor fault
+	Fallback to external confirmation, log incident
+	Container stuck deployed
+	Hover, attempt retract (3x), if failed → emergency landing
+	
+
+20. Delivery Verification Autonomy
+20.1 Contact Protocol Selection
+Inputs from mission manifest:
+* contact_mode (phone/WhatsApp/SMS)
+* contact_info (phone number/WhatsApp number)
+* preferred_language (English, Pidgin, French etc). Note: We will be strictly using english for now, but it should be forward compatible
+Priority Order (configurable per mission type):
+* Phone call (highest certainty, immediate feedback)
+* WhatsApp call (Immediate feedback, Network dependent)
+* WhatsApp message (rich media, read receipts)
+* SMS (fallback, universal)
+
+
+20.2 Visual Identification (Phase 2+)
+Scope for Abuja pilot: DEFERRED to Phase 3
+Phase 1 approach:
+* Audio-only verification
+* GPS proximity confirmation (±10m)
+* OTP as primary authentication. Note: The OTP will be managed outside the ADOS, it will only receive the event on sucessful authentication
+Rationale for deferral:
+* Privacy regulations (consent requirements)
+* Misidentification risks in varied demographics
+* Edge compute requirements (GPU on drone)
+* Weather/lighting dependencies
+* NITDA guidance pending
+When implemented (Phase 3)
+* Downward-facing camera activation at arrival
+* Computer vision model for human detection
+* Color/pattern matching based on sender description
+* Confidence threshold: 0.85 for automated proceed
+* 0.60 – 0.85 → Escalate to operator
+
+
+20.3 OTP Verification Flow
+* Arrive at destination: ARRIVED_AT_DESTINATION
+* Establish contact: CONTACT_INITIATING_DELIVERY
+* Receive OTP confirmation from external system → AUTHORIZATION_GRANTED_RECEIVED
+Note: The OTP verification is handled externally, the ADOS only receives the event on successful authorization.
+
+
+20.4 Contact Failure Protocol
+If contact unreachable or AUTHORIZATION_GRANTED_RECEIVED event not achieved after:
+Attempt
+	Action
+	1
+	Wait 30s, retry
+	2
+	Wait 60s, retry via alternate mode
+	3
+	Log failed contact, transtion to DELIVERY_TIMEOUT
+	
+
+On DELIVERY_TIMEOUT:
+* Return to pickup location (if business-to-customer) OR
+* Return to warehouse (if peer-to-peer)
+* Mission status: DELIVERY_FAILED
+* External system notified for refund/credit processing
+
+
+20.5 Safety Constraints
+* No payload deployment without AUTHORIZATION_GRANTED_RECEIVED state transition 
+* No landing in unverified locations
+* Maintain minimum 3m altitude during contact
+* Abort if hostile situation detected (future)
+* Maintain visual line of sight with recipient during delivery
+
+
+21. Warehouse Network Autonomy
+21.1 Warehouse Registry
+Each warehouse node contains:
+Field
+	Description
+	warehouse_id
+	Unique identified
+	gps_coordinates
+	WGS84
+	operational_status
+	ACTIVE, MAINTENANCE, FULL
+	drone_capacity
+	Max simultaneous docking slots
+	available_slots
+	Current available
+	service_capabilities
+	[CHARGE, REPAIR, PAYLOAD]
+	priority_tier
+	PRIMARY, BACKUP, EMERGENCY
+	contact_info
+	Ground crew contact
+	
+
+21.2 Warehouse Selection Logic
+Context 1: End-of-mission-return
+* Return waypoint provided in mission manifest
+* ADOS treats as abstract coordinate
+
+
+Context 2: Emergency diversion (low battery/fault)
+Algorithm
+* Step 1: Query all warehouses within energy-feasible range
+* Step 2: Filter by operational_status = ACTIVE
+* Step 3: Filter by available_slots > 0
+* Step 4: Calculate energy_cost to reach each (consider current battery)
+* Step 5: Select minimum energy_cost warehouse
+* Step 6: Reserve docking slot (decrement available_slots)
+* Step 7: Navigate to warehouse
+* Step 8: Notify external system: drone.low_battery with target_location
+
+
+Edge case: No warehouse reachable
+* Trigger EMERGENCY_LANDING (Section 8.2.1)
+* Log GPS + diagnostics
+* Operator immediate dispatch to location
+
+
+21.3 Business Location vs Warehouse Distinction
+Location Type
+	Purpose
+	Business location
+	Payload pickup points; payload container return points; NOT drone servicing locations
+	Warehouse
+	Drone charging/servicing; fleet staging; operator staffed
+	
+
+Autonomy must distinguish; 
+* Return to business (for payload container retrieval)
+* Return to warehouse (end of mission, servicing)
+21.4 Docking Protocol
+* Enter warehouse airspace (within 50m radius)
+* Request docking assignment via MQTT
+{
+ "drone_id": "...",
+ "mission_id": "...",
+ "request_type": "DOCK"
+}
+	* Receive assigned pad coordinates
+* Navigate to assigned pad (precision approach)
+* Descend to landing (vertical, obstacle monitored)
+* Motor disarm
+* Release payload container (if carried and business return)
+* Report status: DOCKING_COMPLETE
+* Await next mission assignment or charge cycle
+
+
+21.5 Multi-Warehouse Coordination (Phase 3+)
+* Centralized slot management to prevent conflicts
+* Load balancing across warehouses
+* Predictive maintenance scheduling based on usage
+
+
+22. Mission Handoff Protocol (Future v3)
+22.1 Handoff Trigger Conditions
+* Battery insufficient for completion + return
+* Hardware fault requiring grounding
+* Scheduled maintenance window approaching
+* Performance degradation detected
+
+
+22.2 Handoff Decision Logic
+Evaluate:
+* Can current drone complete mission? (battery + fault severity)
+* Is alternate drone available? (fleet availability check)
+* Is payload transferable? (container compatibility)
+* Is handoff more efficient than abort/refund?
+If handoff is justified:
+* Initiate DRONE_SWAP_INITIATED state
+
+
+22.3 Handoff Execution Flow
+* Current drone (D1) diverts to nearest warehouse
+* Fleet service reserves alternate drone (D2)
+* D1 lands, payload container detached
+* D2 assigned same mission_id
+* D2 loads container from D1
+* D2 ingerits:
+   * Destination coordinates
+   * Recipient contact info
+   * Delivery instructions
+* D2 recalculates route from warehouse to destination
+* D2 proceeds with mission
+* D1 logs MISSION_TRANSFERRED event
+* External system notified for customer communication
+
+
+22.4 Handoff Constraints
+* Maximum 1 handoff per mission
+* Payload container must support quick-release mechanism
+* Both drones must support same container standard
+* Handoff only at warehouse locations (not mid-air)
+
+
+23. Simulation-to-Reality Validation
+23.1 Parameters Constant Across Environments
+* Route planning algorithms (Section 5.3)
+* Decision layer hierarchy (Section 4)
+* Safety constraints thresholds (Section 4, Layer 1)
+* Mission state machine (Product Definition Section 7)
+
+
+23.2 Parameters Environment-Specific
+Environment
+	Characteristics
+	Simulation (Gazebo)
+	Perfect GPS; deterministic wind; ideal battery; no communication delays
+	Reality (Physical)
+	GPS accuracy ±3-5m; wind variability; battery degradation; cellular latency 50-200ms
+	
+
+23.3 Validation Criteria for Reality Transfer
+Simulation graduation requirements:
+* 1000 simulated missions passed
+* Gazebo weather stress tests passed
+* Battery edge cases covered
+* Signal loss scenarios validated
+Real-world pilot acceptance:
+* 100 physical test flights (empty payload)
+* 50 supervised delivery missions
+* ETA error <15% across all flights
+* Zero safety violations
+
+
+23.4 Known Reality Gaps
+* Simulation cannot model: crowds, birds, electromagnetic interference
+* Requires: Supervised autonomy during Phase 2
+* Continuous model refinement with real telemetry
+
+
+24. Multi-Drone Coordination (Phase 4+)
+Current Scope (Phase 1-2): SINGLE DRONE AUTONOMY
+Each mission operates independently
+Future Scope (Phase 4+): FLEET COORDINATION
+Coordination challenges:
+* Airspace deconfliction (avoid mid-air collisions)
+* Warehouse traffic control (docking queues)
+* Shared weather hazard information
+* Coordinated rerouting (load balancing)
+Deferred Architecture Decisions:
+* Centralized vs distributed coordination
+* Communication protocol between drones
+* Conflict resolution hierarchy
+Current Assumption: Sufficient airspace separation via time-based scheduling at orchestration layer.
+
+
+25. Mission Lifecycle Integration
+This autonomy logic maps to Product Definition Section 7:
+Mission Phase
+	Autonomy Component
+	1-2: Request Created → Drone Assigned
+	Fleet Management (external)
+	3: Route Calculated
+	Section 5: Route Planning
+	4: Weather & Safety Validation
+	Section 4: Decision Layers 1-2
+	5: Launch Approved
+	Section 8: Policy Engine
+	6: En Route to Pickup
+	Section 5 + Section 7
+	7: Payload Secured
+	Section 19: Container Ops
+	8-9: Navigation + ETA Recalc
+	Section 5 + Section 7
+	10: Arrival & Verification
+	Section 20: Delivery Verification
+	11: Payload Deployment
+	Section 19.3
+	12-14: Return → Docking → Closed
+	Section 21: Warehouse Network
+	
+
+26. Configuration Parameters Summary
+Parameter
+	Default
+	Range
+	Description
+	battery.low_threshold
+	30%
+	20-40%
+	Trigger diversion
+	battery.critical_threshold
+	5%
+	3-10%
+	Emergency landing
+	battery.safety_margin_base
+	25%
+	20-30%
+	Min landing reserve
+	weather.wind.max_sustained
+	15m/s
+	10-20
+	Operational limit
+	weather.wind.max_gust
+	20m/s
+	15-25
+	Abort threshold
+	wether.rain.light
+	5mm/hr
+	-
+	Operational
+	weather.rain.moderate
+	10mm/hr
+	-
+	Abort new
+	weather.visibility.min
+	1000m
+	500-2000
+	Operational min
+	timeout.contact_pickup
+	2 min
+	1-5
+	Contact establishment
+	timeout.contact_delivery
+	2 min
+	1-5
+	Contact establishment
+	timeout.visual_pickup
+	3 min
+	2-5
+	Visual Identification
+	timeout.visual_delivery
+	3 min
+	2-5
+	Visual identification
+	timeout.weight_verification
+	3 min
+	2-5
+	Weight confirmation
+	timeout.delivery_authorization
+	5 min
+	3-10
+	OTP verification
+	timeout.signal_loss
+	30 sec
+	15-60
+	Declare signal loss
+	arrival.radius
+	10m
+	5-20
+	Arrival threshold
+	deployment.altitude
+	4m
+	3-6
+	Container deployment AGL
+	visual.confidence_threshold
+	0.85
+	0.7-0.95
+	Auto-proceed threshold
+	
+
+All parameters configurable per:
+* Business tier
+* Geography
+* Mission priority
+* Weather conditions
+
+
+27. Glossary
+Term
+	Definition
+	ADOS
+	Automated Drone Operating System
+	AGL
+	Above Ground Level
+	CV
+	Computer Vision 
+	ETA
+	Estimated Time of Arrival
+	ML
+	Machine Learning
+	MSL
+	Mean Sea Level
+	NiMet
+	Nigerian Meteorological Agency
+	NITDA
+	National Information Technology Development Agency
+	OTP
+	One-Time Password
+	RTH
+	Return to Home
+	SITL
+	Software in the Loop
+	WP
+	Waypoint

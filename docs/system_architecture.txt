@@ -1,0 +1,286 @@
+﻿System Architecture Specification
+Autonomous Drone Operating System (ADOS)
+
+
+1. Purpose of This Document
+This document defines the structural, functional and technical architecture of the Autonomous Drone Operating System (ADOS).
+It establishes:
+* How the system is decomposed
+* How components communicate
+* Where autonomy logic resides
+* How the platform scales from simulation to national infrastructure
+* What trade-offs are consciously accepted
+This specification governs all future engineering decisions concerning the ADOS
+
+
+2. Architectural Philosophy
+ADOS is designed as infrastructural software. Its key principles include:
+* Software-first autonomy: Intelligence precedes hardware
+* Modular evolution: Simulation -> Real drones -> National grid
+* Event-driven orchestration: Drones are reactive agents
+* Human-in-the-loop by design: Supervised autonomy is a core constraint
+* Data gravity: Telemetry and routing data are strategic assets
+
+
+3. High-Level System Overview
+There are four major layers:
+* Edge Layer (Drone / Simulator)
+* Autonomy & Intelligence Layer
+* Cloud Orchestration Layer
+* Client & Integration Layer
+These layers should be loosey coupled and communicate through defined protocols
+
+
+4. Structural Decomposition
+4.1 Edge Layer (Drone/Simulation Runtime)
+Responsibility
+* Execute flight commands
+* Collect sensor data
+* Perform low-level obstacle avoidance
+* Maintain safety-critical controls
+Components
+* PX4/ArduPilot flight controller
+* Companion computer (Jetson / equivalent)
+* ROS2 runtime
+* Sensor interfaces
+* Payload control module
+Key Properties
+* Must operate independently of cloud
+* Must fail safe
+* Must degrade gracefully on signal loss
+
+
+4.2 Autonomy & Intelligence Layer
+Responsibility
+* Mission-level decision making
+* Route planning
+* ETA prediction
+* Rerouting logic
+* Fault resolution suggestions
+
+
+Subcomponents
+Routing Engine
+* Path planning (A*, RRT*, graph-based routing)
+* Geospatial awareness
+* No-fly zone enforcement
+Prediction Engine
+* Battery consumption models
+* ETA regression models
+* Weather impact models
+Autonomy Policy Engine
+* Evaluates safety constraints
+* Decides when to reroute
+* Determines mission abort conditions
+
+
+4.3 Cloud Orchestration Layer
+Responsibility
+* Mission lifecycle management
+* Fleet management
+* Telemetry ingestion
+* Operator supervision
+* Event propagation
+
+
+Core Service
+Mission Service
+* Create missions
+* Manage state transitions
+* Bind missions to drones
+Fleet Management Service
+* Drone availability
+* Health status
+* Maintenance scheduling
+Telemetry Ingestion Service
+* Ingest live drone data
+* Normalize sensor streams 
+* Store time-series data
+Operator Control Service
+* Override commands
+* Abort logic
+* Manual rerouting triggers
+
+
+4.4 Client & Integration Layer
+Responsibility
+* Human interaction
+* External system integration
+* Observability
+Components
+* Operator dashboard
+* Business dashboard
+* Internal APIs
+* Future public APIs
+* Webhook/event streams
+
+
+
+
+5. Interfaces & Interactions
+5.1 Drone <--> Cloud
+Pattern
+* Publish/subscribe
+* Event-driven
+Protocols
+* MQTT (primary)
+* WebSocket fallback
+* Telemetry heartbeat channels
+Data flow
+Drone -> telemetry system -> ingestion service
+Cloud -> intent commands -> drone
+
+
+5.2 Autonomy Engine <--> Mission Service
+Pattern 
+* Asynchronous command evaluation
+Flow
+* Mission created
+* Autonomy engine calculates route
+* Mission service approves or escalates
+* Command issued to drone
+
+
+5.3 Operator <--> System
+Pattern
+* Supervisory control
+Operators:
+* View mission state
+* Approve high-risk decisions
+* Intervene on faults
+
+
+5.4 External Systems <--> ADOS (Future plan)
+Pattern
+* REST + Webhooks + event streams
+External Systems:
+* Request missions
+* Subscribe to status updates
+* Receive fault notifications
+
+
+6. Technology Choices (Initial)
+6.1 Core Stack
+* Language: Python (autonomy), Typescript (platform)
+* Robotics: ROS2, PX4
+* Simulation: Gazebo + PX4 SITL
+* Backend: Node.js / Python services
+* Data:
+   * PostgreSQL + PostGIS
+   * TimescaleDB for telemetry
+   * Redis for transient state
+* Messaging:
+   * MQTT
+   * Kafka/RabbitMQ (later)
+
+
+6.2 Frontend
+* React-based dashboards
+* Mapbox / Leaflet for geospatial visualization
+* WebSocket telemetry streaming
+
+
+6.3 Infrastructure
+* Containerized services (Docker)
+* Kubernetes (post-pilot)
+* Cloud-first, edge-compatible
+
+
+7. Non-Functional Requirements
+7.1 Reliability
+* Telemetry loss tolerance
+* Drone autonomy under disconnection
+* Graceful degradation
+7.2 Latency
+* Telemetry latency < 2 seconds
+* Operator command propagation < 1 second
+7.3 Scalability
+* Horizontal mission scaling
+* Multi-drone concurrency
+* City-to-city expansion
+7.4 Safety
+* No single point of failure
+* Conservative autonomy policies
+* Explicit abort logic
+7.5 Observability
+* Full mission logs
+* Decision traceability
+* Auditability for regulators
+
+
+8. Constraints
+8.1 Regulatory
+* Supervised autonomy only
+* Geofencing mandatory
+* Operator intervention required
+
+
+8.2 Energy Physics
+* Battery density limits
+* Payload weight constraints
+* Weather sensitivity
+
+
+8.3 Communications
+* Intermittent connectivity
+* Urban interference
+* Reliance on cellular networks
+
+
+9. Trade-offs (Explicit)
+Centralized autonomy vs edge autonomy
+Chosen: Hybrid
+Reason: Safety + scalability
+
+
+Microservices vs Monolith
+Chosen: Modular monolith initially
+Reason: Faster iteration, fewer failure modes
+
+
+Full autonomy vs supervised autonomy (With intention to migrate to full)
+Chosen: Supervised
+Reason: Internet  realities
+
+
+Real-time guarantees vs best-effort
+Chosen: best-effort with safety fallbacks
+Reason: Internet realities
+
+
+10. Evolution Path of Architecture
+Phase 1
+* Simulation only
+* Monolithic backend
+* Limited services
+Phase 2
+* Physical drones
+* Telemetry scaling
+* Operator supervision layer
+Phase 3
+* Service decomposition
+* Fleet intelligence
+* Warehouse orchestration
+* Complete autonomy
+
+
+Phase 4
+* Regional partitioning
+* Corridor routing
+* National-scale eventing
+
+
+11. Architectural Risks
+* Autonomy complexity underestimated
+* Telemetry volume explosion
+* Regulatory intervention delays
+* Battery economics mismatch
+These risks are tracked outside this document
+
+
+12. Architecture Success Criteria
+The architecture is validated if:
+* Autonomy logic works unchanged between simulation and real drones
+* Drones can be swapped without platform changes
+* Telemetry scales linearly
+* New cities can be onboarded with configuration, not rewrites
