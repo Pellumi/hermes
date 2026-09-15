@@ -1,0 +1,367 @@
+[
+  {
+    "source": "main_frame_top_plate",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 standoffs and screws"
+  },
+  {
+    "source": "arm_hexarotor_1",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "arm_hexarotor_2",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "arm_hexarotor_3",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "arm_hexarotor_4",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "arm_hexarotor_5",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "arm_hexarotor_6",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "motor_mount_1",
+    "target": "arm_hexarotor_1",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "motor_mount_2",
+    "target": "arm_hexarotor_2",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "motor_mount_3",
+    "target": "arm_hexarotor_3",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "motor_mount_4",
+    "target": "arm_hexarotor_4",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "motor_mount_5",
+    "target": "arm_hexarotor_5",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "motor_mount_6",
+    "target": "arm_hexarotor_6",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "payload_bay_enclosure",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "payload_winch_system",
+    "target": "payload_bay_enclosure",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "payload_container_housing",
+    "target": "payload_winch_system",
+    "label": "Winch cable attachment"
+  },
+  {
+    "source": "battery_bay_cover_1",
+    "target": "main_frame_bottom_plate",
+    "label": "Snap fit/latches"
+  },
+  {
+    "source": "battery_bay_cover_2",
+    "target": "main_frame_bottom_plate",
+    "label": "Snap fit/latches"
+  },
+  {
+    "source": "landing_gear_leg_front_left",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "landing_gear_leg_front_right",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "landing_gear_leg_rear_left",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "landing_gear_leg_rear_right",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "rtk_gps_mount_main",
+    "target": "main_frame_top_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "rtk_gps_mount_aux",
+    "target": "main_frame_top_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "lidar_mount_front",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "lidar_mount_back",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "lidar_mount_left",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "lidar_mount_right",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "downward_camera_gimbal",
+    "target": "main_frame_bottom_plate",
+    "label": "M3 bolts"
+  },
+  {
+    "source": "fc_ai_enclosure",
+    "target": "main_frame_bottom_plate",
+    "label": "Vibration damping balls"
+  },
+  {
+    "source": "ai_compute_module_mount",
+    "target": "fc_ai_enclosure",
+    "label": "M3 standoffs and screws"
+  },
+  {
+    "source": "barometer_sensor_mount",
+    "target": "fc_ai_enclosure",
+    "label": "M2 bolts"
+  },
+  {
+    "source": "motor_esc_1_mount",
+    "target": "arm_hexarotor_1",
+    "label": "Cable ties/M2 bolts"
+  },
+  {
+    "source": "motor_esc_2_mount",
+    "target": "arm_hexarotor_2",
+    "label": "Cable ties/M2 bolts"
+  },
+  {
+    "source": "motor_esc_3_mount",
+    "target": "arm_hexarotor_3",
+    "label": "Cable ties/M2 bolts"
+  },
+  {
+    "source": "motor_esc_4_mount",
+    "target": "arm_hexarotor_4",
+    "label": "Cable ties/M2 bolts"
+  },
+  {
+    "source": "motor_esc_5_mount",
+    "target": "arm_hexarotor_5",
+    "label": "Cable ties/M2 bolts"
+  },
+  {
+    "source": "motor_esc_6_mount",
+    "target": "arm_hexarotor_6",
+    "label": "Cable ties/M2 bolts"
+  },
+  {
+    "source": "winch_motor_driver_mount",
+    "target": "payload_bay_enclosure",
+    "label": "M2 bolts"
+  },
+  {
+    "source": "cellular_modem_mount",
+    "target": "main_frame_top_plate",
+    "label": "M2 bolts"
+  },
+  {
+    "source": "digital_video_tx_mount",
+    "target": "main_frame_bottom_plate",
+    "label": "M2 bolts"
+  },
+  {
+    "source": "wifi_bluetooth_module_mount",
+    "target": "main_frame_top_plate",
+    "label": "M2 bolts"
+  },
+  {
+    "source": "power_module_voltage_sensor_mount",
+    "target": "main_frame_bottom_plate",
+    "label": "M2 bolts"
+  },
+  {
+    "source": "motor_mount_1",
+    "target": "propulsion_motor_1",
+    "label": "mount"
+  },
+  {
+    "source": "motor_mount_2",
+    "target": "propulsion_motor_2",
+    "label": "mount"
+  },
+  {
+    "source": "motor_mount_3",
+    "target": "propulsion_motor_3",
+    "label": "mount"
+  },
+  {
+    "source": "motor_mount_4",
+    "target": "propulsion_motor_4",
+    "label": "mount"
+  },
+  {
+    "source": "motor_mount_5",
+    "target": "propulsion_motor_5",
+    "label": "mount"
+  },
+  {
+    "source": "motor_mount_6",
+    "target": "propulsion_motor_6",
+    "label": "mount"
+  },
+  {
+    "source": "payload_winch_system",
+    "target": "winch_motor",
+    "label": "mount"
+  },
+  {
+    "source": "payload_container_housing",
+    "target": "payload_weight_sensor",
+    "label": "mount"
+  },
+  {
+    "source": "rtk_gps_mount_main",
+    "target": "rtk_gps_main",
+    "label": "mount"
+  },
+  {
+    "source": "rtk_gps_mount_aux",
+    "target": "rtk_gps_aux",
+    "label": "mount"
+  },
+  {
+    "source": "lidar_mount_front",
+    "target": "lidar_obstacle_front",
+    "label": "mount"
+  },
+  {
+    "source": "lidar_mount_back",
+    "target": "lidar_obstacle_back",
+    "label": "mount"
+  },
+  {
+    "source": "lidar_mount_left",
+    "target": "lidar_obstacle_left",
+    "label": "mount"
+  },
+  {
+    "source": "lidar_mount_right",
+    "target": "lidar_obstacle_right",
+    "label": "mount"
+  },
+  {
+    "source": "downward_camera_gimbal",
+    "target": "downward_vision_camera",
+    "label": "mount"
+  },
+  {
+    "source": "forward_camera_mount",
+    "target": "forward_vision_camera",
+    "label": "mount"
+  },
+  {
+    "source": "fc_ai_enclosure",
+    "target": "flight_controller_mcu",
+    "label": "mount"
+  },
+  {
+    "source": "ai_compute_module_mount",
+    "target": "ai_compute_module",
+    "label": "mount"
+  },
+  {
+    "source": "barometer_sensor_mount",
+    "target": "barometer_sensor",
+    "label": "mount"
+  },
+  {
+    "source": "motor_esc_1_mount",
+    "target": "motor_esc_1",
+    "label": "mount"
+  },
+  {
+    "source": "motor_esc_2_mount",
+    "target": "motor_esc_2",
+    "label": "mount"
+  },
+  {
+    "source": "motor_esc_3_mount",
+    "target": "motor_esc_3",
+    "label": "mount"
+  },
+  {
+    "source": "motor_esc_4_mount",
+    "target": "motor_esc_4",
+    "label": "mount"
+  },
+  {
+    "source": "motor_esc_5_mount",
+    "target": "motor_esc_5",
+    "label": "mount"
+  },
+  {
+    "source": "motor_esc_6_mount",
+    "target": "motor_esc_6",
+    "label": "mount"
+  },
+  {
+    "source": "winch_motor_driver_mount",
+    "target": "winch_motor_driver",
+    "label": "mount"
+  },
+  {
+    "source": "cellular_modem_mount",
+    "target": "cellular_modem",
+    "label": "mount"
+  },
+  {
+    "source": "digital_video_tx_mount",
+    "target": "digital_video_tx",
+    "label": "mount"
+  },
+  {
+    "source": "wifi_bluetooth_module_mount",
+    "target": "wifi_bluetooth_module",
+    "label": "mount"
+  },
+  {
+    "source": "power_module_voltage_sensor_mount",
+    "target": "power_module_voltage_sensor",
+    "label": "mount"
+  }
+]

@@ -1,0 +1,502 @@
+[
+  {
+    "source": "bms_module",
+    "target": "power_distribution_board",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "100A",
+    "label": "Main Battery Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "motor_esc_1",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "ESC 1 Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "motor_esc_2",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "ESC 2 Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "motor_esc_3",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "ESC 3 Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "motor_esc_4",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "ESC 4 Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "motor_esc_5",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "ESC 5 Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "motor_esc_6",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "ESC 6 Power"
+  },
+  {
+    "source": "motor_esc_1",
+    "target": "propulsion_motor_1",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "Motor 1 Power"
+  },
+  {
+    "source": "motor_esc_2",
+    "target": "propulsion_motor_2",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "Motor 2 Power"
+  },
+  {
+    "source": "motor_esc_3",
+    "target": "propulsion_motor_3",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "Motor 3 Power"
+  },
+  {
+    "source": "motor_esc_4",
+    "target": "propulsion_motor_4",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "Motor 4 Power"
+  },
+  {
+    "source": "motor_esc_5",
+    "target": "propulsion_motor_5",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "Motor 5 Power"
+  },
+  {
+    "source": "motor_esc_6",
+    "target": "propulsion_motor_6",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "20A",
+    "label": "Motor 6 Power"
+  },
+  {
+    "source": "flight_controller_mcu",
+    "target": "motor_esc_1",
+    "type": "data",
+    "protocol": "pwm",
+    "sourcePin": "PWM_OUT",
+    "targetPin": "PWM_IN",
+    "label": "ESC 1 Signal"
+  },
+  {
+    "source": "flight_controller_mcu",
+    "target": "motor_esc_2",
+    "type": "data",
+    "protocol": "pwm",
+    "sourcePin": "PWM_OUT",
+    "targetPin": "PWM_IN",
+    "label": "ESC 2 Signal"
+  },
+  {
+    "source": "flight_controller_mcu",
+    "target": "motor_esc_3",
+    "type": "data",
+    "protocol": "pwm",
+    "sourcePin": "PWM_OUT",
+    "targetPin": "PWM_IN",
+    "label": "ESC 3 Signal"
+  },
+  {
+    "source": "flight_controller_mcu",
+    "target": "motor_esc_4",
+    "type": "data",
+    "protocol": "pwm",
+    "sourcePin": "PWM_OUT",
+    "targetPin": "PWM_IN",
+    "label": "ESC 4 Signal"
+  },
+  {
+    "source": "flight_controller_mcu",
+    "target": "motor_esc_5",
+    "type": "data",
+    "protocol": "pwm",
+    "sourcePin": "PWM_OUT",
+    "targetPin": "PWM_IN",
+    "label": "ESC 5 Signal"
+  },
+  {
+    "source": "flight_controller_mcu",
+    "target": "motor_esc_6",
+    "type": "data",
+    "protocol": "pwm",
+    "sourcePin": "PWM_OUT",
+    "targetPin": "PWM_IN",
+    "label": "ESC 6 Signal"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "flight_controller_mcu",
+    "type": "power",
+    "voltage": "5V",
+    "current": "2A",
+    "label": "FC Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "ai_compute_module",
+    "type": "power",
+    "voltage": "10V",
+    "current": "5A",
+    "label": "AI Compute Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "rtk_gps_main",
+    "type": "power",
+    "voltage": "5V",
+    "current": "200mA",
+    "label": "RTK GPS Main Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "rtk_gps_aux",
+    "type": "power",
+    "voltage": "5V",
+    "current": "200mA",
+    "label": "RTK GPS Aux Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "barometer_sensor",
+    "type": "power",
+    "voltage": "3.3V",
+    "current": "50mA",
+    "label": "Barometer Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "lidar_obstacle_front",
+    "type": "power",
+    "voltage": "5V",
+    "current": "100mA",
+    "label": "LiDAR Front Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "lidar_obstacle_back",
+    "type": "power",
+    "voltage": "5V",
+    "current": "100mA",
+    "label": "LiDAR Back Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "lidar_obstacle_left",
+    "type": "power",
+    "voltage": "5V",
+    "current": "100mA",
+    "label": "LiDAR Left Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "lidar_obstacle_right",
+    "type": "power",
+    "voltage": "5V",
+    "current": "100mA",
+    "label": "LiDAR Right Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "downward_vision_camera",
+    "type": "power",
+    "voltage": "5V",
+    "current": "500mA",
+    "label": "Downward Cam Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "forward_vision_camera",
+    "type": "power",
+    "voltage": "5V",
+    "current": "500mA",
+    "label": "Forward Cam Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "payload_weight_sensor",
+    "type": "power",
+    "voltage": "5V",
+    "current": "50mA",
+    "label": "Weight Sensor Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "winch_motor_driver",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "10A",
+    "label": "Winch Driver Power"
+  },
+  {
+    "source": "winch_motor_driver",
+    "target": "winch_motor",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "10A",
+    "label": "Winch Motor Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "cellular_modem",
+    "type": "power",
+    "voltage": "5V",
+    "current": "1.5A",
+    "label": "Cellular Modem Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "digital_video_tx",
+    "type": "power",
+    "voltage": "10V",
+    "current": "1A",
+    "label": "Video TX Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "wifi_bluetooth_module",
+    "type": "power",
+    "voltage": "3.3V",
+    "current": "300mA",
+    "label": "WiFi/BT Power"
+  },
+  {
+    "source": "power_distribution_board",
+    "target": "power_module_voltage_sensor",
+    "type": "power",
+    "voltage": "22.2V",
+    "current": "10mA",
+    "label": "Voltage Sensor Input"
+  },
+  {
+    "source": "power_module_voltage_sensor",
+    "target": "flight_controller_mcu",
+    "type": "data",
+    "protocol": "adc",
+    "sourcePin": "IO_OUT",
+    "targetPin": "ADC",
+    "label": "Voltage/Current Sense"
+  },
+  {
+    "source": "ai_compute_module",
+    "target": "flight_controller_mcu",
+    "type": "data",
+    "protocol": "uart",
+    "sourcePin": "UART",
+    "targetPin": "UART",
+    "label": "AI to FC Communication"
+  },
+  {
+    "source": "rtk_gps_main",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "uart",
+    "sourcePin": "UART",
+    "targetPin": "UART",
+    "label": "RTK GPS Main Data"
+  },
+  {
+    "source": "rtk_gps_aux",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "uart",
+    "sourcePin": "UART",
+    "targetPin": "UART",
+    "label": "RTK GPS Aux Data"
+  },
+  {
+    "source": "barometer_sensor",
+    "target": "flight_controller_mcu",
+    "type": "data",
+    "protocol": "i2c",
+    "sourcePin": "I2C",
+    "targetPin": "I2C",
+    "label": "Barometer Data"
+  },
+  {
+    "source": "lidar_obstacle_front",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "i2c",
+    "sourcePin": "I2C",
+    "targetPin": "I2C",
+    "label": "Front LiDAR Data"
+  },
+  {
+    "source": "lidar_obstacle_back",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "i2c",
+    "sourcePin": "I2C",
+    "targetPin": "I2C",
+    "label": "Back LiDAR Data"
+  },
+  {
+    "source": "lidar_obstacle_left",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "i2c",
+    "sourcePin": "I2C",
+    "targetPin": "I2C",
+    "label": "Left LiDAR Data"
+  },
+  {
+    "source": "lidar_obstacle_right",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "i2c",
+    "sourcePin": "I2C",
+    "targetPin": "I2C",
+    "label": "Right LiDAR Data"
+  },
+  {
+    "source": "downward_vision_camera",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "csi",
+    "sourcePin": "CSI",
+    "targetPin": "CSI",
+    "label": "Downward Cam Video"
+  },
+  {
+    "source": "forward_vision_camera",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "usb",
+    "sourcePin": "USB3.0",
+    "targetPin": "USB",
+    "label": "Forward Cam Video"
+  },
+  {
+    "source": "payload_weight_sensor",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "gpio",
+    "sourcePin": "DOUT",
+    "targetPin": "GPIO",
+    "label": "Weight Sensor Data"
+  },
+  {
+    "source": "payload_weight_sensor",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "gpio",
+    "sourcePin": "SCK",
+    "targetPin": "GPIO",
+    "label": "Weight Sensor Clock"
+  },
+  {
+    "source": "bms_module",
+    "target": "flight_controller_mcu",
+    "type": "data",
+    "protocol": "can",
+    "sourcePin": "CAN",
+    "targetPin": "CAN",
+    "label": "BMS to FC Telemetry"
+  },
+  {
+    "source": "flight_controller_mcu",
+    "target": "winch_motor_driver",
+    "type": "data",
+    "protocol": "pwm",
+    "sourcePin": "PWM_OUT",
+    "targetPin": "PWM_IN1",
+    "label": "Winch Motor Speed"
+  },
+  {
+    "source": "flight_controller_mcu",
+    "target": "winch_motor_driver",
+    "type": "data",
+    "protocol": "gpio",
+    "sourcePin": "GPIO",
+    "targetPin": "PWM_IN2",
+    "label": "Winch Motor Direction"
+  },
+  {
+    "source": "winch_motor",
+    "target": "flight_controller_mcu",
+    "type": "data",
+    "protocol": "gpio",
+    "sourcePin": "ENC_A",
+    "targetPin": "GPIO",
+    "label": "Winch Encoder A"
+  },
+  {
+    "source": "winch_motor",
+    "target": "flight_controller_mcu",
+    "type": "data",
+    "protocol": "gpio",
+    "sourcePin": "ENC_B",
+    "targetPin": "GPIO",
+    "label": "Winch Encoder B"
+  },
+  {
+    "source": "cellular_modem",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "usb",
+    "sourcePin": "USB3.0",
+    "targetPin": "USB",
+    "label": "Cellular Modem Data"
+  },
+  {
+    "source": "digital_video_tx",
+    "target": "downward_vision_camera",
+    "type": "data",
+    "protocol": "mipi_csi",
+    "sourcePin": "MIPI_CSI",
+    "targetPin": "CSI",
+    "label": "Downward Cam to VTX"
+  },
+  {
+    "source": "digital_video_tx",
+    "target": "flight_controller_mcu",
+    "type": "data",
+    "protocol": "uart",
+    "sourcePin": "UART",
+    "targetPin": "UART",
+    "label": "VTX Control"
+  },
+  {
+    "source": "wifi_bluetooth_module",
+    "target": "ai_compute_module",
+    "type": "data",
+    "protocol": "uart",
+    "sourcePin": "UART",
+    "targetPin": "UART",
+    "label": "WiFi/BT to AI Compute"
+  }
+]

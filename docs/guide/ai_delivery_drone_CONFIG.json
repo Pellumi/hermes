@@ -1,0 +1,3803 @@
+{
+  "projectName": "AI Delivery Drone",
+  "nodes": [
+    {
+      "id": "flight_controller_mcu",
+      "name": "Flight Controller MCU",
+      "productName": "Holybro Pixhawk 6C",
+      "category": "electrical",
+      "type": "mcu",
+      "pins": [
+        "PWM_OUT",
+        "UART",
+        "CAN",
+        "I2C",
+        "SPI",
+        "ADC",
+        "GPIO"
+      ],
+      "dimensions": "42x84.5x23mm",
+      "quantity": 1,
+      "estimatedCost": 299.99,
+      "purchaseUrl": "https://www.holybro.com/products/pixhawk-6c",
+      "partId": "79239b5e-d3b8-4971-8e97-97e33748bea2",
+      "description": "Primary flight control unit based on STM32H753, includes integrated IMU (ICM-20689) and barometer (MS5611) for stable flight and navigation.",
+      "imageUrl": "https://imgs.search.brave.com/uWQ-jvdFBPcP-ZVzZ3vlA8XQMzqPaFP0ie-g2vmBaQ4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9ob2x5/YnJvLmNvbS9jZG4v/c2hvcC9maWxlcy9Q/aXhoYXdrNkNfQWx1/bWludW1fUE0wMjEy/U1NldF80MDB4Lmpw/Zz92PTE3NDk1Mzc4/NjI",
+      "research": {
+        "specs": [
+          {
+            "label": "pins",
+            "value": "PWM Out,CAN1,CAN2,I2C,UART,ADC,USB-C,Power In,GPS Port"
+          }
+        ],
+        "summary": "",
+        "datasheetUrl": "",
+        "documentationUrls": [
+          {
+            "title": "PX4 Guide",
+            "url": "https://docs.px4.io/main/en/flight_controller/pixhawk6c",
+            "type": "docs",
+            "description": "Official flight controller overview"
+          },
+          {
+            "title": "PX4 Guide",
+            "url": "https://docs.px4.io/main/en/assembly/quick_start_pixhawk6c",
+            "type": "guide",
+            "description": "Wiring and quick start guide"
+          },
+          {
+            "title": "PX4 Firmware",
+            "url": "https://github.com/PX4/PX4-Autopilot",
+            "type": "repo",
+            "description": "PX4 Autopilot flight stack"
+          },
+          {
+            "title": "PX4 Developer Guide",
+            "url": "https://docs.px4.io/main/en/dev_setup/",
+            "type": "docs",
+            "description": "PX4 software development kit"
+          }
+        ],
+        "sourcing": []
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=Holybro%20Pixhawk%206C&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 42,
+        "height": 23,
+        "depth": 84.5
+      },
+      "position3d": {
+        "x": 0,
+        "y": 190,
+        "z": 0
+      }
+    },
+    {
+      "id": "ai_compute_module",
+      "name": "AI Navigation Computer",
+      "productName": "NVIDIA Jetson Xavier NX Module",
+      "category": "electrical",
+      "type": "mcu",
+      "pins": [
+        "PCIe",
+        "USB",
+        "CSI",
+        "DSI",
+        "UART",
+        "I2C",
+        "SPI",
+        "GPIO"
+      ],
+      "dimensions": "70x45x8mm",
+      "quantity": 1,
+      "estimatedCost": 499,
+      "purchaseUrl": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-xavier-nx/",
+      "partId": "05da078f-c855-47ad-af36-8a4b109d79c3",
+      "description": "Primary AI and flight control unit for autonomous operation and sensor data processing.",
+      "imageUrl": "https://imgs.search.brave.com/TQpK091Uuh6y3gr8XrC_tpv7tpg1PIE5H9fv-yMGdt4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9yb2J1/LmluL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIwLzEyL05WSURJ/QS1KZXRzb24tWGF2/aWVyLU5YLURldmVs/b3Blci1LaXQtMy5w/bmc",
+      "amazonUrl": "https://www.amazon.com/s?k=NVIDIA%20Jetson%20Xavier%20NX%20Module&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 70,
+        "height": 8,
+        "depth": 45
+      },
+      "position3d": {
+        "x": 0,
+        "y": 170,
+        "z": 0
+      }
+    },
+    {
+      "id": "rtk_gps_main",
+      "name": "Main RTK GPS Module",
+      "productName": "Here4 GNSS Module",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "CAN",
+        "UART",
+        "I2C",
+        "GPS_PPS"
+      ],
+      "dimensions": "60x60x16mm",
+      "quantity": 1,
+      "estimatedCost": 220,
+      "purchaseUrl": "https://www.digikey.com/en/products/detail/here-technologies-pty-ltd/HERE4/22002131",
+      "partId": "89e40c5f-179a-4bf4-a429-78a48f7095b4",
+      "description": "Provides global positioning data for accurate navigation and position hold.",
+      "imageUrl": "https://imgs.search.brave.com/OrV7VdZPWYtKpadrdvlEN7RBZ_nCDjcC5FaQ8Tr-ZJ8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/ZWxlY2JlZS5jb20v/aW1hZ2UvY2F0YWxv/Zy9FbGVjdHJvbmlj/LU1vZHVsZS9GbGln/aHQtQ29udHJvbC1N/b2R1bGUvSEVYJTIw/SGVyZTMlMjBDQU4l/MjBHTlNTJTIwR1BT/JTIwTW9kdWxlJTIw/dyUyMGlTdGFuZC0y/LTFfd2F0ZXJtYXJr/LmpwZw",
+      "amazonUrl": "https://www.amazon.com/s?k=Here4%20GNSS%20Module&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 60,
+        "height": 16,
+        "depth": 60
+      },
+      "position3d": {
+        "x": 100,
+        "y": 275,
+        "z": 0
+      }
+    },
+    {
+      "id": "rtk_gps_aux",
+      "name": "Auxiliary RTK GPS Module",
+      "productName": "Here4 GNSS Module",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "CAN",
+        "UART",
+        "I2C",
+        "GPS_PPS"
+      ],
+      "dimensions": "60x60x16mm",
+      "quantity": 1,
+      "estimatedCost": 220,
+      "purchaseUrl": "https://www.digikey.com/en/products/detail/here-technologies-pty-ltd/HERE4/22002131",
+      "partId": "89e40c5f-179a-4bf4-a429-78a48f7095b4",
+      "description": "Provides global positioning data for accurate navigation and position hold.",
+      "imageUrl": "https://imgs.search.brave.com/OrV7VdZPWYtKpadrdvlEN7RBZ_nCDjcC5FaQ8Tr-ZJ8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/ZWxlY2JlZS5jb20v/aW1hZ2UvY2F0YWxv/Zy9FbGVjdHJvbmlj/LU1vZHVsZS9GbGln/aHQtQ29udHJvbC1N/b2R1bGUvSEVYJTIw/SGVyZTMlMjBDQU4l/MjBHTlNTJTIwR1BT/JTIwTW9kdWxlJTIw/dyUyMGlTdGFuZC0y/LTFfd2F0ZXJtYXJr/LmpwZw",
+      "amazonUrl": "https://www.amazon.com/s?k=Here4%20GNSS%20Module&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 60,
+        "height": 16,
+        "depth": 60
+      },
+      "position3d": {
+        "x": -100,
+        "y": 275,
+        "z": 0
+      }
+    },
+    {
+      "id": "barometer_sensor",
+      "name": "High Precision Barometer",
+      "productName": "MS5611 Barometric Pressure Sensor",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "I2C",
+        "SPI"
+      ],
+      "dimensions": "10x10x2mm",
+      "quantity": 1,
+      "estimatedCost": 15,
+      "purchaseUrl": "https://www.digikey.com/en/products/detail/te-connectivity-measurement-specialties/MS5611-01BA03/2403606",
+      "partId": "ac0b3b6a-acbb-4600-a425-8b0e560c3b56",
+      "description": "High-resolution pressure sensor for accurate altitude measurement, crucial for recovery deployment.",
+      "imageUrl": "https://imgs.search.brave.com/AnJhUxDO9cA9VoQWoXfWwHyBCO_RXQt-MTSNziI1NEU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pMC53/cC5jb20vY29tcG9u/ZW50c3RyZWUuY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIx/LzA4L2d5LTYzLW1z/NTYxMS0wMWJhMDMt/aGlnaC1wcmVjaXNp/b24tcHJlc3N1cmUt/c2Vuc29yLWhlaWdo/dC1zZW5zb3ItbW9k/dWxlLTMtODAweDgw/MC0xLmpwZz9maXQ9/ODAwLDgwMCZzc2w9/MQ",
+      "amazonUrl": "https://www.amazon.com/s?k=MS5611%20Barometric%20Pressure%20Sensor&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 10,
+        "height": 2,
+        "depth": 10
+      },
+      "position3d": {
+        "x": 40,
+        "y": 210,
+        "z": 40
+      }
+    },
+    {
+      "id": "lidar_obstacle_front",
+      "name": "Front Obstacle LiDAR",
+      "productName": "Garmin LiDAR-Lite v4 LED",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "I2C",
+        "PWM"
+      ],
+      "dimensions": "20x34x22mm",
+      "quantity": 1,
+      "estimatedCost": 149.99,
+      "purchaseUrl": "https://www.amazon.com/Garmin-Lidar-Lite-v4-LED/dp/B088R9F5P9",
+      "partId": "0f1f7b12-d81c-4402-8eff-8e4aeaa057a6",
+      "description": "Compact optical distance sensor for obstacle detection and ground sensing.",
+      "imageUrl": "https://imgs.search.brave.com/H3GxxXtrNVJjimk0jhehOM9Qvib3wBvA8aY26Ggb3KA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/c3BhcmtmdW4uY29t/L3IvNjAwLTYwMC9h/c3NldHMvcGFydHMv/MS80LzMvNy81LzE1/Nzc2LUdhcm1pbl9M/SURBUi1MaXRlX1Y0/X0xFRF8tX0Rpc3Rh/bmNlX01lYXN1cmVt/ZW50X1NlbnNvci0w/MS5qcGc",
+      "amazonUrl": "https://www.amazon.com/s?k=Garmin%20LiDAR-Lite%20v4%20LED&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 20,
+        "height": 22,
+        "depth": 34
+      },
+      "position3d": {
+        "x": 300,
+        "y": 100,
+        "z": 0
+      }
+    },
+    {
+      "id": "lidar_obstacle_back",
+      "name": "Back Obstacle LiDAR",
+      "productName": "Garmin LiDAR-Lite v4 LED",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "I2C",
+        "PWM"
+      ],
+      "dimensions": "20x34x22mm",
+      "quantity": 1,
+      "estimatedCost": 149.99,
+      "purchaseUrl": "https://www.amazon.com/Garmin-Lidar-Lite-v4-LED/dp/B088R9F5P9",
+      "partId": "0f1f7b12-d81c-4402-8eff-8e4aeaa057a6",
+      "description": "Compact optical distance sensor for obstacle detection and ground sensing.",
+      "imageUrl": "https://imgs.search.brave.com/H3GxxXtrNVJjimk0jhehOM9Qvib3wBvA8aY26Ggb3KA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/c3BhcmtmdW4uY29t/L3IvNjAwLTYwMC9h/c3NldHMvcGFydHMv/MS80LzMvNy81LzE1/Nzc2LUdhcm1pbl9M/SURBUi1MaXRlX1Y0/X0xFRF8tX0Rpc3Rh/bmNlX01lYXN1cmVt/ZW50X1NlbnNvci0w/MS5qcGc",
+      "amazonUrl": "https://www.amazon.com/s?k=Garmin%20LiDAR-Lite%20v4%20LED&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 20,
+        "height": 22,
+        "depth": 34
+      },
+      "position3d": {
+        "x": -300,
+        "y": 100,
+        "z": 0
+      }
+    },
+    {
+      "id": "lidar_obstacle_left",
+      "name": "Left Obstacle LiDAR",
+      "productName": "Garmin LiDAR-Lite v4 LED",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "I2C",
+        "PWM"
+      ],
+      "dimensions": "20x34x22mm",
+      "quantity": 1,
+      "estimatedCost": 149.99,
+      "purchaseUrl": "https://www.amazon.com/Garmin-Lidar-Lite-v4-LED/dp/B088R9F5P9",
+      "partId": "0f1f7b12-d81c-4402-8eff-8e4aeaa057a6",
+      "description": "Compact optical distance sensor for obstacle detection and ground sensing.",
+      "imageUrl": "https://imgs.search.brave.com/H3GxxXtrNVJjimk0jhehOM9Qvib3wBvA8aY26Ggb3KA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/c3BhcmtmdW4uY29t/L3IvNjAwLTYwMC9h/c3NldHMvcGFydHMv/MS80LzMvNy81LzE1/Nzc2LUdhcm1pbl9M/SURBUi1MaXRlX1Y0/X0xFRF8tX0Rpc3Rh/bmNlX01lYXN1cmVt/ZW50X1NlbnNvci0w/MS5qcGc",
+      "amazonUrl": "https://www.amazon.com/s?k=Garmin%20LiDAR-Lite%20v4%20LED&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 20,
+        "height": 22,
+        "depth": 34
+      },
+      "position3d": {
+        "x": 0,
+        "y": 100,
+        "z": -300
+      }
+    },
+    {
+      "id": "lidar_obstacle_right",
+      "name": "Right Obstacle LiDAR",
+      "productName": "Garmin LiDAR-Lite v4 LED",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "I2C",
+        "PWM"
+      ],
+      "dimensions": "20x34x22mm",
+      "quantity": 1,
+      "estimatedCost": 149.99,
+      "purchaseUrl": "https://www.amazon.com/Garmin-Lidar-Lite-v4-LED/dp/B088R9F5P9",
+      "partId": "0f1f7b12-d81c-4402-8eff-8e4aeaa057a6",
+      "description": "Compact optical distance sensor for obstacle detection and ground sensing.",
+      "imageUrl": "https://imgs.search.brave.com/H3GxxXtrNVJjimk0jhehOM9Qvib3wBvA8aY26Ggb3KA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/c3BhcmtmdW4uY29t/L3IvNjAwLTYwMC9h/c3NldHMvcGFydHMv/MS80LzMvNy81LzE1/Nzc2LUdhcm1pbl9M/SURBUi1MaXRlX1Y0/X0xFRF8tX0Rpc3Rh/bmNlX01lYXN1cmVt/ZW50X1NlbnNvci0w/MS5qcGc",
+      "amazonUrl": "https://www.amazon.com/s?k=Garmin%20LiDAR-Lite%20v4%20LED&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 20,
+        "height": 22,
+        "depth": 34
+      },
+      "position3d": {
+        "x": 0,
+        "y": 100,
+        "z": 300
+      }
+    },
+    {
+      "id": "downward_vision_camera",
+      "name": "Downward Vision Camera",
+      "productName": "Raspberry Pi Camera Module 3",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "CSI"
+      ],
+      "dimensions": "25x24x9mm",
+      "quantity": 1,
+      "estimatedCost": 35,
+      "purchaseUrl": "https://www.adafruit.com/product/5717",
+      "partId": "6bf48057-ff33-401c-9d04-37b1022c4b0b",
+      "description": "High-resolution camera for visual sensing and streaming.",
+      "imageUrl": "https://imgs.search.brave.com/If0X6xEnv5PctEgZhlEV-Yv04jQJo6BzAcSii4JaYf4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/d2F2ZXNoYXJlLmNv/bS9pbWcvZGV2a2l0/L2FjY0JvYXJkL1Jh/c3BiZXJyeS1QaS1D/YW1lcmEtTW9kdWxl/LTMvUmFzcGJlcnJ5/LVBpLUNhbWVyYS1N/b2R1bGUtMy1kZXRh/aWxzLTEzLmpwZw",
+      "research": {
+        "datasheetUrl": "https://datasheets.raspberrypi.com/camera/camera-module-3-product-brief.pdf",
+        "documentationUrls": [
+          {
+            "url": "https://www.raspberrypi.com/products/camera-module-3/",
+            "title": "Raspberry Pi Camera Module 3 Product Page"
+          },
+          {
+            "url": "https://www.raspberrypi.com/documentation/accessories/camera.html",
+            "title": "Learn more about libcamera (Official Raspberry Pi Open Source Camera System)"
+          },
+          {
+            "url": "https://datasheets.raspberrypi.com/camera/picamera2-manual.pdf",
+            "title": "Picamera2 Library Documentation (Official Python library)"
+          },
+          {
+            "url": "https://www.waveshare.com/wiki/Raspberry_Pi_Camera_Module_3",
+            "title": "Waveshare Wiki: Raspberry Pi Camera Module 3"
+          },
+          {
+            "url": "https://www.raspberrypi.com/products/camera-module-3/",
+            "type": "docs",
+            "title": "Raspberry Pi Camera Module 3 - Raspberry Pi"
+          },
+          {
+            "url": "https://techeonics.com/raspberry-pi-camera-module-3-guide/",
+            "type": "guide",
+            "title": "Raspberry Pi Camera Module 3 : Setup, Review, and Troubleshooting Guide - Techeonics"
+          },
+          {
+            "url": "https://www.waveshare.com/wiki/Raspberry_Pi_Camera_Module_3",
+            "type": "wiki",
+            "title": "Raspberry Pi Camera Module 3 - Waveshare Wiki"
+          },
+          {
+            "url": "https://spotpear.com/index/study/detail/id/936.html",
+            "type": "guide",
+            "title": "Raspberry Pi Camera Module 3 User Guide - Spotpear"
+          },
+          {
+            "url": "https://www.raspberrypi.com/documentation/accessories/camera.html",
+            "type": "reference",
+            "title": "Raspberry Pi Camera Module 3 - Picamera2 (Official Python Library)"
+          }
+        ],
+        "examples": [
+          {
+            "url": "https://gist.github.com/maxpromer/3cdf718647b16d0dfc009ffa1f15add6",
+            "title": "Raspberry Pi Camera Module 3 image preview with Python",
+            "description": "A simple Python script to display a preview from the Raspberry Pi Camera Module 3 using the `picamera2` library."
+          },
+          {
+            "url": "https://github.com/RoboticXps/ras-pi-cam3",
+            "title": "Codes for Raspberry Pi Camera Module 3 (Community GitHub)",
+            "description": "A collection of community-contributed code examples and scripts for interfacing with the Raspberry Pi Camera Module 3."
+          },
+          {
+            "url": "https://github.com/jackberger03/mast3r-camera-client",
+            "title": "MASt3R-Camera-Client (Raspberry Pi Camera Module 3 client for streaming images)",
+            "description": "A client-side application for Raspberry Pi Camera Module 3 designed to capture and stream images over HTTP POST, demonstrated with a MASt3R-SLAM server."
+          },
+          {
+            "url": "https://notenoughtech.com/raspberry-pi/raspberry-pi-camera-module-3/",
+            "title": "My first steps with Raspberry Pi Camera Module 3 - NotEnoughTech",
+            "description": "A guide on initial setup and commands for capturing videos and pictures with the Raspberry Pi Camera Module 3."
+          },
+          {
+            "url": "https://github.com/RoboticXps/ras-pi-cam3",
+            "title": "Codes for Raspberry Pi Camera Module 3 - GitHub (RoboticXps/ras-pi-cam3)",
+            "description": "GitHub repository containing example codes for the Raspberry Pi Camera Module 3."
+          },
+          {
+            "url": "https://gist.github.com/maxpromer/3cdf718647b16d0dfc009ffa1f15add6",
+            "title": "Raspberry Pi Camera Module 3 image preview with Python - GitHub Gist",
+            "description": "A simple Python script example for generating an image preview using the Raspberry Pi Camera Module 3."
+          },
+          {
+            "url": "https://forum.arduino.cc/t/interfacing-a-raspberry-pi-camera-module-3-with-an-arduino-board/1101850",
+            "title": "Interfacing a Raspberry Pi Camera module 3 with an Arduino board - Arduino Forum",
+            "description": "Discussion on the feasibility and methods of interfacing the Raspberry Pi Camera Module 3 with an Arduino board, noting direct compatibility challenges."
+          },
+          {
+            "url": "https://docs.cirkitdesigner.com/component/d8efe652-e7f1-4d43-a6d0-0fc49340621e/raspberry-pi-camera-module-3",
+            "title": "How to Use Raspberry Pi Camera Module 3: Pinouts, Specs, and Examples",
+            "description": "Learn how to use the Raspberry Pi Camera Module 3 with detailed documentation, including pinouts, usage guides, and example projects, perfect for integrating it into circuits."
+          },
+          {
+            "url": "https://www.tomshardware.com/how-to/raspberry-pi-camera-module-3-python-picamera-2",
+            "title": "How To Use Raspberry Pi Camera Module 3 with Python Code",
+            "description": "A tutorial demonstrating how to use the Raspberry Pi Camera Module 3 with Python code, including capturing HDR images and utilizing the picamera2 library for basic camera operation."
+          },
+          {
+            "url": "https://www.raspberrypi.com/news/the-official-raspberry-pi-camera-module-guide-out-now-build-amazing-vision-based-projects/",
+            "title": "The Official Raspberry Pi Camera Module Guide: build amazing vision-based projects",
+            "description": "This official guide details how to attach Raspberry Pi Camera Modules (including Module 3) and integrate vision technology into various projects, covering hardware and software aspects."
+          }
+        ],
+        "sourcing": [
+          {
+            "vendor": "DigiKey",
+            "url": "https://www.digikey.com/en/products/detail/raspberry-pi/SC0873/17278646",
+            "price": "$25",
+            "note": "Raspberry Pi Camera Module 3 (Standard)"
+          },
+          {
+            "vendor": "Adafruit",
+            "url": "https://www.adafruit.com/product/5657",
+            "note": "Raspberry Pi Camera Module 3 Standard [12MP Autofocus]"
+          },
+          {
+            "vendor": "SparkFun",
+            "url": "https://www.sparkfun.com/raspberry-pi-camera-module-3.html",
+            "note": "Raspberry Pi Camera Module 3 (Standard)"
+          }
+        ],
+        "specs": [
+          {
+            "label": "pins",
+            "value": "CSI"
+          },
+          {
+            "label": "autofocus",
+            "value": "Phase Detection Autofocus (PDAF)"
+          },
+          {
+            "label": "resolution",
+            "value": "12 Megapixels"
+          },
+          {
+            "label": "image_sensor",
+            "value": "Sony IMX708"
+          },
+          {
+            "label": "key_features",
+            "value": "HDR, Improved low-light sensitivity"
+          },
+          {
+            "label": "output_interface",
+            "value": "CSI (Camera Serial Interface)"
+          },
+          {
+            "label": "diagonal_field_of_view_wide",
+            "value": "120 degrees"
+          },
+          {
+            "label": "diagonal_field_of_view_standard",
+            "value": "75 degrees"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=Raspberry%20Pi%20Camera%20Module%203&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 25,
+        "height": 9,
+        "depth": 24
+      },
+      "position3d": {
+        "x": 0,
+        "y": -15,
+        "z": 0
+      }
+    },
+    {
+      "id": "forward_vision_camera",
+      "name": "Forward Vision Camera",
+      "productName": "Intel RealSense Depth Camera D435i",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "USB3.0"
+      ],
+      "dimensions": "90x25x25mm",
+      "quantity": 1,
+      "estimatedCost": 399,
+      "purchaseUrl": "https://store.intelrealsense.com/buy-intel-realsense-depth-camera-d435i.html",
+      "partId": "10e07661-a169-47c3-88c5-cace8bf330d3",
+      "description": "LiDAR or depth camera for navigation and environmental awareness, integrated with ROS.",
+      "imageUrl": "https://imgs.search.brave.com/j8Oq4iy7ChyUzWNKt2QZhq9-M7H30UhGBl07ePx50W8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jMS5u/ZXdlZ2dpbWFnZXMu/Y29tL3Byb2R1Y3Rp/bWFnZS9uYjY0MC9W/QzE3RDI0MDYyMDAw/QTNVWDlGLmpwZw",
+      "research": {
+        "specs": [
+          {
+            "label": "pins",
+            "value": "USB"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=Intel%20RealSense%20Depth%20Camera%20D435i&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 90,
+        "height": 25,
+        "depth": 25
+      },
+      "position3d": {
+        "x": 170,
+        "y": 165,
+        "z": 0
+      }
+    },
+    {
+      "id": "payload_weight_sensor",
+      "name": "Payload Weight Sensor",
+      "productName": "Load Cell 20kg with HX711 ADC",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "DOUT",
+        "SCK",
+        "VCC",
+        "GND"
+      ],
+      "dimensions": "80x12.7x12.7mm (load cell), 35x20x5mm (HX711)",
+      "quantity": 1,
+      "estimatedCost": 20,
+      "purchaseUrl": "https://www.amazon.com/Load-Cell-Weighing-Sensor-HX711/dp/B07R8M575R",
+      "partId": "bbbee3fd-c432-4b25-a5c9-9970d0a72dd8",
+      "imageUrl": "https://imgs.search.brave.com/UHx6gYwpc-_XI2WdK9vt-NGlSBwu5FByz13WGI3UVuc/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzYxM2t4a2lrazNM/LmpwZw",
+      "amazonUrl": "https://www.amazon.com/s?k=Load%20Cell%2020kg%20with%20HX711%20ADC&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 80,
+        "height": 12.7,
+        "depth": 12.7
+      },
+      "position3d": {
+        "x": 0,
+        "y": -80,
+        "z": 0
+      }
+    },
+    {
+      "id": "bms_module",
+      "name": "Battery Management System",
+      "productName": "Smart BMS 12S LiPo with UART/CAN",
+      "category": "electrical",
+      "type": "power",
+      "pins": [
+        "B-",
+        "P-",
+        "C-",
+        "UART",
+        "CAN",
+        "Balance Ports"
+      ],
+      "dimensions": "100x70x15mm",
+      "quantity": 1,
+      "estimatedCost": 80,
+      "purchaseUrl": "https://www.amazon.com/Daly-Smart-BMS-12S-Balance/dp/B0BNP7R9M1",
+      "partId": "c5e085c3-c993-4162-8877-c99fd2cfa13d",
+      "imageUrl": "https://imgs.search.brave.com/V0l6KUWEl8PcwNKAIWzmTKN0ZO0tTQB709kCZk3i-6Y/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/eG1hY2V5LmNvbS91/cGxvYWRmaWxlLzIw/MjIxMS8xOC8yM2M3/NGY4M2JhN2I0M2Zh/MTc4Njk0M2NkNDUy/NWM1ZS5qcGc",
+      "amazonUrl": "https://www.amazon.com/s?k=Smart%20BMS%2012S%20LiPo%20with%20UART%2FCAN&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 100,
+        "height": 15,
+        "depth": 70
+      },
+      "position3d": {
+        "x": 0,
+        "y": 140,
+        "z": 0
+      }
+    },
+    {
+      "id": "power_distribution_board",
+      "name": "Power Distribution Board",
+      "productName": "Matek Systems PDB FCHUB-6S",
+      "category": "electrical",
+      "type": "power",
+      "pins": [
+        "BAT_IN",
+        "ESC_OUT",
+        "VBAT_OUT",
+        "5V_OUT",
+        "10V_OUT"
+      ],
+      "dimensions": "36x36x6mm",
+      "quantity": 1,
+      "estimatedCost": 20,
+      "purchaseUrl": "https://www.racedayquads.com/products/matek-fchub-6s-power-distribution-board-pdb",
+      "partId": "ad25c805-4e50-40fc-9bb7-efa0d0c8ed2e",
+      "description": "Regulates main battery voltage to stable 5V/12V for companion computer and peripherals.",
+      "imageUrl": "https://imgs.search.brave.com/Z6k7T66d83KptXF20FyxD1nUGXANPIIzWRNoQWlFBPk/rs:fit:0:180:1:0/g:ce/aHR0cHM6Ly9pbWdh/ejMuc3RhdGljYmcu/Y29tL3RodW1iL2xp/c3RfZ3JpZC9vYXVw/bG9hZC9iYW5nZ29v/ZC9pbWFnZXMvOEUv/NzIvNzYwYTc2Y2It/NTcyZS00NGVjLWE2/ZWYtOTZiOTk1OWM2/N2RkLmpwZy53ZWJw",
+      "amazonUrl": "https://www.amazon.com/s?k=Matek%20Systems%20PDB%20FCHUB-6S&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 36,
+        "height": 6,
+        "depth": 36
+      },
+      "position3d": {
+        "x": 0,
+        "y": 158,
+        "z": 0
+      }
+    },
+    {
+      "id": "motor_esc_1",
+      "name": "Motor 1 ESC",
+      "productName": "T-Motor Flame 80A HV",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "PWM_IN",
+        "BAT_IN",
+        "MOTOR_OUT"
+      ],
+      "dimensions": "70x32x15mm",
+      "quantity": 1,
+      "estimatedCost": 75,
+      "purchaseUrl": "https://www.getfpv.com/t-motor-flame-80a-hv-esc-6-12s.html",
+      "partId": "02e4f976-6e55-4611-bae1-52651ab18474",
+      "description": "Electronic Speed Controller for the front-left motor.",
+      "imageUrl": "https://imgs.search.brave.com/ANvK0FTQl0JVaySQgHKnK4leREzTc4fGBZ8NvhDO1VA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZS5tYWRlLWluLWNo/aW5hLmNvbS8yMDNm/MGowMFdoU1ZqbVl0/aEJHVS9ULU1vdG9y/LUZsYW1lLTgwQS1I/di1FbGVjdHJvbmlj/LVNwZWVkLUNvbnRy/b2xsZXItZm9yLURy/b25lLndlYnA",
+      "research": {
+        "specs": [
+          {
+            "label": "pins",
+            "value": "Power In +,Power In -,Motor Out U,Motor Out V,Motor Out W,Signal In"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20Flame%2080A%20HV&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 70,
+        "height": 15,
+        "depth": 32
+      },
+      "position3d": {
+        "x": 300,
+        "y": 95,
+        "z": 0
+      }
+    },
+    {
+      "id": "motor_esc_2",
+      "name": "Motor 2 ESC",
+      "productName": "T-Motor Flame 80A HV",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "PWM_IN",
+        "BAT_IN",
+        "MOTOR_OUT"
+      ],
+      "dimensions": "70x32x15mm",
+      "quantity": 1,
+      "estimatedCost": 75,
+      "purchaseUrl": "https://www.getfpv.com/t-motor-flame-80a-hv-esc-6-12s.html",
+      "partId": "02e4f976-6e55-4611-bae1-52651ab18474",
+      "description": "Electronic Speed Controller for the front-left motor.",
+      "imageUrl": "https://imgs.search.brave.com/ANvK0FTQl0JVaySQgHKnK4leREzTc4fGBZ8NvhDO1VA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZS5tYWRlLWluLWNo/aW5hLmNvbS8yMDNm/MGowMFdoU1ZqbVl0/aEJHVS9ULU1vdG9y/LUZsYW1lLTgwQS1I/di1FbGVjdHJvbmlj/LVNwZWVkLUNvbnRy/b2xsZXItZm9yLURy/b25lLndlYnA",
+      "research": {
+        "specs": [
+          {
+            "label": "pins",
+            "value": "Power In +,Power In -,Motor Out U,Motor Out V,Motor Out W,Signal In"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20Flame%2080A%20HV&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 70,
+        "height": 15,
+        "depth": 32
+      },
+      "position3d": {
+        "x": 150,
+        "y": 95,
+        "z": -259.8
+      }
+    },
+    {
+      "id": "motor_esc_3",
+      "name": "Motor 3 ESC",
+      "productName": "T-Motor Flame 80A HV",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "PWM_IN",
+        "BAT_IN",
+        "MOTOR_OUT"
+      ],
+      "dimensions": "70x32x15mm",
+      "quantity": 1,
+      "estimatedCost": 75,
+      "purchaseUrl": "https://www.getfpv.com/t-motor-flame-80a-hv-esc-6-12s.html",
+      "partId": "02e4f976-6e55-4611-bae1-52651ab18474",
+      "description": "Electronic Speed Controller for the front-left motor.",
+      "imageUrl": "https://imgs.search.brave.com/ANvK0FTQl0JVaySQgHKnK4leREzTc4fGBZ8NvhDO1VA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZS5tYWRlLWluLWNo/aW5hLmNvbS8yMDNm/MGowMFdoU1ZqbVl0/aEJHVS9ULU1vdG9y/LUZsYW1lLTgwQS1I/di1FbGVjdHJvbmlj/LVNwZWVkLUNvbnRy/b2xsZXItZm9yLURy/b25lLndlYnA",
+      "research": {
+        "specs": [
+          {
+            "label": "pins",
+            "value": "Power In +,Power In -,Motor Out U,Motor Out V,Motor Out W,Signal In"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20Flame%2080A%20HV&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 70,
+        "height": 15,
+        "depth": 32
+      },
+      "position3d": {
+        "x": -150,
+        "y": 95,
+        "z": -259.8
+      }
+    },
+    {
+      "id": "motor_esc_4",
+      "name": "Motor 4 ESC",
+      "productName": "T-Motor Flame 80A HV",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "PWM_IN",
+        "BAT_IN",
+        "MOTOR_OUT"
+      ],
+      "dimensions": "70x32x15mm",
+      "quantity": 1,
+      "estimatedCost": 75,
+      "purchaseUrl": "https://www.getfpv.com/t-motor-flame-80a-hv-esc-6-12s.html",
+      "partId": "02e4f976-6e55-4611-bae1-52651ab18474",
+      "description": "Electronic Speed Controller for the front-left motor.",
+      "imageUrl": "https://imgs.search.brave.com/ANvK0FTQl0JVaySQgHKnK4leREzTc4fGBZ8NvhDO1VA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZS5tYWRlLWluLWNo/aW5hLmNvbS8yMDNm/MGowMFdoU1ZqbVl0/aEJHVS9ULU1vdG9y/LUZsYW1lLTgwQS1I/di1FbGVjdHJvbmlj/LVNwZWVkLUNvbnRy/b2xsZXItZm9yLURy/b25lLndlYnA",
+      "research": {
+        "specs": [
+          {
+            "label": "pins",
+            "value": "Power In +,Power In -,Motor Out U,Motor Out V,Motor Out W,Signal In"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20Flame%2080A%20HV&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 70,
+        "height": 15,
+        "depth": 32
+      },
+      "position3d": {
+        "x": -300,
+        "y": 95,
+        "z": 0
+      }
+    },
+    {
+      "id": "motor_esc_5",
+      "name": "Motor 5 ESC",
+      "productName": "T-Motor Flame 80A HV",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "PWM_IN",
+        "BAT_IN",
+        "MOTOR_OUT"
+      ],
+      "dimensions": "70x32x15mm",
+      "quantity": 1,
+      "estimatedCost": 75,
+      "purchaseUrl": "https://www.getfpv.com/t-motor-flame-80a-hv-esc-6-12s.html",
+      "partId": "02e4f976-6e55-4611-bae1-52651ab18474",
+      "description": "Electronic Speed Controller for the front-left motor.",
+      "imageUrl": "https://imgs.search.brave.com/ANvK0FTQl0JVaySQgHKnK4leREzTc4fGBZ8NvhDO1VA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZS5tYWRlLWluLWNo/aW5hLmNvbS8yMDNm/MGowMFdoU1ZqbVl0/aEJHVS9ULU1vdG9y/LUZsYW1lLTgwQS1I/di1FbGVjdHJvbmlj/LVNwZWVkLUNvbnRy/b2xsZXItZm9yLURy/b25lLndlYnA",
+      "research": {
+        "specs": [
+          {
+            "label": "pins",
+            "value": "Power In +,Power In -,Motor Out U,Motor Out V,Motor Out W,Signal In"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20Flame%2080A%20HV&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 70,
+        "height": 15,
+        "depth": 32
+      },
+      "position3d": {
+        "x": -150,
+        "y": 95,
+        "z": 259.8
+      }
+    },
+    {
+      "id": "motor_esc_6",
+      "name": "Motor 6 ESC",
+      "productName": "T-Motor Flame 80A HV",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "PWM_IN",
+        "BAT_IN",
+        "MOTOR_OUT"
+      ],
+      "dimensions": "70x32x15mm",
+      "quantity": 1,
+      "estimatedCost": 75,
+      "purchaseUrl": "https://www.getfpv.com/t-motor-flame-80a-hv-esc-6-12s.html",
+      "partId": "02e4f976-6e55-4611-bae1-52651ab18474",
+      "description": "Electronic Speed Controller for the front-left motor.",
+      "imageUrl": "https://imgs.search.brave.com/ANvK0FTQl0JVaySQgHKnK4leREzTc4fGBZ8NvhDO1VA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZS5tYWRlLWluLWNo/aW5hLmNvbS8yMDNm/MGowMFdoU1ZqbVl0/aEJHVS9ULU1vdG9y/LUZsYW1lLTgwQS1I/di1FbGVjdHJvbmlj/LVNwZWVkLUNvbnRy/b2xsZXItZm9yLURy/b25lLndlYnA",
+      "research": {
+        "specs": [
+          {
+            "label": "pins",
+            "value": "Power In +,Power In -,Motor Out U,Motor Out V,Motor Out W,Signal In"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20Flame%2080A%20HV&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 70,
+        "height": 15,
+        "depth": 32
+      },
+      "position3d": {
+        "x": 150,
+        "y": 95,
+        "z": 259.8
+      }
+    },
+    {
+      "id": "propulsion_motor_1",
+      "name": "Propulsion Motor 1",
+      "productName": "T-Motor U8 II KV100",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "ESC_OUT"
+      ],
+      "dimensions": "87.5x32.5mm",
+      "quantity": 1,
+      "estimatedCost": 150,
+      "purchaseUrl": "https://www.amazon.com/T-Motor-Brushless-Propulsion-Multicopter-Quadcopter/dp/B07R8B1G15",
+      "partId": "7c584e27-a954-40b4-970d-c02b9404de1b",
+      "description": "High-efficiency brushless DC motor, optimized for large propellers and long endurance fixed-wing flight.",
+      "imageUrl": "https://imgs.search.brave.com/ejh1xzOCcE3MMFi6JIPcUIP5k9P0U1BPGFIToKIeSQ8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91bm1h/bm5lZHJjLmNvbS9j/ZG4vc2hvcC9maWxl/cy8yMDI1MDMxMDEx/MDU0MC5wbmc_dj0x/NzQxNTc2NzM1Jndp/ZHRoPXt3aWR0aH0",
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20U8%20II%20KV100&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 87.5,
+        "height": 32.5,
+        "depth": 87.5
+      },
+      "position3d": {
+        "x": 400,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "id": "propulsion_motor_2",
+      "name": "Propulsion Motor 2",
+      "productName": "T-Motor U8 II KV100",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "ESC_OUT"
+      ],
+      "dimensions": "87.5x32.5mm",
+      "quantity": 1,
+      "estimatedCost": 150,
+      "purchaseUrl": "https://www.amazon.com/T-Motor-Brushless-Propulsion-Multicopter-Quadcopter/dp/B07R8B1G15",
+      "partId": "7c584e27-a954-40b4-970d-c02b9404de1b",
+      "description": "High-efficiency brushless DC motor, optimized for large propellers and long endurance fixed-wing flight.",
+      "imageUrl": "https://imgs.search.brave.com/ejh1xzOCcE3MMFi6JIPcUIP5k9P0U1BPGFIToKIeSQ8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91bm1h/bm5lZHJjLmNvbS9j/ZG4vc2hvcC9maWxl/cy8yMDI1MDMxMDEx/MDU0MC5wbmc_dj0x/NzQxNTc2NzM1Jndp/ZHRoPXt3aWR0aH0",
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20U8%20II%20KV100&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 87.5,
+        "height": 32.5,
+        "depth": 87.5
+      },
+      "position3d": {
+        "x": 200,
+        "y": 90,
+        "z": -346.4
+      }
+    },
+    {
+      "id": "propulsion_motor_3",
+      "name": "Propulsion Motor 3",
+      "productName": "T-Motor U8 II KV100",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "ESC_OUT"
+      ],
+      "dimensions": "87.5x32.5mm",
+      "quantity": 1,
+      "estimatedCost": 150,
+      "purchaseUrl": "https://www.amazon.com/T-Motor-Brushless-Propulsion-Multicopter-Quadcopter/dp/B07R8B1G15",
+      "partId": "7c584e27-a954-40b4-970d-c02b9404de1b",
+      "description": "High-efficiency brushless DC motor, optimized for large propellers and long endurance fixed-wing flight.",
+      "imageUrl": "https://imgs.search.brave.com/ejh1xzOCcE3MMFi6JIPcUIP5k9P0U1BPGFIToKIeSQ8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91bm1h/bm5lZHJjLmNvbS9j/ZG4vc2hvcC9maWxl/cy8yMDI1MDMxMDEx/MDU0MC5wbmc_dj0x/NzQxNTc2NzM1Jndp/ZHRoPXt3aWR0aH0",
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20U8%20II%20KV100&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 87.5,
+        "height": 32.5,
+        "depth": 87.5
+      },
+      "position3d": {
+        "x": -200,
+        "y": 90,
+        "z": -346.4
+      }
+    },
+    {
+      "id": "propulsion_motor_4",
+      "name": "Propulsion Motor 4",
+      "productName": "T-Motor U8 II KV100",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "ESC_OUT"
+      ],
+      "dimensions": "87.5x32.5mm",
+      "quantity": 1,
+      "estimatedCost": 150,
+      "purchaseUrl": "https://www.amazon.com/T-Motor-Brushless-Propulsion-Multicopter-Quadcopter/dp/B07R8B1G15",
+      "partId": "7c584e27-a954-40b4-970d-c02b9404de1b",
+      "description": "High-efficiency brushless DC motor, optimized for large propellers and long endurance fixed-wing flight.",
+      "imageUrl": "https://imgs.search.brave.com/ejh1xzOCcE3MMFi6JIPcUIP5k9P0U1BPGFIToKIeSQ8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91bm1h/bm5lZHJjLmNvbS9j/ZG4vc2hvcC9maWxl/cy8yMDI1MDMxMDEx/MDU0MC5wbmc_dj0x/NzQxNTc2NzM1Jndp/ZHRoPXt3aWR0aH0",
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20U8%20II%20KV100&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 87.5,
+        "height": 32.5,
+        "depth": 87.5
+      },
+      "position3d": {
+        "x": -400,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "id": "propulsion_motor_5",
+      "name": "Propulsion Motor 5",
+      "productName": "T-Motor U8 II KV100",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "ESC_OUT"
+      ],
+      "dimensions": "87.5x32.5mm",
+      "quantity": 1,
+      "estimatedCost": 150,
+      "purchaseUrl": "https://www.amazon.com/T-Motor-Brushless-Propulsion-Multicopter-Quadcopter/dp/B07R8B1G15",
+      "partId": "7c584e27-a954-40b4-970d-c02b9404de1b",
+      "description": "High-efficiency brushless DC motor, optimized for large propellers and long endurance fixed-wing flight.",
+      "imageUrl": "https://imgs.search.brave.com/ejh1xzOCcE3MMFi6JIPcUIP5k9P0U1BPGFIToKIeSQ8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91bm1h/bm5lZHJjLmNvbS9j/ZG4vc2hvcC9maWxl/cy8yMDI1MDMxMDEx/MDU0MC5wbmc_dj0x/NzQxNTc2NzM1Jndp/ZHRoPXt3aWR0aH0",
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20U8%20II%20KV100&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 87.5,
+        "height": 32.5,
+        "depth": 87.5
+      },
+      "position3d": {
+        "x": -200,
+        "y": 90,
+        "z": 346.4
+      }
+    },
+    {
+      "id": "propulsion_motor_6",
+      "name": "Propulsion Motor 6",
+      "productName": "T-Motor U8 II KV100",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "ESC_OUT"
+      ],
+      "dimensions": "87.5x32.5mm",
+      "quantity": 1,
+      "estimatedCost": 150,
+      "purchaseUrl": "https://www.amazon.com/T-Motor-Brushless-Propulsion-Multicopter-Quadcopter/dp/B07R8B1G15",
+      "partId": "7c584e27-a954-40b4-970d-c02b9404de1b",
+      "description": "High-efficiency brushless DC motor, optimized for large propellers and long endurance fixed-wing flight.",
+      "imageUrl": "https://imgs.search.brave.com/ejh1xzOCcE3MMFi6JIPcUIP5k9P0U1BPGFIToKIeSQ8/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91bm1h/bm5lZHJjLmNvbS9j/ZG4vc2hvcC9maWxl/cy8yMDI1MDMxMDEx/MDU0MC5wbmc_dj0x/NzQxNTc2NzM1Jndp/ZHRoPXt3aWR0aH0",
+      "amazonUrl": "https://www.amazon.com/s?k=T-Motor%20U8%20II%20KV100&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 87.5,
+        "height": 32.5,
+        "depth": 87.5
+      },
+      "position3d": {
+        "x": 200,
+        "y": 90,
+        "z": 346.4
+      }
+    },
+    {
+      "id": "winch_motor",
+      "name": "Payload Winch Motor",
+      "productName": "Brushless DC Geared Motor with Encoder",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "PWM_IN",
+        "DIR",
+        "ENC_A",
+        "ENC_B",
+        "VCC",
+        "GND"
+      ],
+      "dimensions": "50x30x30mm",
+      "quantity": 1,
+      "estimatedCost": 60,
+      "purchaseUrl": "https://www.amazon.com/Brushless-Encoder-Permanent-Magnet-Electric/dp/B09V7N86G7",
+      "partId": "209b79de-3ac7-401c-8b32-18203a06421f",
+      "description": "Brushless motor with integrated encoder for left wheel propulsion.",
+      "imageUrl": "https://imgs.search.brave.com/RV4l5PSEsE6QwhPbMlWGHQ4ArTX6LIfVINa9ETHKFFo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly96Ym90/aWMuaW4vd3AtY29u/dGVudC91cGxvYWRz/LzIwMjMvMTEvQnJ1/c2hsZXNzLURDLVdv/cm0tR2Vhci1SZWR1/Y3Rpb24tTW90b3It/d2l0aC1FbmNvZGVy/LTMwMHgzMDAuanBn",
+      "amazonUrl": "https://www.amazon.com/s?k=Brushless%20DC%20Geared%20Motor%20with%20Encoder&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 30,
+        "depth": 30
+      },
+      "position3d": {
+        "x": 0,
+        "y": 40,
+        "z": 0
+      }
+    },
+    {
+      "id": "winch_motor_driver",
+      "name": "Winch Motor Driver",
+      "productName": "Sabertooth 2x32A Motor Driver",
+      "category": "electrical",
+      "type": "actuator",
+      "pins": [
+        "PWM_IN1",
+        "PWM_IN2",
+        "BAT_IN",
+        "MOTOR_OUT1",
+        "MOTOR_OUT2"
+      ],
+      "dimensions": "66x80x25mm",
+      "quantity": 1,
+      "estimatedCost": 150,
+      "purchaseUrl": "https://www.dimensionengineering.com/products/sabertooth2x32",
+      "partId": "8e84af0d-bcfc-4846-a1b6-eb7a67c7d882",
+      "description": "Dual-channel motor driver for controlling the left and right drive motors.",
+      "imageUrl": "https://imgs.search.brave.com/_StJwo76IsLsxJipe7s2tgkdQ1JR0A6Ak_iolqUs_cs/rs:fit:0:180:1:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL0c1NEFB/ZVN3Y0hob3QzVkYv/cy1sMjI1LmpwZw",
+      "amazonUrl": "https://www.amazon.com/s?k=Sabertooth%202x32A%20Motor%20Driver&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 66,
+        "height": 25,
+        "depth": 80
+      },
+      "position3d": {
+        "x": 0,
+        "y": 70,
+        "z": 0
+      }
+    },
+    {
+      "id": "cellular_modem",
+      "name": "4G/5G Cellular Modem",
+      "productName": "Quectel RM500Q-GL 5G NR Module",
+      "category": "electrical",
+      "type": "module",
+      "pins": [
+        "USB3.0",
+        "PCIe",
+        "UART",
+        "SIM"
+      ],
+      "dimensions": "52x30x2.3mm",
+      "quantity": 1,
+      "estimatedCost": 250,
+      "purchaseUrl": "https://www.digikey.com/en/products/detail/quectel/RM500Q-GL/11696225",
+      "partId": "ce5968cf-b3d3-47bc-aa25-b1718aebcf9d",
+      "description": "5G NR Sub-6GHz and LTE-A Cat 16 module for cellular connectivity.",
+      "imageUrl": "https://imgs.search.brave.com/pH-XrxsYwaewVRyw9fuuL5TuUYZn8CaW3R_Ry3O6SLg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9odWJ0/cm9uaWNzLmluL2lt/YWdlL2NhY2hlL2Nh/dGFsb2cvc2FnYXIv/cm0tc2VyaWVzLXJt/NTAwcS1nbC0yLTU1/MHg1NTAuanBn",
+      "amazonUrl": "https://www.amazon.com/s?k=Quectel%20RM500Q-GL%205G%20NR%20Module&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 52,
+        "height": 2.3,
+        "depth": 30
+      },
+      "position3d": {
+        "x": -50,
+        "y": 140,
+        "z": 0
+      }
+    },
+    {
+      "id": "digital_video_tx",
+      "name": "Digital Video Transmitter",
+      "productName": "DJI Air Unit O3",
+      "category": "electrical",
+      "type": "module",
+      "pins": [
+        "MIPI_CSI",
+        "UART",
+        "SBUS",
+        "VCC",
+        "GND"
+      ],
+      "dimensions": "32.5x30.5x14.5mm",
+      "quantity": 1,
+      "estimatedCost": 229,
+      "purchaseUrl": "https://www.dji.com/o3-air-unit",
+      "partId": "5f1a991c-aa8e-4eb0-b059-dfe13aa19be9",
+      "description": "Transmits high-definition video feed to ground station.",
+      "imageUrl": "https://imgs.search.brave.com/B4o6AC8bJwmkTCYWZqtVk3829jjLP5W5xXnn461g_tY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/MzFGQmZuSllhVUwu/anBn",
+      "amazonUrl": "https://www.amazon.com/s?k=DJI%20Air%20Unit%20O3&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 32.5,
+        "height": 14.5,
+        "depth": 30.5
+      },
+      "position3d": {
+        "x": 50,
+        "y": 140,
+        "z": 0
+      }
+    },
+    {
+      "id": "wifi_bluetooth_module",
+      "name": "WiFi/Bluetooth Module",
+      "productName": "ESP32-WROOM-32D",
+      "category": "electrical",
+      "type": "module",
+      "pins": [
+        "UART",
+        "SPI",
+        "I2C",
+        "GPIO"
+      ],
+      "dimensions": "18x25.5x3.1mm",
+      "quantity": 1,
+      "estimatedCost": 5,
+      "purchaseUrl": "https://www.digikey.com/en/products/detail/espressif-systems/ESP32-WROOM-32D/9477013",
+      "partId": "0cb03cd4-c10f-4bd1-ae27-0b6fcad2cc7c",
+      "description": "Main microcontroller for station control, BLE communication with toio, and motor control.",
+      "imageUrl": "https://imgs.search.brave.com/BbtaPy02rXW8ehIadtdBFldmPTxvpcwdplJShbb2mvM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/ZWxlY3Jvdy5jb20v/bWVkaWEvY2F0YWxv/Zy9wcm9kdWN0L2Nh/Y2hlL2I2Yjk1Nzc5/MzdlNmE5NmY1MGU1/M2RkYzQyOTgzNjI4/L2Uvcy9lc3AzMi13/cm9vbS0zMmQuanBn",
+      "research": {
+        "specs": [
+          {
+            "label": "pins",
+            "value": "3V3,GND,GPIO0,GPIO2,GPIO4,GPIO5,GPIO12,GPIO13,GPIO14,GPIO15,GPIO16,GPIO17,GPIO18,GPIO19,GPIO21,GPIO22,GPIO23,GPIO25,GPIO26,GPIO27,GPIO32,GPIO33"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=ESP32-WROOM-32D&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 18,
+        "height": 3.1,
+        "depth": 25.5
+      },
+      "position3d": {
+        "x": 0,
+        "y": 140,
+        "z": 50
+      }
+    },
+    {
+      "id": "power_module_voltage_sensor",
+      "name": "Voltage/Current Sensor",
+      "productName": "Holybro PM07 Power Module",
+      "category": "electrical",
+      "type": "sensor",
+      "pins": [
+        "VBAT_OUT",
+        "IO_OUT",
+        "CURR_OUT"
+      ],
+      "dimensions": "35x35x10mm",
+      "quantity": 1,
+      "estimatedCost": 30,
+      "purchaseUrl": "https://www.holybro.com/products/pm07",
+      "partId": "9762bb39-3605-46fc-97f1-8e2716107b7d",
+      "description": "Provides regulated power to the flight controller and measures battery voltage/current.",
+      "imageUrl": "https://imgs.search.brave.com/hwDwmmDYSK473bJL8V4IT2zlM_ui0vJrX4eDrQ9LgNo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9yY2Ry/b25lLnRvcC9jZG4v/c2hvcC9maWxlcy9T/ZWU3ODY4ZWE0MDk1/NDA3OWJiODMxMWNi/ODFlODAwMTM1Lmpw/Zz92PTE3MTI1OTUw/MDEmd2lkdGg9MTk0/Ng",
+      "research": {
+        "specs": [
+          {
+            "label": "pins",
+            "value": "Battery In,ESC Power Out,FC Power Out (VCC, GND),Current Sense,Voltage Sense"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=Holybro%20PM07%20Power%20Module&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 35,
+        "height": 10,
+        "depth": 35
+      },
+      "position3d": {
+        "x": 40,
+        "y": 155,
+        "z": -40
+      }
+    },
+    {
+      "id": "main_frame_top_plate",
+      "name": "Main Frame Top Plate",
+      "productName": "Carbon Fiber Plate 600x600x3mm",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Primary structural top plate for mounting electronics and connecting frame arms. Provides rigidity to the hexarotor frame.",
+      "dimensions": "600x600x3mm",
+      "quantity": 1,
+      "estimatedCost": 120,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+plate+600x600x3mm",
+      "partId": "4407d46b-bf54-4175-b59b-426b43bdb913",
+      "imageUrl": "https://imgs.search.brave.com/S-2Zx_e2Km6pdHKPO9YxbIfYIOYNgvtiJY6smbBNz1w/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NTFFRGhXazFocUwu/anBn",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Plate%20600x600x3mm&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 600,
+        "height": 3,
+        "depth": 600
+      },
+      "position3d": {
+        "x": 0,
+        "y": 120,
+        "z": 0
+      }
+    },
+    {
+      "id": "main_frame_bottom_plate",
+      "name": "Main Frame Bottom Plate",
+      "productName": "Carbon Fiber Plate 600x600x3mm",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Primary structural bottom plate for mounting components and enclosing payload bay. Forms the base of the drone's chassis.",
+      "dimensions": "600x600x3mm",
+      "quantity": 1,
+      "estimatedCost": 120,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+plate+600x600x3mm",
+      "partId": "4407d46b-bf54-4175-b59b-426b43bdb913",
+      "imageUrl": "https://imgs.search.brave.com/S-2Zx_e2Km6pdHKPO9YxbIfYIOYNgvtiJY6smbBNz1w/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NTFFRGhXazFocUwu/anBn",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Plate%20600x600x3mm&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 600,
+        "height": 3,
+        "depth": 600
+      },
+      "position3d": {
+        "x": 0,
+        "y": 50,
+        "z": 0
+      }
+    },
+    {
+      "id": "arm_hexarotor_1",
+      "name": "Hexarotor Arm 1",
+      "productName": "Carbon Fiber Arm 30x20x300mm",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Carbon fiber arm connecting motor 1 to the main frame, providing structural support for propulsion.",
+      "dimensions": "30x20x300mm",
+      "quantity": 1,
+      "estimatedCost": 25,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+rectangle+tube+30x20x300mm",
+      "partId": "f0368918-0d40-4a7e-a2cf-faf46476623b",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Arm%2030x20x300mm&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 300,
+        "height": 20,
+        "depth": 30
+      },
+      "position3d": {
+        "x": 250,
+        "y": 60,
+        "z": 0
+      }
+    },
+    {
+      "id": "arm_hexarotor_2",
+      "name": "Hexarotor Arm 2",
+      "productName": "Carbon Fiber Arm 30x20x300mm",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Carbon fiber arm connecting motor 2 to the main frame, providing structural support for propulsion.",
+      "dimensions": "30x20x300mm",
+      "quantity": 1,
+      "estimatedCost": 25,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+rectangle+tube+30x20x300mm",
+      "partId": "f0368918-0d40-4a7e-a2cf-faf46476623b",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Arm%2030x20x300mm&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 150,
+        "height": 20,
+        "depth": 30
+      },
+      "position3d": {
+        "x": 125,
+        "y": 60,
+        "z": -216.5
+      }
+    },
+    {
+      "id": "arm_hexarotor_3",
+      "name": "Hexarotor Arm 3",
+      "productName": "Carbon Fiber Arm 30x20x300mm",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Carbon fiber arm connecting motor 3 to the main frame, providing structural support for propulsion.",
+      "dimensions": "30x20x300mm",
+      "quantity": 1,
+      "estimatedCost": 25,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+rectangle+tube+30x20x300mm",
+      "partId": "f0368918-0d40-4a7e-a2cf-faf46476623b",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Arm%2030x20x300mm&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 150,
+        "height": 20,
+        "depth": 30
+      },
+      "position3d": {
+        "x": -125,
+        "y": 60,
+        "z": -216.5
+      }
+    },
+    {
+      "id": "arm_hexarotor_4",
+      "name": "Hexarotor Arm 4",
+      "productName": "Carbon Fiber Arm 30x20x300mm",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Carbon fiber arm connecting motor 4 to the main frame, providing structural support for propulsion.",
+      "dimensions": "30x20x300mm",
+      "quantity": 1,
+      "estimatedCost": 25,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+rectangle+tube+30x20x300mm",
+      "partId": "f0368918-0d40-4a7e-a2cf-faf46476623b",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Arm%2030x20x300mm&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 300,
+        "height": 20,
+        "depth": 30
+      },
+      "position3d": {
+        "x": -250,
+        "y": 60,
+        "z": 0
+      }
+    },
+    {
+      "id": "arm_hexarotor_5",
+      "name": "Hexarotor Arm 5",
+      "productName": "Carbon Fiber Arm 30x20x300mm",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Carbon fiber arm connecting motor 5 to the main frame, providing structural support for propulsion.",
+      "dimensions": "30x20x300mm",
+      "quantity": 1,
+      "estimatedCost": 25,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+rectangle+tube+30x20x300mm",
+      "partId": "f0368918-0d40-4a7e-a2cf-faf46476623b",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Arm%2030x20x300mm&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 150,
+        "height": 20,
+        "depth": 30
+      },
+      "position3d": {
+        "x": -125,
+        "y": 60,
+        "z": 216.5
+      }
+    },
+    {
+      "id": "arm_hexarotor_6",
+      "name": "Hexarotor Arm 6",
+      "productName": "Carbon Fiber Arm 30x20x300mm",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Carbon fiber arm connecting motor 6 to the main frame, providing structural support for propulsion.",
+      "dimensions": "30x20x300mm",
+      "quantity": 1,
+      "estimatedCost": 25,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+rectangle+tube+30x20x300mm",
+      "partId": "f0368918-0d40-4a7e-a2cf-faf46476623b",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Arm%2030x20x300mm&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 150,
+        "height": 20,
+        "depth": 30
+      },
+      "position3d": {
+        "x": 125,
+        "y": 60,
+        "z": 216.5
+      }
+    },
+    {
+      "id": "motor_mount_1",
+      "name": "Motor Mount 1",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mount for propulsion motor 1, ensuring secure attachment to the hexarotor arm.",
+      "dimensions": "65x65x30mm",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, high strength",
+      "mountsFor": "propulsion_motor_1",
+      "quantity": 1,
+      "estimatedCost": 3.5,
+      "partId": "c9a64372-337f-45be-bfa6-4f0d12c4630c",
+      "productName": "Motor Mount 1",
+      "imageUrl": "https://imgs.search.brave.com/1hvmcnJjN7i9aUP1wjdsVhMuM5CeHTwml1BKfMrB66I/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NjF3QUk3UUs3Qkwu/anBn",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%20Mount%201&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 65,
+        "height": 30,
+        "depth": 65
+      },
+      "position3d": {
+        "x": 400,
+        "y": 60,
+        "z": 0
+      }
+    },
+    {
+      "id": "motor_mount_2",
+      "name": "Motor Mount 2",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mount for propulsion motor 2, ensuring secure attachment to the hexarotor arm.",
+      "dimensions": "65x65x30mm",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, high strength",
+      "mountsFor": "propulsion_motor_2",
+      "quantity": 1,
+      "estimatedCost": 3.5,
+      "partId": "a72dda6c-4d0b-4b64-818e-fcf645ee7d55",
+      "productName": "Motor Mount 2",
+      "imageUrl": "https://imgs.search.brave.com/nPANE9xWLmF7VNagsasJvwS1ZEC2a43smiFoFPkVcUg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NzFDYmE1LVV3Ukwu/anBn",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%20Mount%202&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 65,
+        "height": 30,
+        "depth": 65
+      },
+      "position3d": {
+        "x": 200,
+        "y": 60,
+        "z": -346.4
+      }
+    },
+    {
+      "id": "motor_mount_3",
+      "name": "Motor Mount 3",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mount for propulsion motor 3, ensuring secure attachment to the hexarotor arm.",
+      "dimensions": "65x65x30mm",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, high strength",
+      "mountsFor": "propulsion_motor_3",
+      "quantity": 1,
+      "estimatedCost": 3.5,
+      "partId": "b3b873d4-ace0-4063-8f1c-939c8771260b",
+      "productName": "Motor Mount 3",
+      "imageUrl": "https://imgs.search.brave.com/0RNPD3qpESOkcjmv7LNbIcsJ2oFx63e5IMU0tHtLnbA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NDFDb1k0a1g1U0wu/anBn",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%20Mount%203&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 65,
+        "height": 30,
+        "depth": 65
+      },
+      "position3d": {
+        "x": -200,
+        "y": 60,
+        "z": -346.4
+      }
+    },
+    {
+      "id": "motor_mount_4",
+      "name": "Motor Mount 4",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mount for propulsion motor 4, ensuring secure attachment to the hexarotor arm.",
+      "dimensions": "65x65x30mm",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, high strength",
+      "mountsFor": "propulsion_motor_4",
+      "quantity": 1,
+      "estimatedCost": 3.5,
+      "partId": "d40b81ab-ba1c-4e4b-9233-0b17d214ce60",
+      "productName": "Motor Mount 4",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%20Mount%204&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 65,
+        "height": 30,
+        "depth": 65
+      },
+      "position3d": {
+        "x": -400,
+        "y": 60,
+        "z": 0
+      }
+    },
+    {
+      "id": "motor_mount_5",
+      "name": "Motor Mount 5",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mount for propulsion motor 5, ensuring secure attachment to the hexarotor arm.",
+      "dimensions": "65x65x30mm",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, high strength",
+      "mountsFor": "propulsion_motor_5",
+      "quantity": 1,
+      "estimatedCost": 3.5,
+      "partId": "8f644948-f677-44c0-839f-d78619def0e1",
+      "productName": "Motor Mount 5",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%20Mount%205&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 65,
+        "height": 30,
+        "depth": 65
+      },
+      "position3d": {
+        "x": -200,
+        "y": 60,
+        "z": 346.4
+      }
+    },
+    {
+      "id": "motor_mount_6",
+      "name": "Motor Mount 6",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mount for propulsion motor 6, ensuring secure attachment to the hexarotor arm.",
+      "dimensions": "65x65x30mm",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, high strength",
+      "mountsFor": "propulsion_motor_6",
+      "quantity": 1,
+      "estimatedCost": 3.5,
+      "partId": "2be36b60-0bf7-4419-900b-4f4a5d0ed21b",
+      "productName": "Motor Mount 6",
+      "imageUrl": "https://imgs.search.brave.com/MxrNdNTZBu7EhfGi4_6MXTe3CwScSQPFjUJYABSQ6mE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/cGl0c2NvLmNvbS9j/ZG4vc2hvcC9maWxl/cy92MjE0NF9wcm9k/dWN0ZGV0YWlsXzAx/LmpwZz92PTE3MTgy/MjQyMjYmd2lkdGg9/MTQ0NQ",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%20Mount%206&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 65,
+        "height": 30,
+        "depth": 65
+      },
+      "position3d": {
+        "x": 200,
+        "y": 60,
+        "z": 346.4
+      }
+    },
+    {
+      "id": "payload_bay_enclosure",
+      "name": "Payload Bay Enclosure",
+      "productName": "Custom Carbon Fiber Payload Box",
+      "category": "mechanical",
+      "type": "enclosure",
+      "description": "Lightweight and durable carbon fiber enclosure for the 8kg payload, integrated into the drone's underside.",
+      "dimensions": "250x200x150mm",
+      "quantity": 1,
+      "estimatedCost": 80,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+box",
+      "partId": "c6952325-c874-421f-8d7a-f7eac13bac2f",
+      "amazonUrl": "https://www.amazon.com/s?k=Custom%20Carbon%20Fiber%20Payload%20Box&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 250,
+        "height": 150,
+        "depth": 200
+      },
+      "position3d": {
+        "x": 0,
+        "y": -25,
+        "z": 0
+      }
+    },
+    {
+      "id": "payload_winch_system",
+      "name": "Payload Winch System",
+      "productName": "Industrial Grade Micro Winch",
+      "category": "mechanical",
+      "type": "mechanism",
+      "description": "Automated winch system for lowering and raising the payload container without requiring the drone to land.",
+      "dimensions": "100x80x70mm",
+      "mountsFor": "winch_motor",
+      "quantity": 1,
+      "estimatedCost": 150,
+      "purchaseUrl": "https://www.amazon.com/s?k=industrial+micro+winch",
+      "partId": "f534ab08-a525-47a5-964d-ad0cb9f17eb3",
+      "amazonUrl": "https://www.amazon.com/s?k=Industrial%20Grade%20Micro%20Winch&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 100,
+        "height": 70,
+        "depth": 80
+      },
+      "position3d": {
+        "x": 0,
+        "y": 5,
+        "z": 0
+      }
+    },
+    {
+      "id": "payload_container_housing",
+      "name": "Payload Container Housing",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed housing for the payload container, integrating the weighing system and release mechanism.",
+      "dimensions": "260x210x160mm",
+      "material": "PETG",
+      "printSettings": "20% infill, 0.2mm layer",
+      "mountsFor": "payload_weight_sensor",
+      "quantity": 1,
+      "estimatedCost": 15,
+      "partId": "46aad710-0080-4e6b-80a5-f3e4b34a18f9",
+      "amazonUrl": "https://www.amazon.com/s?k=Payload%20Container%20Housing&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 260,
+        "height": 160,
+        "depth": 210
+      },
+      "position3d": {
+        "x": 0,
+        "y": -150,
+        "z": 0
+      }
+    },
+    {
+      "id": "battery_bay_cover_1",
+      "name": "Battery Bay Cover 1",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "Custom 3D-printed quick-release cover for battery bay 1, allowing easy battery swapping.",
+      "dimensions": "180x80x5mm",
+      "material": "PETG",
+      "printSettings": "15% infill, 0.2mm layer",
+      "quantity": 1,
+      "estimatedCost": 4,
+      "partId": "c1f56133-2853-4033-b2e1-fa0b18e90011",
+      "amazonUrl": "https://www.amazon.com/s?k=Battery%20Bay%20Cover%201&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 180,
+        "height": 5,
+        "depth": 80
+      },
+      "position3d": {
+        "x": 100,
+        "y": 118,
+        "z": -150
+      }
+    },
+    {
+      "id": "battery_bay_cover_2",
+      "name": "Battery Bay Cover 2",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "Custom 3D-printed quick-release cover for battery bay 2, allowing easy battery swapping.",
+      "dimensions": "180x80x5mm",
+      "material": "PETG",
+      "printSettings": "15% infill, 0.2mm layer",
+      "quantity": 1,
+      "estimatedCost": 4,
+      "partId": "7b93770d-8117-41d7-804a-a6dde8e81db9",
+      "amazonUrl": "https://www.amazon.com/s?k=Battery%20Bay%20Cover%202&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 180,
+        "height": 5,
+        "depth": 80
+      },
+      "position3d": {
+        "x": -100,
+        "y": 118,
+        "z": -150
+      }
+    },
+    {
+      "id": "landing_gear_leg_front_left",
+      "name": "Landing Gear Leg Front Left",
+      "productName": "Carbon Fiber Landing Gear Retractable",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Retractable carbon fiber landing gear leg for safe take-off and landing, minimizing aerodynamic drag during flight.",
+      "dimensions": "20x20x250mm",
+      "quantity": 1,
+      "estimatedCost": 40,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+retractable+landing+gear",
+      "partId": "ff949565-165a-4294-9cbb-fc8c1f9eccb5",
+      "material": "Carbon Fiber/Aluminum",
+      "imageUrl": "https://imgs.search.brave.com/4JI0NxlcecLxKXHVDICF-AVy2fOPOhmEbMsCCyPiYSw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NjFzSUtGdWJSSEwu/anBn",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Landing%20Gear%20Retractable&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 20,
+        "height": 250,
+        "depth": 20
+      },
+      "position3d": {
+        "x": 150,
+        "y": -75,
+        "z": -150
+      }
+    },
+    {
+      "id": "landing_gear_leg_front_right",
+      "name": "Landing Gear Leg Front Right",
+      "productName": "Carbon Fiber Landing Gear Retractable",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Retractable carbon fiber landing gear leg for safe take-off and landing, minimizing aerodynamic drag during flight.",
+      "dimensions": "20x20x250mm",
+      "quantity": 1,
+      "estimatedCost": 40,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+retractable+landing+gear",
+      "partId": "ff949565-165a-4294-9cbb-fc8c1f9eccb5",
+      "material": "Carbon Fiber/Aluminum",
+      "imageUrl": "https://imgs.search.brave.com/4JI0NxlcecLxKXHVDICF-AVy2fOPOhmEbMsCCyPiYSw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NjFzSUtGdWJSSEwu/anBn",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Landing%20Gear%20Retractable&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 20,
+        "height": 250,
+        "depth": 20
+      },
+      "position3d": {
+        "x": 150,
+        "y": -75,
+        "z": 150
+      }
+    },
+    {
+      "id": "landing_gear_leg_rear_left",
+      "name": "Landing Gear Leg Rear Left",
+      "productName": "Carbon Fiber Landing Gear Ret retractable",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Retractable carbon fiber landing gear leg for safe take-off and landing, minimizing aerodynamic drag during flight.",
+      "dimensions": "20x20x250mm",
+      "quantity": 1,
+      "estimatedCost": 40,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+retractable+landing+gear",
+      "partId": "9df02702-e376-46b8-a3c6-378fbba8492d",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Landing%20Gear%20Ret%20retractable&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 20,
+        "height": 250,
+        "depth": 20
+      },
+      "position3d": {
+        "x": -150,
+        "y": -75,
+        "z": -150
+      }
+    },
+    {
+      "id": "landing_gear_leg_rear_right",
+      "name": "Landing Gear Leg Rear Right",
+      "productName": "Carbon Fiber Landing Gear Ret retractable",
+      "category": "mechanical",
+      "type": "structural",
+      "description": "Retractable carbon fiber landing gear leg for safe take-off and landing, minimizing aerodynamic drag during flight.",
+      "dimensions": "20x20x250mm",
+      "quantity": 1,
+      "estimatedCost": 40,
+      "purchaseUrl": "https://www.amazon.com/s?k=carbon+fiber+retractable+landing+gear",
+      "partId": "9df02702-e376-46b8-a3c6-378fbba8492d",
+      "amazonUrl": "https://www.amazon.com/s?k=Carbon%20Fiber%20Landing%20Gear%20Ret%20retractable&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 20,
+        "height": 250,
+        "depth": 20
+      },
+      "position3d": {
+        "x": -150,
+        "y": -75,
+        "z": 150
+      }
+    },
+    {
+      "id": "rtk_gps_mount_main",
+      "name": "Main RTK GPS Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mast and mount for the main RTK GPS module, positioned for optimal signal reception.",
+      "dimensions": "50x50x120mm",
+      "material": "PETG",
+      "printSettings": "20% infill, 0.2mm layer",
+      "mountsFor": "rtk_gps_main",
+      "quantity": 1,
+      "estimatedCost": 2.5,
+      "partId": "a29c88e6-9eeb-452d-808c-2c2809c6c90d",
+      "productName": "Main RTK GPS Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Main%20RTK%20GPS%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 120,
+        "depth": 50
+      },
+      "position3d": {
+        "x": 100,
+        "y": 210,
+        "z": 0
+      }
+    },
+    {
+      "id": "rtk_gps_mount_aux",
+      "name": "Auxiliary RTK GPS Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mast and mount for the auxiliary RTK GPS module, positioned for optimal signal reception and redundancy.",
+      "dimensions": "50x50x120mm",
+      "material": "PETG",
+      "printSettings": "20% infill, 0.2mm layer",
+      "mountsFor": "rtk_gps_aux",
+      "quantity": 1,
+      "estimatedCost": 2.5,
+      "partId": "76ca6b28-4d1a-4063-92b9-54ebfc1a1b16",
+      "amazonUrl": "https://www.amazon.com/s?k=Auxiliary%20RTK%20GPS%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 120,
+        "depth": 50
+      },
+      "position3d": {
+        "x": -100,
+        "y": 210,
+        "z": 0
+      }
+    },
+    {
+      "id": "lidar_mount_front",
+      "name": "Front Obstacle LiDAR Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mount for the front LiDAR sensor, angled for optimal obstacle detection.",
+      "dimensions": "40x30x25mm",
+      "material": "PETG",
+      "printSettings": "25% infill, 0.2mm layer",
+      "mountsFor": "lidar_obstacle_front",
+      "quantity": 1,
+      "estimatedCost": 1.8,
+      "partId": "6cf319aa-5934-415f-9c8b-6808c4893d51",
+      "productName": "Front Obstacle LiDAR Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Front%20Obstacle%20LiDAR%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 40,
+        "height": 25,
+        "depth": 30
+      },
+      "position3d": {
+        "x": 300,
+        "y": 80,
+        "z": 0
+      }
+    },
+    {
+      "id": "lidar_mount_back",
+      "name": "Back Obstacle LiDAR Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mount for the back LiDAR sensor, angled for optimal obstacle detection.",
+      "dimensions": "40x30x25mm",
+      "material": "PETG",
+      "printSettings": "25% infill, 0.2mm layer",
+      "mountsFor": "lidar_obstacle_back",
+      "quantity": 1,
+      "estimatedCost": 1.8,
+      "partId": "451fc5cd-cf85-4314-bf38-0c6f787e74c2",
+      "amazonUrl": "https://www.amazon.com/s?k=Back%20Obstacle%20LiDAR%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 40,
+        "height": 25,
+        "depth": 30
+      },
+      "position3d": {
+        "x": -300,
+        "y": 80,
+        "z": 0
+      }
+    },
+    {
+      "id": "lidar_mount_left",
+      "name": "Left Obstacle LiDAR Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mount for the left LiDAR sensor, angled for optimal obstacle detection.",
+      "dimensions": "40x30x25mm",
+      "material": "PETG",
+      "printSettings": "25% infill, 0.2mm layer",
+      "mountsFor": "lidar_obstacle_left",
+      "quantity": 1,
+      "estimatedCost": 1.8,
+      "partId": "fa3a52b3-a54a-40f7-99c3-cbef4979ef2b",
+      "productName": "Left Obstacle LiDAR Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Left%20Obstacle%20LiDAR%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 40,
+        "height": 25,
+        "depth": 30
+      },
+      "position3d": {
+        "x": 0,
+        "y": 80,
+        "z": -300
+      }
+    },
+    {
+      "id": "lidar_mount_right",
+      "name": "Right Obstacle LiDAR Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "3D-printed mount for the right LiDAR sensor, angled for optimal obstacle detection.",
+      "dimensions": "40x30x25mm",
+      "material": "PETG",
+      "printSettings": "25% infill, 0.2mm layer",
+      "mountsFor": "lidar_obstacle_right",
+      "quantity": 1,
+      "estimatedCost": 1.8,
+      "partId": "d7bbedc6-d1ee-4405-bd58-7c48f0b3712d",
+      "productName": "Right Obstacle LiDAR Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Right%20Obstacle%20LiDAR%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 40,
+        "height": 25,
+        "depth": 30
+      },
+      "position3d": {
+        "x": 0,
+        "y": 80,
+        "z": 300
+      }
+    },
+    {
+      "id": "downward_camera_gimbal",
+      "name": "Downward Camera Gimbal",
+      "productName": "2-Axis Brushless Gimbal for Drone",
+      "category": "mechanical",
+      "type": "mechanism",
+      "description": "2-axis brushless gimbal for stabilizing the downward vision camera, ensuring clear views for landing and payload operations.",
+      "dimensions": "80x70x60mm",
+      "mountsFor": "downward_vision_camera",
+      "quantity": 1,
+      "estimatedCost": 75,
+      "purchaseUrl": "https://www.amazon.com/s?k=2+axis+drone+gimbal",
+      "partId": "42f619a7-4a92-42a5-be60-f0d04724cbda",
+      "material": "Aluminum, Plastic",
+      "imageUrl": "https://imgs.search.brave.com/bFU3RXz5ABwFtF08VjYckFxLHI3V5VYuJ8G-PFB6AEU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NDFMbGVMNjQrS0wu/anBn",
+      "amazonUrl": "https://www.amazon.com/s?k=2-Axis%20Brushless%20Gimbal%20for%20Drone&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 80,
+        "height": 60,
+        "depth": 70
+      },
+      "position3d": {
+        "x": 0,
+        "y": 15,
+        "z": 0
+      }
+    },
+    {
+      "id": "forward_camera_mount",
+      "name": "Forward Camera Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "Fixed 3D-printed mount for the forward vision camera, providing a clear view for navigation.",
+      "dimensions": "45x40x30mm",
+      "material": "PETG",
+      "printSettings": "20% infill, 0.2mm layer",
+      "mountsFor": "forward_vision_camera",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "partId": "7d70f9d5-781b-4131-b111-6f6e6c938607",
+      "productName": "Forward Camera Mount",
+      "imageUrl": "https://imgs.search.brave.com/57MtUFyVkVILizvzUz3gSy09YlxQ1GzSGb6LYp5-U54/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/a2l3aS1lbGVjdHJv/bmljcy5jb20vaW1h/Z2UvY2FjaGUvY2F0/YWxvZy9wcm9kdWN0/L2FlbThoYnBkL0tX/LTI5MDhfMS00MDB4/MzAwdy5qcGc",
+      "research": {
+        "specs": [
+          {
+            "label": "print_settings",
+            "value": "0.2mm layer height, 20% infill"
+          }
+        ]
+      },
+      "amazonUrl": "https://www.amazon.com/s?k=Forward%20Camera%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 45,
+        "height": 30,
+        "depth": 40
+      },
+      "position3d": {
+        "x": 150,
+        "y": 150,
+        "z": 0
+      }
+    },
+    {
+      "id": "fc_ai_enclosure",
+      "name": "Flight Controller/AI Enclosure",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "Custom 3D-printed enclosure to protect the flight controller and AI compute module from environmental elements.",
+      "dimensions": "150x100x60mm",
+      "material": "ABS",
+      "printSettings": "30% infill, 0.2mm layer",
+      "mountsFor": "flight_controller_mcu",
+      "quantity": 1,
+      "estimatedCost": 8,
+      "partId": "c5176332-3824-4e73-aeb5-366f82dc2ecd",
+      "amazonUrl": "https://www.amazon.com/s?k=Flight%20Controller%2FAI%20Enclosure&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 150,
+        "height": 60,
+        "depth": 100
+      },
+      "position3d": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "id": "ai_compute_module_mount",
+      "name": "AI Compute Module Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "Internal 3D-printed mount for securing the AI compute module within the main electronics enclosure.",
+      "dimensions": "100x80x15mm",
+      "material": "PLA",
+      "printSettings": "20% infill, 0.2mm layer",
+      "mountsFor": "ai_compute_module",
+      "quantity": 1,
+      "estimatedCost": 2.5,
+      "partId": "ff5e8785-d020-48fb-9bf9-ab82f7ef2719",
+      "productName": "AI Compute Module Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=AI%20Compute%20Module%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 100,
+        "height": 15,
+        "depth": 80
+      },
+      "position3d": {
+        "x": 0,
+        "y": 160,
+        "z": 0
+      }
+    },
+    {
+      "id": "cable_management_clips",
+      "name": "Cable Management Clips",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "description": "Assorted 3D-printed clips and guides for routing and securing internal wiring, preventing interference and damage.",
+      "dimensions": "20x10x5mm",
+      "material": "PLA",
+      "printSettings": "20% infill, 0.2mm layer",
+      "quantity": 20,
+      "estimatedCost": 0.2,
+      "partId": "a5c6b3b4-a455-43ad-9df4-c679ba94b5db",
+      "productName": "Cable Management Clips",
+      "imageUrl": "https://imgs.search.brave.com/cE8RGwuf-6IVXvUSpv1-gcJFg4-1Y5FGu-2X2VONr6U/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/bHR0c3RvcmUuY29t/L2Nkbi9zaG9wL2Zp/bGVzL01DTVByb2R1/Y3RJbWFnZXNfQWRq/dXN0ZWQtQ2FibGVU/aWVIb2xkZXJzLnBu/Zz92PTE3NDQyMzEw/NzUmd2lkdGg9NTMz",
+      "amazonUrl": "https://www.amazon.com/s?k=Cable%20Management%20Clips&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl"
+    },
+    {
+      "id": "m3_standoffs_nylon",
+      "name": "M3 Nylon Standoffs",
+      "productName": "M3x10mm Nylon Hex Standoffs",
+      "category": "mechanical",
+      "type": "misc",
+      "description": "Nylon standoffs for electrically isolating and spacing PCBs and components within the frame.",
+      "dimensions": "M3x10mm",
+      "quantity": 50,
+      "estimatedCost": 0.15,
+      "purchaseUrl": "https://www.amazon.com/s?k=m3+nylon+standoffs",
+      "partId": "b996a0e2-19ef-4260-8a3c-c022eca2968e",
+      "imageUrl": "https://imgs.search.brave.com/ocSOWg_cOYA2aewt1JSr2v0gE77LI5mrnv724wZHd0o/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pNS53/YWxtYXJ0aW1hZ2Vz/LmNvbS9zZW8vVXhj/ZWxsLU0zeDEwbW0t/Nm1tLU1hbGUtdG8t/RmVtYWxlLUhleC1O/eWxvbi1TcGFjZXIt/U3RhbmRvZmYtMTUw/cGNzXzlmNTY2MTY5/LWEyNzEtNDhiOS1h/MmQ0LTY3NGM5NWJi/YzkwMy4xM2JjMTI2/ZmU0NTU2YmY0ZDdh/NmRjMTNhYTkyNTBm/Yi5qcGVnP29kbkhl/aWdodD02MTImb2Ru/V2lkdGg9NjEyJm9k/bkJnPUZGRkZGRg",
+      "amazonUrl": "https://www.amazon.com/s?k=M3x10mm%20Nylon%20Hex%20Standoffs&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl"
+    },
+    {
+      "id": "m3_screws_hex_socket",
+      "name": "M3 Hex Socket Screws",
+      "productName": "M3x12mm Hex Socket Screws Stainless Steel",
+      "category": "mechanical",
+      "type": "misc",
+      "description": "Stainless steel hex socket screws for general assembly of frame components and mounts.",
+      "dimensions": "M3x12mm",
+      "quantity": 100,
+      "estimatedCost": 0.08,
+      "purchaseUrl": "https://www.amazon.com/s?k=m3+hex+socket+screws",
+      "partId": "18c21915-36b8-4756-aef7-6b49b8928458",
+      "amazonUrl": "https://www.amazon.com/s?k=M3x12mm%20Hex%20Socket%20Screws%20Stainless%20Steel&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl"
+    },
+    {
+      "id": "m3_nuts_nyloc",
+      "name": "M3 Nyloc Nuts",
+      "productName": "M3 Nyloc Hex Nuts Stainless Steel",
+      "category": "mechanical",
+      "type": "misc",
+      "description": "Nyloc nuts to provide secure, vibration-resistant fastening for critical structural connections.",
+      "dimensions": "M3",
+      "quantity": 50,
+      "estimatedCost": 0.05,
+      "purchaseUrl": "https://www.amazon.com/s?k=m3+nyloc+nuts",
+      "partId": "f10ac3ca-fac2-4203-827d-abe97148fdf7",
+      "imageUrl": "https://imgs.search.brave.com/qL8HfCHHEYtduaxO9KvPlAxN8f6pxlgTEKcSe890UxU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL0hIOEFB/T1N3blRkWjk2WWkv/cy1sMjI1LmpwZw",
+      "amazonUrl": "https://www.amazon.com/s?k=M3%20Nyloc%20Hex%20Nuts%20Stainless%20Steel&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl"
+    },
+    {
+      "id": "vibration_damping_balls",
+      "name": "Vibration Damping Balls",
+      "productName": "Rubber Vibration Dampers for Flight Controller",
+      "category": "mechanical",
+      "type": "misc",
+      "description": "Rubber damping balls to reduce vibrations transmitted to sensitive electronic components like the flight controller.",
+      "dimensions": "10x10x10mm",
+      "quantity": 8,
+      "estimatedCost": 0.5,
+      "purchaseUrl": "https://www.amazon.com/s?k=flight+controller+vibration+dampers",
+      "partId": "e02df01d-8f8f-4273-97a1-2b0fbf281bad",
+      "amazonUrl": "https://www.amazon.com/s?k=Rubber%20Vibration%20Dampers%20for%20Flight%20Controller&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl"
+    },
+    {
+      "id": "barometer_sensor_mount",
+      "name": "High Precision Barometer Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "barometer_sensor",
+      "description": "Form-fitting cradle for the High Precision Barometer that holds the sensing surface in its rated orientation. Snap-fit retention so it can be removed for calibration without tools.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "30x30x15mm",
+      "partId": "38b773b6-ffc8-4cf0-ac08-ecb5e5bca51e",
+      "productName": "High Precision Barometer Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=High%20Precision%20Barometer%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 30,
+        "height": 15,
+        "depth": 30
+      },
+      "position3d": {
+        "x": 40,
+        "y": 200,
+        "z": 40
+      }
+    },
+    {
+      "id": "motor_esc_1_mount",
+      "name": "Motor 1 ESC Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "motor_esc_1",
+      "description": "Per-position bracket for the Motor 1 ESC with M3 mounting holes matched to its bolt pattern. Rated for the actuator's continuous torque/load class.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "50x50x20mm",
+      "partId": "a4efebeb-a090-4500-af78-db92c61c68b8",
+      "productName": "Motor 1 ESC Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%201%20ESC%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 20,
+        "depth": 50
+      },
+      "position3d": {
+        "x": 300,
+        "y": 80,
+        "z": 0
+      }
+    },
+    {
+      "id": "motor_esc_2_mount",
+      "name": "Motor 2 ESC Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "motor_esc_2",
+      "description": "Per-position bracket for the Motor 2 ESC with M3 mounting holes matched to its bolt pattern. Rated for the actuator's continuous torque/load class.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "50x50x20mm",
+      "partId": "c947c244-23d1-4118-aa7d-11a7ae0cbcc6",
+      "productName": "Motor 2 ESC Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%202%20ESC%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 20,
+        "depth": 50
+      },
+      "position3d": {
+        "x": 150,
+        "y": 80,
+        "z": -259.8
+      }
+    },
+    {
+      "id": "motor_esc_3_mount",
+      "name": "Motor 3 ESC Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "motor_esc_3",
+      "description": "Per-position bracket for the Motor 3 ESC with M3 mounting holes matched to its bolt pattern. Rated for the actuator's continuous torque/load class.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "50x50x20mm",
+      "partId": "94583458-e510-46f0-9121-ee4d47ea9fe0",
+      "productName": "Motor 3 ESC Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%203%20ESC%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 20,
+        "depth": 50
+      },
+      "position3d": {
+        "x": -150,
+        "y": 80,
+        "z": -259.8
+      }
+    },
+    {
+      "id": "motor_esc_4_mount",
+      "name": "Motor 4 ESC Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "motor_esc_4",
+      "description": "Per-position bracket for the Motor 4 ESC with M3 mounting holes matched to its bolt pattern. Rated for the actuator's continuous torque/load class.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "50x50x20mm",
+      "partId": "ff2e89e3-4508-4cb3-b478-33e3104c7de7",
+      "productName": "Motor 4 ESC Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%204%20ESC%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 20,
+        "depth": 50
+      },
+      "position3d": {
+        "x": -300,
+        "y": 80,
+        "z": 0
+      }
+    },
+    {
+      "id": "motor_esc_5_mount",
+      "name": "Motor 5 ESC Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "motor_esc_5",
+      "description": "Per-position bracket for the Motor 5 ESC with M3 mounting holes matched to its bolt pattern. Rated for the actuator's continuous torque/load class.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "50x50x20mm",
+      "partId": "6e8489a2-ce6f-41ba-8358-0e01d26aa7ca",
+      "productName": "Motor 5 ESC Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%205%20ESC%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 20,
+        "depth": 50
+      },
+      "position3d": {
+        "x": -150,
+        "y": 80,
+        "z": 259.8
+      }
+    },
+    {
+      "id": "motor_esc_6_mount",
+      "name": "Motor 6 ESC Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "motor_esc_6",
+      "description": "Per-position bracket for the Motor 6 ESC with M3 mounting holes matched to its bolt pattern. Rated for the actuator's continuous torque/load class.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "50x50x20mm",
+      "partId": "68967d17-d1bd-4bf5-ba63-2763b623738b",
+      "productName": "Motor 6 ESC Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Motor%206%20ESC%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 20,
+        "depth": 50
+      },
+      "position3d": {
+        "x": 150,
+        "y": 80,
+        "z": 259.8
+      }
+    },
+    {
+      "id": "winch_motor_driver_mount",
+      "name": "Winch Motor Driver Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "winch_motor_driver",
+      "description": "Per-position bracket for the Winch Motor Driver with M3 mounting holes matched to its bolt pattern. Rated for the actuator's continuous torque/load class.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "50x50x20mm",
+      "partId": "2343fb52-e7f5-4d3f-b629-78a2ff1088e3",
+      "productName": "Winch Motor Driver Mount",
+      "imageUrl": "https://imgs.search.brave.com/n2MCk3JgnXnJs9eekGO089OAEjNc--5BmFa7Qened90/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NjFEK3I4U3Jaa0wu/anBn",
+      "amazonUrl": "https://www.amazon.com/s?k=Winch%20Motor%20Driver%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 20,
+        "depth": 50
+      },
+      "position3d": {
+        "x": 0,
+        "y": 60,
+        "z": 0
+      }
+    },
+    {
+      "id": "cellular_modem_mount",
+      "name": "4G/5G Cellular Modem Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "cellular_modem",
+      "description": "Adapter plate for the 4G/5G Cellular Modem that bolts to the main chassis with M3 hardware. Includes wire-routing channels.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "50x40x12mm",
+      "partId": "73a70edb-fdbe-431b-8b45-6187c48a4db4",
+      "productName": "4G/5G Cellular Modem Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=4G%2F5G%20Cellular%20Modem%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 12,
+        "depth": 40
+      },
+      "position3d": {
+        "x": -50,
+        "y": 130,
+        "z": 0
+      }
+    },
+    {
+      "id": "digital_video_tx_mount",
+      "name": "Digital Video Transmitter Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "digital_video_tx",
+      "description": "Adapter plate for the Digital Video Transmitter that bolts to the main chassis with M3 hardware. Includes wire-routing channels.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "50x40x12mm",
+      "partId": "73a6e638-a98c-446f-846f-b8c8d4c4f38a",
+      "productName": "Digital Video Transmitter Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Digital%20Video%20Transmitter%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 12,
+        "depth": 40
+      },
+      "position3d": {
+        "x": 50,
+        "y": 130,
+        "z": 0
+      }
+    },
+    {
+      "id": "wifi_bluetooth_module_mount",
+      "name": "WiFi/Bluetooth Module Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "wifi_bluetooth_module",
+      "description": "Adapter plate for the WiFi/Bluetooth Module that bolts to the main chassis with M3 hardware. Includes wire-routing channels.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "50x40x12mm",
+      "partId": "3f34cc6d-513e-49ac-b7c2-49c0a6f1400f",
+      "productName": "WiFi/Bluetooth Module Mount",
+      "imageUrl": "https://imgs.search.brave.com/Q3shi3vHaZxBBjLATu3LRqVRenLKtebJ9EFZ2EJc8Dg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9yb2J1/LmluL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDE5LzAyL0VMTTMy/Ny1PQkQyLVYyLjEt/Qmx1ZXRvb3RoLUlu/dGVyZmFjZS1BdXRv/LUNhci1EaWFnbm9z/dGljLVNjYW5uZXIt/MTAuanBn",
+      "amazonUrl": "https://www.amazon.com/s?k=WiFi%2FBluetooth%20Module%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 50,
+        "height": 12,
+        "depth": 40
+      },
+      "position3d": {
+        "x": 0,
+        "y": 130,
+        "z": 50
+      }
+    },
+    {
+      "id": "power_module_voltage_sensor_mount",
+      "name": "Voltage/Current Sensor Mount",
+      "category": "mechanical",
+      "type": "3d_printed",
+      "mountsFor": "power_module_voltage_sensor",
+      "description": "Form-fitting cradle for the Voltage/Current Sensor that holds the sensing surface in its rated orientation. Snap-fit retention so it can be removed for calibration without tools.",
+      "material": "PETG",
+      "printSettings": "30% infill, 0.2mm layer, 4 perimeters",
+      "quantity": 1,
+      "estimatedCost": 2,
+      "purchaseUrl": "",
+      "dimensions": "30x30x15mm",
+      "partId": "7367f41b-f3dd-45d2-828b-16c5ab5df1e1",
+      "productName": "Voltage/Current Sensor Mount",
+      "amazonUrl": "https://www.amazon.com/s?k=Voltage%2FCurrent%20Sensor%20Mount&linkCode=ll2&tag=blueprintam-20&linkId=4ccf4163514d07f9bf547ac1c23fd3e0&language=en_US&ref_=as_li_ss_tl",
+      "boundingBox": {
+        "width": 30,
+        "height": 15,
+        "depth": 30
+      },
+      "position3d": {
+        "x": 40,
+        "y": 145,
+        "z": -40
+      }
+    }
+  ],
+  "electricalConnections": [
+    {
+      "source": "bms_module",
+      "target": "power_distribution_board",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "100A",
+      "label": "Main Battery Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "motor_esc_1",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "ESC 1 Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "motor_esc_2",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "ESC 2 Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "motor_esc_3",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "ESC 3 Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "motor_esc_4",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "ESC 4 Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "motor_esc_5",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "ESC 5 Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "motor_esc_6",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "ESC 6 Power"
+    },
+    {
+      "source": "motor_esc_1",
+      "target": "propulsion_motor_1",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "Motor 1 Power"
+    },
+    {
+      "source": "motor_esc_2",
+      "target": "propulsion_motor_2",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "Motor 2 Power"
+    },
+    {
+      "source": "motor_esc_3",
+      "target": "propulsion_motor_3",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "Motor 3 Power"
+    },
+    {
+      "source": "motor_esc_4",
+      "target": "propulsion_motor_4",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "Motor 4 Power"
+    },
+    {
+      "source": "motor_esc_5",
+      "target": "propulsion_motor_5",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "Motor 5 Power"
+    },
+    {
+      "source": "motor_esc_6",
+      "target": "propulsion_motor_6",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "20A",
+      "label": "Motor 6 Power"
+    },
+    {
+      "source": "flight_controller_mcu",
+      "target": "motor_esc_1",
+      "type": "data",
+      "protocol": "pwm",
+      "sourcePin": "PWM_OUT",
+      "targetPin": "PWM_IN",
+      "label": "ESC 1 Signal"
+    },
+    {
+      "source": "flight_controller_mcu",
+      "target": "motor_esc_2",
+      "type": "data",
+      "protocol": "pwm",
+      "sourcePin": "PWM_OUT",
+      "targetPin": "PWM_IN",
+      "label": "ESC 2 Signal"
+    },
+    {
+      "source": "flight_controller_mcu",
+      "target": "motor_esc_3",
+      "type": "data",
+      "protocol": "pwm",
+      "sourcePin": "PWM_OUT",
+      "targetPin": "PWM_IN",
+      "label": "ESC 3 Signal"
+    },
+    {
+      "source": "flight_controller_mcu",
+      "target": "motor_esc_4",
+      "type": "data",
+      "protocol": "pwm",
+      "sourcePin": "PWM_OUT",
+      "targetPin": "PWM_IN",
+      "label": "ESC 4 Signal"
+    },
+    {
+      "source": "flight_controller_mcu",
+      "target": "motor_esc_5",
+      "type": "data",
+      "protocol": "pwm",
+      "sourcePin": "PWM_OUT",
+      "targetPin": "PWM_IN",
+      "label": "ESC 5 Signal"
+    },
+    {
+      "source": "flight_controller_mcu",
+      "target": "motor_esc_6",
+      "type": "data",
+      "protocol": "pwm",
+      "sourcePin": "PWM_OUT",
+      "targetPin": "PWM_IN",
+      "label": "ESC 6 Signal"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "flight_controller_mcu",
+      "type": "power",
+      "voltage": "5V",
+      "current": "2A",
+      "label": "FC Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "ai_compute_module",
+      "type": "power",
+      "voltage": "10V",
+      "current": "5A",
+      "label": "AI Compute Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "rtk_gps_main",
+      "type": "power",
+      "voltage": "5V",
+      "current": "200mA",
+      "label": "RTK GPS Main Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "rtk_gps_aux",
+      "type": "power",
+      "voltage": "5V",
+      "current": "200mA",
+      "label": "RTK GPS Aux Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "barometer_sensor",
+      "type": "power",
+      "voltage": "3.3V",
+      "current": "50mA",
+      "label": "Barometer Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "lidar_obstacle_front",
+      "type": "power",
+      "voltage": "5V",
+      "current": "100mA",
+      "label": "LiDAR Front Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "lidar_obstacle_back",
+      "type": "power",
+      "voltage": "5V",
+      "current": "100mA",
+      "label": "LiDAR Back Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "lidar_obstacle_left",
+      "type": "power",
+      "voltage": "5V",
+      "current": "100mA",
+      "label": "LiDAR Left Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "lidar_obstacle_right",
+      "type": "power",
+      "voltage": "5V",
+      "current": "100mA",
+      "label": "LiDAR Right Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "downward_vision_camera",
+      "type": "power",
+      "voltage": "5V",
+      "current": "500mA",
+      "label": "Downward Cam Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "forward_vision_camera",
+      "type": "power",
+      "voltage": "5V",
+      "current": "500mA",
+      "label": "Forward Cam Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "payload_weight_sensor",
+      "type": "power",
+      "voltage": "5V",
+      "current": "50mA",
+      "label": "Weight Sensor Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "winch_motor_driver",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "10A",
+      "label": "Winch Driver Power"
+    },
+    {
+      "source": "winch_motor_driver",
+      "target": "winch_motor",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "10A",
+      "label": "Winch Motor Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "cellular_modem",
+      "type": "power",
+      "voltage": "5V",
+      "current": "1.5A",
+      "label": "Cellular Modem Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "digital_video_tx",
+      "type": "power",
+      "voltage": "10V",
+      "current": "1A",
+      "label": "Video TX Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "wifi_bluetooth_module",
+      "type": "power",
+      "voltage": "3.3V",
+      "current": "300mA",
+      "label": "WiFi/BT Power"
+    },
+    {
+      "source": "power_distribution_board",
+      "target": "power_module_voltage_sensor",
+      "type": "power",
+      "voltage": "22.2V",
+      "current": "10mA",
+      "label": "Voltage Sensor Input"
+    },
+    {
+      "source": "power_module_voltage_sensor",
+      "target": "flight_controller_mcu",
+      "type": "data",
+      "protocol": "adc",
+      "sourcePin": "IO_OUT",
+      "targetPin": "ADC",
+      "label": "Voltage/Current Sense"
+    },
+    {
+      "source": "ai_compute_module",
+      "target": "flight_controller_mcu",
+      "type": "data",
+      "protocol": "uart",
+      "sourcePin": "UART",
+      "targetPin": "UART",
+      "label": "AI to FC Communication"
+    },
+    {
+      "source": "rtk_gps_main",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "uart",
+      "sourcePin": "UART",
+      "targetPin": "UART",
+      "label": "RTK GPS Main Data"
+    },
+    {
+      "source": "rtk_gps_aux",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "uart",
+      "sourcePin": "UART",
+      "targetPin": "UART",
+      "label": "RTK GPS Aux Data"
+    },
+    {
+      "source": "barometer_sensor",
+      "target": "flight_controller_mcu",
+      "type": "data",
+      "protocol": "i2c",
+      "sourcePin": "I2C",
+      "targetPin": "I2C",
+      "label": "Barometer Data"
+    },
+    {
+      "source": "lidar_obstacle_front",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "i2c",
+      "sourcePin": "I2C",
+      "targetPin": "I2C",
+      "label": "Front LiDAR Data"
+    },
+    {
+      "source": "lidar_obstacle_back",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "i2c",
+      "sourcePin": "I2C",
+      "targetPin": "I2C",
+      "label": "Back LiDAR Data"
+    },
+    {
+      "source": "lidar_obstacle_left",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "i2c",
+      "sourcePin": "I2C",
+      "targetPin": "I2C",
+      "label": "Left LiDAR Data"
+    },
+    {
+      "source": "lidar_obstacle_right",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "i2c",
+      "sourcePin": "I2C",
+      "targetPin": "I2C",
+      "label": "Right LiDAR Data"
+    },
+    {
+      "source": "downward_vision_camera",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "csi",
+      "sourcePin": "CSI",
+      "targetPin": "CSI",
+      "label": "Downward Cam Video"
+    },
+    {
+      "source": "forward_vision_camera",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "usb",
+      "sourcePin": "USB3.0",
+      "targetPin": "USB",
+      "label": "Forward Cam Video"
+    },
+    {
+      "source": "payload_weight_sensor",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "gpio",
+      "sourcePin": "DOUT",
+      "targetPin": "GPIO",
+      "label": "Weight Sensor Data"
+    },
+    {
+      "source": "payload_weight_sensor",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "gpio",
+      "sourcePin": "SCK",
+      "targetPin": "GPIO",
+      "label": "Weight Sensor Clock"
+    },
+    {
+      "source": "bms_module",
+      "target": "flight_controller_mcu",
+      "type": "data",
+      "protocol": "can",
+      "sourcePin": "CAN",
+      "targetPin": "CAN",
+      "label": "BMS to FC Telemetry"
+    },
+    {
+      "source": "flight_controller_mcu",
+      "target": "winch_motor_driver",
+      "type": "data",
+      "protocol": "pwm",
+      "sourcePin": "PWM_OUT",
+      "targetPin": "PWM_IN1",
+      "label": "Winch Motor Speed"
+    },
+    {
+      "source": "flight_controller_mcu",
+      "target": "winch_motor_driver",
+      "type": "data",
+      "protocol": "gpio",
+      "sourcePin": "GPIO",
+      "targetPin": "PWM_IN2",
+      "label": "Winch Motor Direction"
+    },
+    {
+      "source": "winch_motor",
+      "target": "flight_controller_mcu",
+      "type": "data",
+      "protocol": "gpio",
+      "sourcePin": "ENC_A",
+      "targetPin": "GPIO",
+      "label": "Winch Encoder A"
+    },
+    {
+      "source": "winch_motor",
+      "target": "flight_controller_mcu",
+      "type": "data",
+      "protocol": "gpio",
+      "sourcePin": "ENC_B",
+      "targetPin": "GPIO",
+      "label": "Winch Encoder B"
+    },
+    {
+      "source": "cellular_modem",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "usb",
+      "sourcePin": "USB3.0",
+      "targetPin": "USB",
+      "label": "Cellular Modem Data"
+    },
+    {
+      "source": "digital_video_tx",
+      "target": "downward_vision_camera",
+      "type": "data",
+      "protocol": "mipi_csi",
+      "sourcePin": "MIPI_CSI",
+      "targetPin": "CSI",
+      "label": "Downward Cam to VTX"
+    },
+    {
+      "source": "digital_video_tx",
+      "target": "flight_controller_mcu",
+      "type": "data",
+      "protocol": "uart",
+      "sourcePin": "UART",
+      "targetPin": "UART",
+      "label": "VTX Control"
+    },
+    {
+      "source": "wifi_bluetooth_module",
+      "target": "ai_compute_module",
+      "type": "data",
+      "protocol": "uart",
+      "sourcePin": "UART",
+      "targetPin": "UART",
+      "label": "WiFi/BT to AI Compute"
+    }
+  ],
+  "mechanicalConnections": [
+    {
+      "source": "main_frame_top_plate",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 standoffs and screws"
+    },
+    {
+      "source": "arm_hexarotor_1",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "arm_hexarotor_2",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "arm_hexarotor_3",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "arm_hexarotor_4",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "arm_hexarotor_5",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "arm_hexarotor_6",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "motor_mount_1",
+      "target": "arm_hexarotor_1",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "motor_mount_2",
+      "target": "arm_hexarotor_2",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "motor_mount_3",
+      "target": "arm_hexarotor_3",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "motor_mount_4",
+      "target": "arm_hexarotor_4",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "motor_mount_5",
+      "target": "arm_hexarotor_5",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "motor_mount_6",
+      "target": "arm_hexarotor_6",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "payload_bay_enclosure",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "payload_winch_system",
+      "target": "payload_bay_enclosure",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "payload_container_housing",
+      "target": "payload_winch_system",
+      "label": "Winch cable attachment"
+    },
+    {
+      "source": "battery_bay_cover_1",
+      "target": "main_frame_bottom_plate",
+      "label": "Snap fit/latches"
+    },
+    {
+      "source": "battery_bay_cover_2",
+      "target": "main_frame_bottom_plate",
+      "label": "Snap fit/latches"
+    },
+    {
+      "source": "landing_gear_leg_front_left",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "landing_gear_leg_front_right",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "landing_gear_leg_rear_left",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "landing_gear_leg_rear_right",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "rtk_gps_mount_main",
+      "target": "main_frame_top_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "rtk_gps_mount_aux",
+      "target": "main_frame_top_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "lidar_mount_front",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "lidar_mount_back",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "lidar_mount_left",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "lidar_mount_right",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "downward_camera_gimbal",
+      "target": "main_frame_bottom_plate",
+      "label": "M3 bolts"
+    },
+    {
+      "source": "fc_ai_enclosure",
+      "target": "main_frame_bottom_plate",
+      "label": "Vibration damping balls"
+    },
+    {
+      "source": "ai_compute_module_mount",
+      "target": "fc_ai_enclosure",
+      "label": "M3 standoffs and screws"
+    },
+    {
+      "source": "barometer_sensor_mount",
+      "target": "fc_ai_enclosure",
+      "label": "M2 bolts"
+    },
+    {
+      "source": "motor_esc_1_mount",
+      "target": "arm_hexarotor_1",
+      "label": "Cable ties/M2 bolts"
+    },
+    {
+      "source": "motor_esc_2_mount",
+      "target": "arm_hexarotor_2",
+      "label": "Cable ties/M2 bolts"
+    },
+    {
+      "source": "motor_esc_3_mount",
+      "target": "arm_hexarotor_3",
+      "label": "Cable ties/M2 bolts"
+    },
+    {
+      "source": "motor_esc_4_mount",
+      "target": "arm_hexarotor_4",
+      "label": "Cable ties/M2 bolts"
+    },
+    {
+      "source": "motor_esc_5_mount",
+      "target": "arm_hexarotor_5",
+      "label": "Cable ties/M2 bolts"
+    },
+    {
+      "source": "motor_esc_6_mount",
+      "target": "arm_hexarotor_6",
+      "label": "Cable ties/M2 bolts"
+    },
+    {
+      "source": "winch_motor_driver_mount",
+      "target": "payload_bay_enclosure",
+      "label": "M2 bolts"
+    },
+    {
+      "source": "cellular_modem_mount",
+      "target": "main_frame_top_plate",
+      "label": "M2 bolts"
+    },
+    {
+      "source": "digital_video_tx_mount",
+      "target": "main_frame_bottom_plate",
+      "label": "M2 bolts"
+    },
+    {
+      "source": "wifi_bluetooth_module_mount",
+      "target": "main_frame_top_plate",
+      "label": "M2 bolts"
+    },
+    {
+      "source": "power_module_voltage_sensor_mount",
+      "target": "main_frame_bottom_plate",
+      "label": "M2 bolts"
+    },
+    {
+      "source": "motor_mount_1",
+      "target": "propulsion_motor_1",
+      "label": "mount"
+    },
+    {
+      "source": "motor_mount_2",
+      "target": "propulsion_motor_2",
+      "label": "mount"
+    },
+    {
+      "source": "motor_mount_3",
+      "target": "propulsion_motor_3",
+      "label": "mount"
+    },
+    {
+      "source": "motor_mount_4",
+      "target": "propulsion_motor_4",
+      "label": "mount"
+    },
+    {
+      "source": "motor_mount_5",
+      "target": "propulsion_motor_5",
+      "label": "mount"
+    },
+    {
+      "source": "motor_mount_6",
+      "target": "propulsion_motor_6",
+      "label": "mount"
+    },
+    {
+      "source": "payload_winch_system",
+      "target": "winch_motor",
+      "label": "mount"
+    },
+    {
+      "source": "payload_container_housing",
+      "target": "payload_weight_sensor",
+      "label": "mount"
+    },
+    {
+      "source": "rtk_gps_mount_main",
+      "target": "rtk_gps_main",
+      "label": "mount"
+    },
+    {
+      "source": "rtk_gps_mount_aux",
+      "target": "rtk_gps_aux",
+      "label": "mount"
+    },
+    {
+      "source": "lidar_mount_front",
+      "target": "lidar_obstacle_front",
+      "label": "mount"
+    },
+    {
+      "source": "lidar_mount_back",
+      "target": "lidar_obstacle_back",
+      "label": "mount"
+    },
+    {
+      "source": "lidar_mount_left",
+      "target": "lidar_obstacle_left",
+      "label": "mount"
+    },
+    {
+      "source": "lidar_mount_right",
+      "target": "lidar_obstacle_right",
+      "label": "mount"
+    },
+    {
+      "source": "downward_camera_gimbal",
+      "target": "downward_vision_camera",
+      "label": "mount"
+    },
+    {
+      "source": "forward_camera_mount",
+      "target": "forward_vision_camera",
+      "label": "mount"
+    },
+    {
+      "source": "fc_ai_enclosure",
+      "target": "flight_controller_mcu",
+      "label": "mount"
+    },
+    {
+      "source": "ai_compute_module_mount",
+      "target": "ai_compute_module",
+      "label": "mount"
+    },
+    {
+      "source": "barometer_sensor_mount",
+      "target": "barometer_sensor",
+      "label": "mount"
+    },
+    {
+      "source": "motor_esc_1_mount",
+      "target": "motor_esc_1",
+      "label": "mount"
+    },
+    {
+      "source": "motor_esc_2_mount",
+      "target": "motor_esc_2",
+      "label": "mount"
+    },
+    {
+      "source": "motor_esc_3_mount",
+      "target": "motor_esc_3",
+      "label": "mount"
+    },
+    {
+      "source": "motor_esc_4_mount",
+      "target": "motor_esc_4",
+      "label": "mount"
+    },
+    {
+      "source": "motor_esc_5_mount",
+      "target": "motor_esc_5",
+      "label": "mount"
+    },
+    {
+      "source": "motor_esc_6_mount",
+      "target": "motor_esc_6",
+      "label": "mount"
+    },
+    {
+      "source": "winch_motor_driver_mount",
+      "target": "winch_motor_driver",
+      "label": "mount"
+    },
+    {
+      "source": "cellular_modem_mount",
+      "target": "cellular_modem",
+      "label": "mount"
+    },
+    {
+      "source": "digital_video_tx_mount",
+      "target": "digital_video_tx",
+      "label": "mount"
+    },
+    {
+      "source": "wifi_bluetooth_module_mount",
+      "target": "wifi_bluetooth_module",
+      "label": "mount"
+    },
+    {
+      "source": "power_module_voltage_sensor_mount",
+      "target": "power_module_voltage_sensor",
+      "label": "mount"
+    }
+  ],
+  "instructionPreamble": {
+    "tools": [
+      "3D printer (PETG/ABS/PLA capable)",
+      "M3 hex key",
+      "M2 hex key / precision screwdriver set",
+      "Soldering iron with fine tip",
+      "Solder",
+      "Wire strippers",
+      "Flush cutters",
+      "Heat gun (for heat shrink)",
+      "Multimeter",
+      "Cable ties",
+      "Deburring tool",
+      "Drill press or hand drill",
+      "Computer with USB ports"
+    ],
+    "assumptions": [
+      "Basic soldering experience is required.",
+      "Familiarity with 3D printer operation and material properties (PETG, ABS, PLA).",
+      "Basic understanding of electronics and wiring diagrams.",
+      "Access to a computer with necessary software for firmware flashing and configuration (e.g., flight controller configurator, Linux environment for AI module).",
+      "Components are sourced and ready for assembly."
+    ]
+  },
+  "instructionSteps": [
+    {
+      "id": "fabricate",
+      "subSteps": [
+        {
+          "id": "fabricate_1",
+          "title": "3D print all custom mounts and enclosures",
+          "partIds": [
+            "motor_mount_1",
+            "motor_mount_2",
+            "motor_mount_3",
+            "motor_mount_4",
+            "motor_mount_5",
+            "motor_mount_6",
+            "payload_container_housing",
+            "battery_bay_cover_1",
+            "battery_bay_cover_2",
+            "rtk_gps_mount_main",
+            "rtk_gps_mount_aux",
+            "lidar_mount_front",
+            "lidar_mount_back",
+            "lidar_mount_left",
+            "lidar_mount_right",
+            "forward_camera_mount",
+            "fc_ai_enclosure",
+            "ai_compute_module_mount",
+            "cable_management_clips",
+            "barometer_sensor_mount",
+            "motor_esc_1_mount",
+            "motor_esc_2_mount",
+            "motor_esc_3_mount",
+            "motor_esc_4_mount",
+            "motor_esc_5_mount",
+            "motor_esc_6_mount",
+            "winch_motor_driver_mount",
+            "cellular_modem_mount",
+            "digital_video_tx_mount",
+            "wifi_bluetooth_module_mount",
+            "power_module_voltage_sensor_mount"
+          ],
+          "detail": {
+            "summary": "3D print all custom mounts and enclosures with specified materials and settings.",
+            "steps": [
+              "Print six Motor Mounts (PETG, 30% infill, 0.2mm layer, high strength) for propulsion motors.",
+              "Print the Payload Container Housing (PETG, 20% infill, 0.2mm layer) and two Battery Bay Covers (PETG, 15% infill, 0.2mm layer).",
+              "Print the Main and Auxiliary RTK GPS Mounts (PETG, 20% infill, 0.2mm layer).",
+              "Print the four Obstacle LiDAR Mounts (PETG, 25% infill, 0.2mm layer), the Forward Camera Mount (PETG, 20% infill, 0.2mm layer), and the High Precision Barometer Mount (PETG, 30% infill, 0.2mm layer, 4 perimeters).",
+              "Print the Flight Controller/AI Enclosure (ABS, 30% infill, 0.2mm layer) and the AI Compute Module Mount (PLA, 20% infill, 0.2mm layer).",
+              "Print the six Motor ESC Mounts, Winch Motor Driver Mount, 4G/5G Cellular Modem Mount, Digital Video Transmitter Mount, WiFi/Bluetooth Module Mount, and Voltage/Current Sensor Mount (all PETG, 30% infill, 0.2mm layer, 4 perimeters), along with the Cable Management Clips (PLA, 20% infill, 0.2mm layer)."
+            ]
+          }
+        },
+        {
+          "id": "fabricate_2",
+          "title": "Deburr and prepare main frame plates and hexarotor arms",
+          "partIds": [
+            "main_frame_top_plate",
+            "main_frame_bottom_plate",
+            "arm_hexarotor_1",
+            "arm_hexarotor_2",
+            "arm_hexarotor_3",
+            "arm_hexarotor_4",
+            "arm_hexarotor_5",
+            "arm_hexarotor_6"
+          ]
+        },
+        {
+          "id": "fabricate_3",
+          "title": "Attach propulsion motors to their mounts and then to hexarotor arms",
+          "partIds": [
+            "propulsion_motor_1",
+            "motor_mount_1",
+            "arm_hexarotor_1",
+            "propulsion_motor_2",
+            "motor_mount_2",
+            "arm_hexarotor_2",
+            "propulsion_motor_3",
+            "motor_mount_3",
+            "arm_hexarotor_3",
+            "propulsion_motor_4",
+            "motor_mount_4",
+            "arm_hexarotor_4",
+            "propulsion_motor_5",
+            "motor_mount_5",
+            "arm_hexarotor_5",
+            "propulsion_motor_6",
+            "motor_mount_6",
+            "arm_hexarotor_6"
+          ]
+        },
+        {
+          "id": "fabricate_4",
+          "title": "Assemble payload winch system components including the winch motor",
+          "partIds": [
+            "payload_winch_system",
+            "winch_motor"
+          ]
+        },
+        {
+          "id": "fabricate_5",
+          "title": "Install downward vision camera into its gimbal",
+          "partIds": [
+            "downward_camera_gimbal",
+            "downward_vision_camera"
+          ]
+        },
+        {
+          "id": "fabricate_6",
+          "title": "Mount sensors into their 3D printed enclosures/mounts",
+          "partIds": [
+            "rtk_gps_main",
+            "rtk_gps_mount_main",
+            "rtk_gps_aux",
+            "rtk_gps_mount_aux",
+            "lidar_obstacle_front",
+            "lidar_mount_front",
+            "lidar_obstacle_back",
+            "lidar_mount_back",
+            "lidar_obstacle_left",
+            "lidar_mount_left",
+            "lidar_obstacle_right",
+            "lidar_mount_right",
+            "barometer_sensor",
+            "barometer_sensor_mount",
+            "forward_vision_camera",
+            "forward_camera_mount",
+            "payload_weight_sensor",
+            "payload_container_housing"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wire",
+      "subSteps": [
+        {
+          "id": "wire_1",
+          "title": "Solder main power leads from BMS to Power Distribution Board",
+          "partIds": [
+            "bms_module",
+            "power_distribution_board"
+          ]
+        },
+        {
+          "id": "wire_2",
+          "title": "Solder ESCs to Power Distribution Board and propulsion motors",
+          "partIds": [
+            "power_distribution_board",
+            "motor_esc_1",
+            "motor_esc_2",
+            "motor_esc_3",
+            "motor_esc_4",
+            "motor_esc_5",
+            "motor_esc_6",
+            "propulsion_motor_1",
+            "propulsion_motor_2",
+            "propulsion_motor_3",
+            "propulsion_motor_4",
+            "propulsion_motor_5",
+            "propulsion_motor_6"
+          ]
+        },
+        {
+          "id": "wire_3",
+          "title": "Wire all power output rails from PDB to various electrical components",
+          "partIds": [
+            "power_distribution_board",
+            "flight_controller_mcu",
+            "ai_compute_module",
+            "rtk_gps_main",
+            "rtk_gps_aux",
+            "barometer_sensor",
+            "lidar_obstacle_front",
+            "lidar_obstacle_back",
+            "lidar_obstacle_left",
+            "lidar_obstacle_right",
+            "downward_vision_camera",
+            "forward_vision_camera",
+            "payload_weight_sensor",
+            "winch_motor_driver",
+            "cellular_modem",
+            "digital_video_tx",
+            "wifi_bluetooth_module",
+            "power_module_voltage_sensor"
+          ]
+        },
+        {
+          "id": "wire_4",
+          "title": "Connect flight controller to ESCs, power module, and BMS (PWM, ADC, CAN)",
+          "partIds": [
+            "flight_controller_mcu",
+            "motor_esc_1",
+            "motor_esc_2",
+            "motor_esc_3",
+            "motor_esc_4",
+            "motor_esc_5",
+            "motor_esc_6",
+            "power_module_voltage_sensor",
+            "bms_module"
+          ]
+        },
+        {
+          "id": "wire_5",
+          "title": "Wire AI compute module to various sensors and communication modules (UART, I2C, SPI, USB, CSI, GPIO)",
+          "partIds": [
+            "ai_compute_module",
+            "flight_controller_mcu",
+            "rtk_gps_main",
+            "rtk_gps_aux",
+            "lidar_obstacle_front",
+            "lidar_obstacle_back",
+            "lidar_obstacle_left",
+            "lidar_obstacle_right",
+            "downward_vision_camera",
+            "forward_vision_camera",
+            "payload_weight_sensor",
+            "cellular_modem",
+            "wifi_bluetooth_module"
+          ]
+        },
+        {
+          "id": "wire_6",
+          "title": "Connect winch motor and driver to flight controller (PWM, GPIO)",
+          "partIds": [
+            "winch_motor",
+            "winch_motor_driver",
+            "flight_controller_mcu"
+          ]
+        },
+        {
+          "id": "wire_7",
+          "title": "Wire digital video transmitter to downward camera and flight controller (MIPI CSI, UART)",
+          "partIds": [
+            "digital_video_tx",
+            "downward_vision_camera",
+            "flight_controller_mcu"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bringup",
+      "subSteps": [
+        {
+          "id": "bringup_1",
+          "title": "Perform initial power-on, verify stable voltages from PDB to all components",
+          "partIds": [
+            "power_distribution_board",
+            "bms_module"
+          ]
+        },
+        {
+          "id": "bringup_2",
+          "title": "Flash flight controller firmware and configure basic settings",
+          "partIds": [
+            "flight_controller_mcu"
+          ]
+        },
+        {
+          "id": "bringup_3",
+          "title": "Power on AI compute module, install OS and necessary drivers",
+          "partIds": [
+            "ai_compute_module"
+          ]
+        },
+        {
+          "id": "bringup_4",
+          "title": "Verify communication with all sensors (GPS, Barometer, LiDAR, Cameras) via AI compute module and flight controller",
+          "partIds": [
+            "rtk_gps_main",
+            "rtk_gps_aux",
+            "barometer_sensor",
+            "lidar_obstacle_front",
+            "lidar_obstacle_back",
+            "lidar_obstacle_left",
+            "lidar_obstacle_right",
+            "downward_vision_camera",
+            "forward_vision_camera",
+            "payload_weight_sensor",
+            "flight_controller_mcu",
+            "ai_compute_module"
+          ]
+        },
+        {
+          "id": "bringup_5",
+          "title": "Calibrate ESCs and test individual motor spin direction",
+          "partIds": [
+            "motor_esc_1",
+            "motor_esc_2",
+            "motor_esc_3",
+            "motor_esc_4",
+            "motor_esc_5",
+            "motor_esc_6",
+            "propulsion_motor_1",
+            "propulsion_motor_2",
+            "propulsion_motor_3",
+            "propulsion_motor_4",
+            "propulsion_motor_5",
+            "propulsion_motor_6",
+            "flight_controller_mcu"
+          ]
+        },
+        {
+          "id": "bringup_6",
+          "title": "Test winch motor control and payload weight sensor readings",
+          "partIds": [
+            "winch_motor",
+            "winch_motor_driver",
+            "payload_weight_sensor",
+            "flight_controller_mcu",
+            "ai_compute_module"
+          ]
+        },
+        {
+          "id": "bringup_7",
+          "title": "Confirm functionality of cellular, WiFi/Bluetooth, and digital video transmission modules",
+          "partIds": [
+            "cellular_modem",
+            "wifi_bluetooth_module",
+            "digital_video_tx"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "assemble",
+      "subSteps": [
+        {
+          "id": "assemble_1",
+          "title": "Assemble main frame structure: bottom plate, arms, landing gear, and top plate",
+          "partIds": [
+            "main_frame_bottom_plate",
+            "arm_hexarotor_1",
+            "arm_hexarotor_2",
+            "arm_hexarotor_3",
+            "arm_hexarotor_4",
+            "arm_hexarotor_5",
+            "arm_hexarotor_6",
+            "landing_gear_leg_front_left",
+            "landing_gear_leg_front_right",
+            "landing_gear_leg_rear_left",
+            "landing_gear_leg_rear_right",
+            "main_frame_top_plate",
+            "m3_screws_hex_socket",
+            "m3_nuts_nyloc",
+            "m3_standoffs_nylon"
+          ]
+        },
+        {
+          "id": "assemble_2",
+          "title": "Mount flight controller and AI compute module into their enclosure on vibration dampers",
+          "partIds": [
+            "fc_ai_enclosure",
+            "flight_controller_mcu",
+            "ai_compute_module",
+            "ai_compute_module_mount",
+            "vibration_damping_balls",
+            "m3_standoffs_nylon",
+            "m3_screws_hex_socket"
+          ]
+        },
+        {
+          "id": "assemble_3",
+          "title": "Install power distribution board and BMS into the main frame",
+          "partIds": [
+            "power_distribution_board",
+            "bms_module",
+            "main_frame_bottom_plate"
+          ]
+        },
+        {
+          "id": "assemble_4",
+          "title": "Mount all remaining sensor and communication modules to their designated locations on the frame",
+          "partIds": [
+            "rtk_gps_main",
+            "rtk_gps_mount_main",
+            "rtk_gps_aux",
+            "rtk_gps_mount_aux",
+            "lidar_obstacle_front",
+            "lidar_mount_front",
+            "lidar_obstacle_back",
+            "lidar_mount_back",
+            "lidar_obstacle_left",
+            "lidar_mount_left",
+            "lidar_obstacle_right",
+            "lidar_mount_right",
+            "cellular_modem",
+            "cellular_modem_mount",
+            "digital_video_tx",
+            "digital_video_tx_mount",
+            "wifi_bluetooth_module",
+            "wifi_bluetooth_module_mount",
+            "power_module_voltage_sensor",
+            "power_module_voltage_sensor_mount",
+            "main_frame_top_plate",
+            "main_frame_bottom_plate"
+          ]
+        },
+        {
+          "id": "assemble_5",
+          "title": "Integrate payload bay enclosure, winch system, and payload container",
+          "partIds": [
+            "payload_bay_enclosure",
+            "payload_winch_system",
+            "payload_container_housing",
+            "main_frame_bottom_plate"
+          ]
+        },
+        {
+          "id": "assemble_6",
+          "title": "Perform thorough cable routing, strain relief, and secure with cable management clips",
+          "partIds": [
+            "cable_management_clips"
+          ]
+        },
+        {
+          "id": "assemble_7",
+          "title": "Attach battery bay covers and conduct a final visual inspection",
+          "partIds": [
+            "battery_bay_cover_1",
+            "battery_bay_cover_2",
+            "main_frame_bottom_plate"
+          ]
+        }
+      ]
+    }
+  ],
+  "projectDescription": "An AI-powered hexarotor drone autonomously delivers",
+  "originalPrompt": "Okay, I want to implement an ai powered navigation drone for dispatch deliveries. These are the listed functionalities\n1) The drone is to be for perform deliveries from one point to another the max payload of the delivery is 8kg\n2) The entirety of the navigation program of the drone is carried out by AI, such that once the destination is put in, it properly maps the distance, tragectory, weather, probable obstacles and all other necessary variables needed to plan the flight.\n3) There would be a mobile application for users to view the progress of their dispatch in real-time.\n4) There will also be apis for already existing systems to integrate the drone delivery system in their websites so that their own users can see the delivery in real-time as well.\n5) The drone will be able to recalculate estimated time of arrival based on real time changes in flight plan, battery, weather etc and communicated to the intrested parties accordingly.\n6) On low battery (once below 30%) or similar fault to the drone the drone will navigate to the nearest warehouse for servicing if it cannot be serviced, the flight plan can be transferred from one drone to another\n7) \n\nNow let me give you a few use cases/user flow in order to shed more light on the project\n1) A business wants to use the migrate from using dispatch riders to be delivering products to using the drones as it is faster. The business owner downloads the application and registers as a business. They then proceed to pay the set up fee, which is priced per number of drones that would be assigned to that business, If the business subscribes for three drones, then they can only use up to three drones at any particular time. Their monthly fee at the end of the month would then be calculated by their total drone milage throughout that month. Once all the payment is done and dusted they can then proceed to utilise the drones. Note that no operator in the business comes in contact with the drone, rather they are delivered payload containers which they will be using to put the package that will be delivered (still not more than 8kg). Once the business wants to make a delivery, they order the drone and put in the location details of the customer in the application as well as contact details and the mode of contact. Once the payload container has been properly secured, the drone proceeds to navigate to the customer upon reaching the approximate location of the customer, the drone then initiates a communication line with the customer using the provided means of contact, once the customer provides the OTP given to them from the business, the drone then deploys the payload container which then opens up to release the package. And the drone proceeds to head back to the business. Upon arriving at the business, the drone returns the payload container and then heads back to the warehouse\n\n2) An individual user in lagos (island) wants to send a package to a friend in the mainland. From the app, the user orders a drone to come and pick up the package. While placing the order, the user puts in their location and the friends location as well a the contact information of the friend and the mode of contact (SMS, phone number, whatapp etc).  Once the drone arrives, it will initiate a phone call / or open a text communication platform to the user in order to gain the precise location of the user (note that the drone also has cameras installed so the user can identify themselves by what they are wearing in order for the drone to locate them), the drone does not land, rather it will let down it's payload container for the user to put in the package they wish delivered, the payload container has a weighing system in it where it will calcuate the weight of the package, if the package is above 8kg, it would advise the user to reduce the weight notifying the user that it would not accept the package until it is done. Once the weight of the package is confirmed, the payload container is sealed and retracted back into the drone. The drone then proceeds to navigate to the friends location upon arriving at the friends location, the drone intiates a line of communication with the friend using the contact information provided by the user, once a line of communication is established, the drone proceeds to locate the friend, upon friend location the drone will request for a confirmation OTP sent to the user (The OTP will be generated and given to the user upon payment, the payment is calulated using how long the drone took to reach their destination and any other factors, the user then communicates the OTP to the friend) once that is given, the drone will proceed to deploy the product and head back to the warehouse\n\n3) A large scale delivery business (they already have their website/mobile app etc want to use our drones for deliveries. Since both they and the customers would need to see the progress of the drone and delivery in real time, they would integrate our apis into their system which would then be used to track the drone during deliveries. The business registers on our website and they are provided with the API endpoints as well as their api and secret key, once they top up their wallet on their dashboard they can then automate the drone request and management flow entirely. The pricing would be calculated based on the estimated time of flight and would be debited from the wallet on API call, there will be a request drone api which the business can use to request a drone, the pickup location, pickup contact, destination location and destination contact would be sent along with the request, along with any other necessary data. then there will be a tracking endpoint/webhook (I am not really sure how this will be implemented) which the business can use to get the real time location of the drone and estimated time of arrival as well as any other necessary data. There will be different flight stages (servicing -> calculating route -> launch -> arriving at pick-up -> awaiting payload and package -> navigation to destination -> deploying payload package -> returning to pickup -> off loading payload container -> returning to warehouse -> route complete) which would be updated by the drone itself as the scenatio depends.",
+  "plan": "- Flight Control System: High-performance Flight Controller (e.g., Cube Orange, Pixhawk) for core flight operations, paired with an embedded AI compute module (e.g., NVIDIA Jetson Xavier NX) for real-time AI navigation, object detection, and path planning.\n- Sensors: Redundant RTK-GPS for precise positioning, IMU (accelerometer, gyroscope, magnetometer), Barometer, LiDAR/Sonar array for obstacle avoidance and accurate altitude hold, downward-facing vision camera for landing/object identification, payload weight sensor, and battery monitoring sensors.\n- Propulsion & Power: High-efficiency brushless motors, ESCs, large diameter propellers, and multiple high-capacity LiPo battery packs (e.g., 6S-12S) with intelligent Battery Management System (BMS) and dynamic charging capabilities.\n- Communication & Telemetry: 4G/5G cellular modem for wide-area real-time data, command & control, and user communication; long-range digital video transmission; and local Wi-Fi/Bluetooth for ground station interface.\n- Mechanical Frame & Payload System: Carbon fiber or aerospace-grade aluminum frame for high strength-to-weight ratio; modular payload container with automated locking, weighing, and release mechanism; quick-swap battery bays; and robust landing gear.\n- Custom 3D Printed Parts: Specialized mounts for sensors and AI module, custom enclosure for payload release mechanism, aerodynamic fairings, and specific internal cable management guides.",
+  "notes": [
+    "AI-powered navigation",
+    "8kg max payload",
+    "Real-time tracking",
+    "Mobile app integration",
+    "API integration",
+    "Automated payload handling",
+    "Dynamic re-routing",
+    "Autonomous battery management"
+  ]
+}
